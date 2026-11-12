@@ -5,6 +5,15 @@
 Перед каждой крупной работой — грилл (скилл `grill`); пользователь этого ждёт.
 Blender: `D:\Clode\Tools\Blender-4.5.14\blender.exe`.
 
+## Blender-to-pixel: что важно в этом проекте
+- Модели — только скрипт `scripts/blender/build_all.py` (пакетно:
+  `blender.exe -b --factory-startup -P scripts/blender/build_all.py`). Ручные — `assets/blender/hand/`.
+- Конфиг `assets/sprites.json`, палитра `assets/palette.hex`, один `px_per_unit` = 32.
+- Выход: `public/art/` (листы + JSON + превью ×8). Персонажи — профиль, idle 4 кадра;
+  дома 3 уровня; фоны 3 климата × 3 слоя (FLAT, без света).
+- ⚠ Цвета материалов в Blender — в ЛИНЕЙНОМ пространстве: `mat()` конвертирует hex sRGB→linear,
+  иначе рендер осветляет и палитра сбивается.
+
 - Стек: TypeScript + Vite + Vitest. Без игрового движка и без бэкенда.
 - Пользователь не программирует: код, запуск и проверку делает Claude; отчитываться
   простым языком, что изменилось в игре.

@@ -1,0 +1,23 @@
+{
+  "name": "bg_temperate_far",
+  "frame": [
+    256,
+    96
+  ],
+  "pivot": [
+    128,
+    48
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 8,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "static": {
+      "sheet": "bg_temperate_far_static.png",
+      "frames": 1,
+      "fps": 24.0
+    }
+  }
+}

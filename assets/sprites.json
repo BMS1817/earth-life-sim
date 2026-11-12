@@ -1,0 +1,16 @@
+{
+  "px_per_unit": 32,
+  "elevation_deg": 12,
+  "directions": 1,
+  "palette": "palette.hex",
+  "outline": true,
+  "engine": "workbench",
+  "frame_step": 1,
+  "presets": {
+    "person": { "frame": [48, 64], "pivot": [24, 58] },
+    "house": { "frame": [96, 80], "pivot": [48, 72], "elevation_deg": 20 },
+    "sky": { "frame": [256, 96], "pivot": [128, 48], "elevation_deg": 0, "outline": false },
+    "far": { "frame": [256, 96], "pivot": [128, 48], "elevation_deg": 8, "outline": false },
+    "near": { "frame": [256, 64], "pivot": [128, 32], "elevation_deg": 8, "outline": false }
+  }
+}

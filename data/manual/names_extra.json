@@ -1,0 +1,14 @@
+{
+  "CN": {
+    "M": ["Wei", "Ming", "Jun", "Jie", "Lei", "Tao", "Gang", "Peng", "Bo", "Chao", "Jian", "Qiang", "Hao", "Yu", "Long", "Xiang", "Feng", "Cheng", "Bin", "Yang", "Dong", "Liang", "Guo", "Zhi", "Rong", "Sheng", "Xin", "Wen", "Fei", "Hai"],
+    "F": ["Mei", "Li", "Juan", "Xia", "Yan", "Na", "Jing", "Hua", "Xin", "Yue", "Ping", "Qin", "Shan", "Ting", "Wen", "Fang", "Ling", "Hong", "Min", "Xiu", "Ying", "Zhen", "Cui", "Dan", "Rong", "Shu", "Ya", "Qing", "Lan", "Ling"]
+  },
+  "PK": {
+    "M": ["Muhammad", "Ahmed", "Ali", "Hassan", "Hussain", "Usman", "Bilal", "Imran", "Shahid", "Tariq", "Asif", "Kamran", "Naveed", "Faisal", "Rashid", "Saeed", "Waqas", "Zahid", "Amir", "Farooq", "Khalid", "Nadeem", "Sajjad", "Shoaib", "Umar", "Waseem", "Yasir", "Zeeshan", "Adnan", "Danish"],
+    "F": ["Ayesha", "Fatima", "Maryam", "Zainab", "Khadija", "Sana", "Hina", "Nadia", "Rabia", "Sadia", "Saima", "Shazia", "Uzma", "Bushra", "Farzana", "Gulnaz", "Humaira", "Iqra", "Javeria", "Komal", "Lubna", "Mahnoor", "Noreen", "Rukhsana", "Samina", "Shabana", "Tahira", "Yasmin", "Zahra", "Asma"]
+  },
+  "PH": {
+    "M": ["Jose", "Juan", "Antonio", "Manuel", "Pedro", "Francisco", "Ramon", "Carlos", "Miguel", "Ricardo", "Eduardo", "Fernando", "Roberto", "Mario", "Angel", "Rafael", "Renato", "Ronaldo", "Danilo", "Emmanuel", "Ernesto", "Felipe", "Gilbert", "Joel", "Jonathan", "Joseph", "Mark", "Michael", "Paul", "Rey"],
+    "F": ["Maria", "Ana", "Carmen", "Rosa", "Teresa", "Luz", "Corazon", "Elena", "Gloria", "Josefina", "Lourdes", "Margarita", "Mercedes", "Rosario", "Soledad", "Victoria", "Angelica", "Cristina", "Divina", "Estrella", "Imelda", "Leonora", "Maricel", "Marites", "Michelle", "Nenita", "Norma", "Remedios", "Rowena", "Susan"]
+  }
+}

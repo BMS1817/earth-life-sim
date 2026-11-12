@@ -1,0 +1,23 @@
+{
+  "name": "bg_tropics_near",
+  "frame": [
+    256,
+    64
+  ],
+  "pivot": [
+    128,
+    32
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 8,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "static": {
+      "sheet": "bg_tropics_near_static.png",
+      "frames": 1,
+      "fps": 24.0
+    }
+  }
+}

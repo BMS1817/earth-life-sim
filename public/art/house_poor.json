@@ -1,0 +1,23 @@
+{
+  "name": "house_poor",
+  "frame": [
+    96,
+    80
+  ],
+  "pivot": [
+    48,
+    72
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 20,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "static": {
+      "sheet": "house_poor_static.png",
+      "frames": 1,
+      "fps": 24.0
+    }
+  }
+}

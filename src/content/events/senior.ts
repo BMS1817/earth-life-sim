@@ -1,0 +1,147 @@
+import type { LifeEvent } from "../../core/events.ts";
+
+export const SENIOR: LifeEvent[] = [
+  {
+    id: "retirement",
+    minAge: 60,
+    maxAge: 80,
+    once: true,
+    weight: 3,
+    text: "Пенсия. Дни стали длинными.",
+    choices: [
+      { sector: "bonds", label: "Больше времени с близкими", outcome: "Ты стал центром семейных обедов и праздников.", effects: { bonds: 10 } },
+      { sector: "self", label: "Хобби и тишина", outcome: "Наконец-то время на то, до чего руки не доходили.", effects: { health: 4 } },
+      { sector: "tradition", label: "Продолжать работать", outcome: "Ты остался на лёгкой ставке — и деньги, и привычка.", effects: { money: 6 } },
+    ],
+  },
+  {
+    id: "old-age-loneliness",
+    minAge: 70,
+    maxAge: 100,
+    heavy: true,
+    weight: 2,
+    text: "Иногда дом кажется слишком тихим.",
+    choices: [
+      { sector: "bonds", label: "Звонить близким первым", outcome: "Ты не ждёшь — звонишь сам. Дом снова звучит голосами.", effects: { bonds: 8 } },
+      { sector: "self", label: "Тишина — тоже компания", outcome: "Книги, воспоминания, спокойствие. Ты нашёл лад с собой.", effects: { education: 2 } },
+    ],
+  },
+  {
+    id: "senior-grandkids",
+    minAge: 60,
+    maxAge: 80,
+    weight: 3,
+    text: "Внуки приезжают на каникулы.",
+    choices: [
+      { sector: "bonds", label: "Нянчить и возиться", outcome: "Дом полон смеха. Ты устаёшь и счастлив.", effects: { bonds: 8 } },
+      { sector: "self", label: "Беречь свой режим", outcome: "Ты помогаешь понемногу и оставляешь время себе.", effects: { health: 3 } },
+    ],
+  },
+  {
+    id: "senior-garden",
+    minAge: 62,
+    maxAge: 85,
+    weight: 2,
+    text: "Дача: вечный ремонт и грядки.",
+    choices: [
+      { sector: "tradition", label: "Копать и строить", outcome: "Свежий воздух и урожай. Спина ноет, душа радуется.", effects: { health: 5, money: 2 } },
+      { sector: "self", label: "Продать", outcome: "Дача продана. Деньги на счету, свободные выходные.", effects: { money: 5 } },
+    ],
+  },
+  {
+    id: "senior-learn",
+    minAge: 60,
+    maxAge: 80,
+    once: true,
+    weight: 2,
+    text: "Курсы для пожилых: компьютер, языки, танцы.",
+    choices: [
+      { sector: "change", label: "Пойти учиться", outcome: "Новые навыки и новые знакомства. Возраст не помеха.", effects: { education: 5, bonds: 3 } },
+      { sector: "tradition", label: "Не по возрасту это", outcome: "Остался дома. Привычное уютно.", effects: { health: 1 } },
+    ],
+  },
+  {
+    id: "senior-move",
+    minAge: 65,
+    maxAge: 85,
+    once: true,
+    weight: 2,
+    text: "Дети зовут переехать к ним.",
+    choices: [
+      { sector: "bonds", label: "Переехать", outcome: "Теперь вы рядом каждый день. Забота взаимна.", effects: { bonds: 7 } },
+      { sector: "self", label: "Жить самостоятельно", outcome: "Ты остался в своём доме. Самостоятельность дорогого стоит.", effects: { health: 2, bonds: -3 } },
+    ],
+  },
+  {
+    id: "senior-pension-work",
+    minAge: 60,
+    maxAge: 70,
+    weight: 2,
+    text: "Предлагают подработку: немного денег к пенсии.",
+    choices: [
+      { sector: "tradition", label: "Работать", outcome: "Подработка идёт. Денег больше, отдыха меньше.", effects: { money: 5, health: -3 } },
+      { sector: "self", label: "Отдыхать", outcome: "Пенсия — тоже время жить.", effects: { health: 3 } },
+    ],
+  },
+  {
+    id: "senior-memory",
+    minAge: 70,
+    maxAge: 90,
+    heavy: true,
+    once: true,
+    weight: 2,
+    text: "Память подводит: забываешь имена, даты, куда положил ключи.",
+    choices: [
+      { sector: "tradition", label: "Сходить к врачу", outcome: "Врач назначил обследование и режим. Стало спокойнее.", effects: { health: 4, money: -3 } },
+      { sector: "self", label: "Это просто возраст", outcome: "Ты машешь рукой. Записные книжки — твоя память.", effects: { health: -2 } },
+    ],
+  },
+  {
+    id: "senior-old-friends",
+    minAge: 65,
+    maxAge: 85,
+    once: true,
+    weight: 2,
+    text: "Встреча старых друзей. Столько лет прошло.",
+    choices: [
+      { sector: "bonds", label: "Пойти", outcome: "Вы вспоминали всё. Смеялись и молчали.", effects: { bonds: 6 } },
+      { sector: "self", label: "Не пойти", outcome: "Ты остался дома. Прошлое — в прошлом.", effects: { bonds: -2 } },
+    ],
+  },
+  {
+    id: "senior-will",
+    minAge: 70,
+    maxAge: 95,
+    heavy: true,
+    once: true,
+    weight: 1.5,
+    text: "Стоит подумать о завещании.",
+    choices: [
+      { sector: "tradition", label: "Написать завещание", outcome: "Бумаги в порядке. Близкие будут защищены.", effects: { bonds: 3 } },
+      { sector: "self", label: "Не думать об этом", outcome: "Ты отложил. Мысли неприятные.", effects: { health: -1 } },
+    ],
+  },
+  {
+    id: "senior-walk",
+    minAge: 65,
+    maxAge: 90,
+    weight: 3,
+    text: "Врач советует ежедневные прогулки.",
+    choices: [
+      { sector: "self", label: "Ходить каждый день", outcome: "Прогулки вошли в привычку. Ноги держат лучше.", effects: { health: 5 } },
+      { sector: "tradition", label: "Телевизор и диван", outcome: "Сериалы вместо прогулок.", effects: { health: -3 } },
+    ],
+  },
+  {
+    id: "senior-legacy",
+    minAge: 75,
+    maxAge: 95,
+    once: true,
+    weight: 2,
+    text: "Хочется записать историю своей жизни.",
+    choices: [
+      { sector: "bonds", label: "Для детей и внуков", outcome: "Ты записал всю жизнь для семьи. Это останется.", effects: { bonds: 6, education: 2 } },
+      { sector: "self", label: "Для себя", outcome: "Ты перечитал свою жизнь как книгу. Хорошая книга.", effects: { education: 3 } },
+    ],
+  },
+];

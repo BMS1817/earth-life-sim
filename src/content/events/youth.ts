@@ -1,0 +1,178 @@
+import type { LifeEvent } from "../../core/events.ts";
+
+export const YOUTH: LifeEvent[] = [
+  {
+    id: "after-school",
+    minAge: 18,
+    maxAge: 18,
+    milestone: true,
+    once: true,
+    weight: 10,
+    text: "Школа позади. Куда дальше?",
+    choices: [
+      { sector: "tradition", label: "Работа рядом с домом", outcome: "Ты устроился рядом с домом — спокойно и понятно.", effects: { money: 5, education: -2 } },
+      { sector: "change", label: "Уехать учиться в другой город", outcome: "Переезд, общага, новые люди — ты учишься и взрослеешь.", effects: { education: 12, money: -8, bonds: -4 } },
+      {
+        sector: "self",
+        label: "Свой путь: ремесло или фриланс",
+        outcome: "",
+        risk: {
+          chance: 0.6,
+          successText: "Своё дело пошло: заказы есть, ты на своей волне.",
+          successEffects: { money: 10, education: 5 },
+          failText: "Своё дело не пошло, пришлось подрабатывать где придётся.",
+          failEffects: { money: -6, education: 2 },
+        },
+      },
+    ],
+  },
+  {
+    id: "city-move",
+    minAge: 19,
+    maxAge: 35,
+    once: true,
+    weight: 2,
+    text: "Звонок: интересная работа в большом городе. Но там никого из твоих.",
+    choices: [
+      {
+        sector: "change",
+        label: "Переехать",
+        outcome: "",
+        risk: {
+          chance: 0.65,
+          successText: "Город принял тебя: работа и зарплата выросли.",
+          successEffects: { money: 14, education: 4 },
+          failText: "В городе не сложилось, вернулся с потерями.",
+          failEffects: { money: -10 },
+        },
+      },
+      { sector: "tradition", label: "Остаться со своими", outcome: "Ты остался. Дом, близкие, привычный ритм.", effects: { bonds: 6, money: -2 } },
+    ],
+  },
+  {
+    id: "youth-rent",
+    minAge: 20,
+    maxAge: 29,
+    once: true,
+    weight: 3,
+    text: "Вопрос жилья: съехать от родителей или копить?",
+    choices: [
+      { sector: "change", label: "Съехать в съёмное", outcome: "Своя квартира. Свобода стоит денег.", effects: { money: -6, bonds: 2, education: 1 } },
+      { sector: "tradition", label: "Жить с родителями", outcome: "Дома дешевле и сытнее. Копишь.", effects: { money: 4, bonds: 2 } },
+    ],
+  },
+  {
+    id: "youth-relations",
+    minAge: 20,
+    maxAge: 29,
+    weight: 3,
+    text: "Отношения становятся серьёзными.",
+    choices: [
+      { sector: "bonds", label: "Строить их всерьёз", outcome: "Вы учитесь быть парой: разговоры, быт, планы.", effects: { bonds: 8 } },
+      { sector: "self", label: "Свобода важнее", outcome: "Ты оставляешь всё лёгким. Больше времени на себя.", effects: { money: 2 } },
+    ],
+  },
+  {
+    id: "youth-marriage",
+    minAge: 23,
+    maxAge: 29,
+    once: true,
+    weight: 2,
+    text: "Разговор о свадьбе.",
+    choices: [
+      { sector: "bonds", label: "Да", outcome: "Свадьба. Теперь вы семья.", effects: { bonds: 10 } },
+      { sector: "self", label: "Пока нет", outcome: "Вы отложили. Отношения продолжаются, но осадок есть.", effects: { bonds: -2 } },
+    ],
+  },
+  {
+    id: "youth-child",
+    minAge: 24,
+    maxAge: 35,
+    once: true,
+    weight: 2,
+    text: "Разговор о ребёнке.",
+    choices: [
+      { sector: "bonds", label: "Завести ребёнка", outcome: "В доме появился малыш. Меньше сна, больше смысла.", effects: { bonds: 10, money: -8 } },
+      { sector: "self", label: "Позже", outcome: "Решили подождать. Живёте для себя.", effects: { money: 3 } },
+    ],
+  },
+  {
+    id: "youth-night-shift",
+    minAge: 20,
+    maxAge: 29,
+    weight: 2,
+    text: "Можно брать дополнительные смены.",
+    choices: [
+      { sector: "self", label: "Брать смены", outcome: "Денег больше, сил меньше.", effects: { money: 8, health: -5 } },
+      { sector: "bonds", label: "Оставить время близким", outcome: "Вечера — дома. Это тоже доход, только не в деньгах.", effects: { bonds: 4 } },
+    ],
+  },
+  {
+    id: "youth-course",
+    minAge: 20,
+    maxAge: 29,
+    weight: 2,
+    text: "Курсы повышения квалификации. Недёшево и по вечерам.",
+    choices: [
+      { sector: "self", label: "Пойти учиться", outcome: "Новые навыки уже пригодились.", effects: { education: 8, money: -4 } },
+      { sector: "tradition", label: "И так хватает", outcome: "Остался при текущем уровне.", effects: { money: 2 } },
+    ],
+  },
+  {
+    id: "youth-travel",
+    minAge: 20,
+    maxAge: 29,
+    weight: 2,
+    text: "Подвернулась дешёвая путёвка.",
+    choices: [
+      { sector: "change", label: "Поехать", outcome: "Новые места, новые люди. Кошелёк похудел, память пополнилась.", effects: { money: -5, bonds: 3 } },
+      { sector: "tradition", label: "Отложить", outcome: "Деньги остались на счету.", effects: { money: 3 } },
+    ],
+  },
+  {
+    id: "youth-friend-ask",
+    minAge: 20,
+    maxAge: 29,
+    weight: 2,
+    text: "Друг просит в долг. Сумма для тебя заметная.",
+    choices: [
+      { sector: "bonds", label: "Дать", outcome: "Ты помог. Друг вернёт, когда сможет. Наверное.", effects: { money: -5, bonds: 6 } },
+      { sector: "self", label: "Отказать", outcome: "Ты отказал. Друг обиделся.", effects: { bonds: -4 } },
+    ],
+  },
+  {
+    id: "youth-startup",
+    minAge: 22,
+    maxAge: 29,
+    once: true,
+    weight: 1.5,
+    text: "Друг зовёт в стартап: вложения нужны прямо сейчас.",
+    choices: [
+      {
+        sector: "change",
+        label: "Вложиться",
+        outcome: "",
+        risk: {
+          chance: 0.3,
+          successText: "Стартап выстрелил! Вложение вернулось многократно.",
+          successEffects: { money: 25 },
+          failText: "Стартап сгорел вместе с твоими вложениями.",
+          failEffects: { money: -12 },
+        },
+      },
+      { sector: "tradition", label: "Не лезть", outcome: "Ты остался в стороне. Спокойно.", effects: { money: 1 } },
+    ],
+  },
+  {
+    id: "youth-burnout",
+    minAge: 24,
+    maxAge: 29,
+    crisis: true,
+    weight: 1.5,
+    text: "Выгорание: работа не радует, сил нет.",
+    choices: [
+      { sector: "self", label: "Взять паузу", outcome: "Ты взял отпуск и выдохнул. Постепенно отпускает.", effects: { health: 6, money: -5 } },
+      { sector: "tradition", label: "Терпеть", outcome: "Ты продолжаешь как был. Терпение на исходе.", effects: { health: -6 } },
+    ],
+  },
+];

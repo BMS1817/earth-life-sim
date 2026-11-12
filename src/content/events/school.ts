@@ -1,0 +1,167 @@
+import type { LifeEvent } from "../../core/events.ts";
+
+export const SCHOOL: LifeEvent[] = [
+  {
+    id: "first-grade",
+    minAge: 6,
+    maxAge: 6,
+    milestone: true,
+    once: true,
+    weight: 10,
+    text: "Первый класс. Всё новое: парта, звонок, учитель.",
+    choices: [
+      { sector: "tradition", label: "Слушаться и делать уроки", outcome: "Ты становишься примерным учеником, родители довольны.", effects: { education: 6, bonds: 2 } },
+      { sector: "self", label: "Учить только то, что интересно", outcome: "Любимые предметы даются легко, остальное — как-нибудь.", effects: { education: 4 } },
+      { sector: "bonds", label: "Помогать одноклассникам", outcome: "Ты объясняешь задачи другим и становишься своим.", effects: { bonds: 6, education: 2 } },
+    ],
+  },
+  {
+    id: "yard-friend",
+    minAge: 6,
+    maxAge: 11,
+    weight: 3,
+    text: "Во дворе появляется шумная компания ровесников.",
+    choices: [
+      { sector: "bonds", label: "Пойти знакомиться", outcome: "Теперь у тебя есть с кем делить лето до темноты.", effects: { bonds: 8 } },
+      { sector: "self", label: "Держаться особняком", outcome: "Ты выбираешь книги и свои занятия вместо двора.", effects: { education: 2, bonds: -3 } },
+    ],
+  },
+  {
+    id: "school-bully",
+    minAge: 7,
+    maxAge: 11,
+    heavy: true,
+    once: true,
+    weight: 2,
+    text: "Старшие ребята отбирают завтраки у младших. Сегодня — у тебя.",
+    choices: [
+      { sector: "change", label: "Рассказать учителю", outcome: "Учитель вмешался. Старшие злятся, но отстали.", effects: { bonds: 2 } },
+      {
+        sector: "self",
+        label: "Дать сдачи",
+        outcome: "",
+        risk: {
+          chance: 0.5,
+          successText: "Ты неожиданно дал отпор — больше не трогают.",
+          successEffects: { bonds: 4 },
+          failText: "Тебе досталось. Зато тебя запомнили.",
+          failEffects: { health: -4 },
+        },
+      },
+      { sector: "tradition", label: "Избегать их", outcome: "Ты научился обходить их маршруты. Неприятно, но цел.", effects: { bonds: -2 } },
+    ],
+  },
+  {
+    id: "school-contest",
+    minAge: 8,
+    maxAge: 11,
+    weight: 2,
+    text: "Школьная олимпиада по твоему любимому предмету.",
+    choices: [
+      {
+        sector: "self",
+        label: "Участвовать",
+        outcome: "",
+        risk: {
+          chance: 0.5,
+          successText: "Грамота за первое место! Ты поверил в себя.",
+          successEffects: { education: 8 },
+          failText: "Не получилось. Но теперь ты знаешь, куда расти.",
+          failEffects: { education: 1 },
+        },
+      },
+      { sector: "tradition", label: "Не высовываться", outcome: "Ты остался в зале. Спокойно, но без грамоты.", effects: { education: 1 } },
+    ],
+  },
+  {
+    id: "school-pet",
+    minAge: 6,
+    maxAge: 11,
+    once: true,
+    weight: 2,
+    text: "Ты просишь завести питомца.",
+    choices: [
+      { sector: "bonds", label: "Обещать заботиться самому", outcome: "В доме появился питомец. Ты кормишь и гуляешь — почти всегда сам.", effects: { bonds: 5 } },
+      { sector: "tradition", label: "Послушаться, если против", outcome: "Родители сказали «позже». Ты согласился.", effects: { bonds: 1 } },
+    ],
+  },
+  {
+    id: "school-grades",
+    minAge: 7,
+    maxAge: 11,
+    weight: 3,
+    text: "Плохая отметка. Дневник жжёт карман.",
+    choices: [
+      { sector: "tradition", label: "Показать и исправить", outcome: "Был разговор, зато ты разобрал тему и пересдал.", effects: { education: 4 } },
+      { sector: "self", label: "Спрятать дневник", outcome: "Покатилось. Отметки стали хуже, правда вскрылась.", effects: { education: -2, bonds: -2 } },
+    ],
+  },
+  {
+    id: "school-sport",
+    minAge: 7,
+    maxAge: 11,
+    weight: 2,
+    text: "Спортивная секция набирает детей.",
+    choices: [
+      { sector: "change", label: "Записаться", outcome: "Тренировки два раза в неделю — ты стал выносливее.", effects: { health: 6 } },
+      { sector: "self", label: "Не люблю спорт", outcome: "Остался при своих занятиях.", effects: { education: 2 } },
+    ],
+  },
+  {
+    id: "school-read",
+    minAge: 8,
+    maxAge: 11,
+    once: true,
+    weight: 2,
+    text: "Рядом с домом обнаружилась библиотека.",
+    choices: [
+      { sector: "self", label: "Читать запоем", outcome: "Ты проглатываешь книгу за книгой.", effects: { education: 6 } },
+      { sector: "bonds", label: "Брать книги для всей семьи", outcome: "Дома появилась традиция читать вслух.", effects: { bonds: 3, education: 3 } },
+    ],
+  },
+  {
+    id: "school-summer-camp",
+    minAge: 8,
+    maxAge: 11,
+    weight: 2,
+    text: "Лето. Можно поехать в лагерь.",
+    choices: [
+      { sector: "change", label: "Поехать", outcome: "Лагерь: костры, новые друзья, немного тоски по дому.", effects: { bonds: 5 } },
+      { sector: "tradition", label: "Остаться дома", outcome: "Лето дома: двор, бабушка, своё расписание.", effects: { bonds: 2 } },
+    ],
+  },
+  {
+    id: "school-help-home",
+    minAge: 7,
+    maxAge: 11,
+    weight: 3,
+    text: "Родители просят помочь по дому.",
+    choices: [
+      { sector: "bonds", label: "Помогать", outcome: "Уборка вместе с родителями — и разговоры по душам.", effects: { bonds: 5 } },
+      { sector: "self", label: "Увильнуть", outcome: "Ты сделал вид, что занят. Дома стало немного тише.", effects: { bonds: -3 } },
+    ],
+  },
+  {
+    id: "school-computer",
+    minAge: 9,
+    maxAge: 11,
+    once: true,
+    weight: 2,
+    text: "В доме появился компьютер.",
+    choices: [
+      { sector: "self", label: "Игры!", outcome: "Ты проходишь игры одну за другой.", effects: { education: 1 } },
+      { sector: "change", label: "Разобраться, как он работает", outcome: "Ты лезешь в настройки и пробуешь писать первые программы.", effects: { education: 6 } },
+    ],
+  },
+  {
+    id: "school-friend-fight",
+    minAge: 8,
+    maxAge: 11,
+    weight: 2,
+    text: "Ты поссорился с лучшим другом.",
+    choices: [
+      { sector: "bonds", label: "Помириться первым", outcome: "Ты подошёл сам. Дружба стала крепче.", effects: { bonds: 5 } },
+      { sector: "self", label: "Ждать его шага", outcome: "Никто не подошёл. Дружба остыла.", effects: { bonds: -3 } },
+    ],
+  },
+];
