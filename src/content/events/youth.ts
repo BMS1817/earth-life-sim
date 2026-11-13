@@ -10,20 +10,21 @@ export const YOUTH: LifeEvent[] = [
     weight: 10,
     text: "Школа позади. Куда дальше?",
     choices: [
-      { sector: "tradition", label: "Работа рядом с домом", outcome: "Ты устроился рядом с домом — спокойно и понятно.", effects: { money: 5, education: -2 } },
-      { sector: "change", label: "Уехать учиться в другой город", outcome: "Переезд, общага, новые люди — ты учишься и взрослеешь.", effects: { education: 12, money: -8, bonds: -4 } },
+      { sector: "tradition", label: "Работа рядом с домом", outcome: "Ты устроился рядом с домом — спокойно и понятно. Роста меньше.", effects: { money: 5, education: -2 } },
+      { sector: "change", label: "Уехать учиться в другой город", outcome: "Переезд, общага, новые люди. Дорого и вдали от своих.", effects: { education: 12, money: -8, bonds: -4 } },
       {
         sector: "self",
         label: "Свой путь: ремесло или фриланс",
         outcome: "",
         risk: {
           chance: 0.6,
-          successText: "Своё дело пошло: заказы есть, ты на своей волне.",
-          successEffects: { money: 10, education: 5 },
+          successText: "Своё дело пошло. Но ты всё делаешь сам, поддержки меньше.",
+          successEffects: { money: 10, bonds: -3 },
           failText: "Своё дело не пошло, пришлось подрабатывать где придётся.",
-          failEffects: { money: -6, education: 2 },
+          failEffects: { money: -6, education: -1 },
         },
       },
+      { sector: "bonds", label: "Остаться помогать семье", outcome: "Ты нужен дома. Образование отложено.", effects: { bonds: 6, education: -3 } },
     ],
   },
   {
@@ -40,13 +41,15 @@ export const YOUTH: LifeEvent[] = [
         outcome: "",
         risk: {
           chance: 0.65,
-          successText: "Город принял тебя: работа и зарплата выросли.",
-          successEffects: { money: 14, education: 4 },
+          successText: "Город принял тебя: работа и зарплата выросли. Близкие далеко.",
+          successEffects: { money: 14, bonds: -5 },
           failText: "В городе не сложилось, вернулся с потерями.",
-          failEffects: { money: -10 },
+          failEffects: { money: -10, bonds: -2 },
         },
       },
-      { sector: "tradition", label: "Остаться со своими", outcome: "Ты остался. Дом, близкие, привычный ритм.", effects: { bonds: 6, money: -2 } },
+      { sector: "tradition", label: "Остаться со своими", outcome: "Ты остался. Дом, близкие, привычный ритм. Карьера медленнее.", effects: { bonds: 6, money: -2 } },
+      { sector: "bonds", label: "Переехать, но навещать каждый месяц", outcome: "Ты выбрал и то, и другое. Дорога съедает деньги.", effects: { bonds: 3, money: -4 } },
+      { sector: "self", label: "Отказаться и строить карьеру здесь", outcome: "Ты остался ради своего пути. Меньше возможностей, больше своих.", effects: { education: 3, money: -2 } },
     ],
   },
   {
@@ -57,8 +60,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 3,
     text: "Вопрос жилья: съехать от родителей или копить?",
     choices: [
-      { sector: "change", label: "Съехать в съёмное", outcome: "Своя квартира. Свобода стоит денег.", effects: { money: -6, bonds: 2, education: 1 } },
-      { sector: "tradition", label: "Жить с родителями", outcome: "Дома дешевле и сытнее. Копишь.", effects: { money: 4, bonds: 2 } },
+      { sector: "change", label: "Съехать в съёмное", outcome: "Своя квартира. Свобода стоит денег.", effects: { money: -6, education: 1, bonds: -1 } },
+      { sector: "tradition", label: "Жить с родителями", outcome: "Дома дешевле и сытнее. Самостоятельности меньше.", effects: { money: 4, education: -1 } },
+      { sector: "bonds", label: "Съехать вместе с партнёром", outcome: "Вы сняли вместе. Отношения проверяются бытом.", effects: { bonds: 4, money: -5 } },
+      { sector: "self", label: "Копить на своё жильё", outcome: "Ты живёшь экономно ради своего. Комфорта меньше.", effects: { money: 5, health: -2 } },
     ],
   },
   {
@@ -68,8 +73,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 3,
     text: "Отношения становятся серьёзными.",
     choices: [
-      { sector: "bonds", label: "Строить их всерьёз", outcome: "Вы учитесь быть парой: разговоры, быт, планы.", effects: { bonds: 8 } },
-      { sector: "self", label: "Свобода важнее", outcome: "Ты оставляешь всё лёгким. Больше времени на себя.", effects: { money: 2 } },
+      { sector: "bonds", label: "Строить их всерьёз", outcome: "Вы учитесь быть парой: разговоры, быт, планы. Времени на себя меньше.", effects: { bonds: 8, money: -2 } },
+      { sector: "self", label: "Свобода важнее", outcome: "Ты оставляешь всё лёгким. Близости меньше.", effects: { money: 2, bonds: -3 } },
+      { sector: "tradition", label: "Как ведут в нашей семье", outcome: "Ты следуешь семейному сценарию. Своего сценария меньше.", effects: { bonds: 3, education: -1 } },
+      { sector: "change", label: "Отношения на расстоянии", outcome: "Вы выбрали непростой формат. Дорого и тоскливо.", effects: { bonds: 3, money: -3 } },
     ],
   },
   {
@@ -80,8 +87,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 2,
     text: "Разговор о свадьбе.",
     choices: [
-      { sector: "bonds", label: "Да", outcome: "Свадьба. Теперь вы семья.", effects: { bonds: 10 } },
-      { sector: "self", label: "Пока нет", outcome: "Вы отложили. Отношения продолжаются, но осадок есть.", effects: { bonds: -2 } },
+      { sector: "bonds", label: "Да", outcome: "Свадьба. Теперь вы семья. Свободы меньше, опоры больше.", effects: { bonds: 10, money: -6 } },
+      { sector: "self", label: "Пока нет", outcome: "Вы отложили. Отношения продолжаются, но осадок есть.", effects: { bonds: -2, money: 1 } },
+      { sector: "tradition", label: "Со скромной росписью", outcome: "Без пира, зато по уму. Кто-то из родни разочарован.", effects: { bonds: 4, money: -1 } },
+      { sector: "change", label: "Свадьба-путешествие", outcome: "Вы уехали вдвоём. Родные остались за кадром.", effects: { bonds: 4, money: -5 } },
     ],
   },
   {
@@ -92,8 +101,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 2,
     text: "Разговор о ребёнке.",
     choices: [
-      { sector: "bonds", label: "Завести ребёнка", outcome: "В доме появился малыш. Меньше сна, больше смысла.", effects: { bonds: 10, money: -8 } },
-      { sector: "self", label: "Позже", outcome: "Решили подождать. Живёте для себя.", effects: { money: 3 } },
+      { sector: "bonds", label: "Завести ребёнка", outcome: "В доме появился малыш. Меньше сна и денег, больше смысла.", effects: { bonds: 10, money: -8 } },
+      { sector: "self", label: "Позже", outcome: "Решили подождать. Живёте для себя.", effects: { money: 3, bonds: -2 } },
+      { sector: "tradition", label: "Как примут бабушки и дедушки", outcome: "Родня помогает. Своих правил меньше.", effects: { bonds: 5, money: -4 } },
+      { sector: "change", label: "Сначала наладить быт", outcome: "Ты решил: сначала база. Годы идут.", effects: { money: 4, bonds: -3 } },
     ],
   },
   {
@@ -104,7 +115,9 @@ export const YOUTH: LifeEvent[] = [
     text: "Можно брать дополнительные смены.",
     choices: [
       { sector: "self", label: "Брать смены", outcome: "Денег больше, сил меньше.", effects: { money: 8, health: -5 } },
-      { sector: "bonds", label: "Оставить время близким", outcome: "Вечера — дома. Это тоже доход, только не в деньгах.", effects: { bonds: 4 } },
+      { sector: "bonds", label: "Оставить время близким", outcome: "Вечера — дома. Доход скромнее.", effects: { bonds: 4, money: -2 } },
+      { sector: "tradition", label: "Только основная работа", outcome: "Стабильность без перегруза. Быстрых денег нет.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Вместо смен — учиться новому", outcome: "Ты вложил вечера в навыки. Денег не прибавилось.", effects: { education: 5, money: -2 } },
     ],
   },
   {
@@ -114,8 +127,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 2,
     text: "Курсы повышения квалификации. Недёшево и по вечерам.",
     choices: [
-      { sector: "self", label: "Пойти учиться", outcome: "Новые навыки уже пригодились.", effects: { education: 8, money: -4 } },
-      { sector: "tradition", label: "И так хватает", outcome: "Остался при текущем уровне.", effects: { money: 2 } },
+      { sector: "self", label: "Пойти учиться", outcome: "Новые навыки уже пригодились. Кошелёк и вечера пострадали.", effects: { education: 8, money: -4 } },
+      { sector: "tradition", label: "И так хватает", outcome: "Остался при текущем уровне. Роста нет.", effects: { money: 2, education: -1 } },
+      { sector: "bonds", label: "Учиться вместе с другом", outcome: "Вдвоём легче. Скидки нет.", effects: { bonds: 3, money: -4 } },
+      { sector: "change", label: "Бесплатные онлайн-курсы", outcome: "Ты учишься бесплатно. Качество неравномерное.", effects: { education: 4, health: -2 } },
     ],
   },
   {
@@ -125,8 +140,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 2,
     text: "Подвернулась дешёвая путёвка.",
     choices: [
-      { sector: "change", label: "Поехать", outcome: "Новые места, новые люди. Кошелёк похудел, память пополнилась.", effects: { money: -5, bonds: 3 } },
-      { sector: "tradition", label: "Отложить", outcome: "Деньги остались на счету.", effects: { money: 3 } },
+      { sector: "change", label: "Поехать", outcome: "Новые места, новые люди. Кошелёк похудел.", effects: { bonds: 3, money: -5 } },
+      { sector: "tradition", label: "Отложить", outcome: "Деньги остались на счету. Впечатлений нет.", effects: { money: 3, bonds: -1 } },
+      { sector: "bonds", label: "Поехать всей семьёй", outcome: "Общее путешествие. Стоило заметно дороже.", effects: { bonds: 5, money: -8 } },
+      { sector: "self", label: "В одиночку с рюкзаком", outcome: "Ты уехал один. Свобода полная, поддержки ноль.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -137,7 +154,9 @@ export const YOUTH: LifeEvent[] = [
     text: "Друг просит в долг. Сумма для тебя заметная.",
     choices: [
       { sector: "bonds", label: "Дать", outcome: "Ты помог. Друг вернёт, когда сможет. Наверное.", effects: { money: -5, bonds: 6 } },
-      { sector: "self", label: "Отказать", outcome: "Ты отказал. Друг обиделся.", effects: { bonds: -4 } },
+      { sector: "self", label: "Отказать", outcome: "Ты отказал. Друг обиделся.", effects: { bonds: -4, money: 1 } },
+      { sector: "tradition", label: "Дать под расписку", outcome: "Деньги выданы по правилам. Другу неприятно.", effects: { money: -3, bonds: -1 } },
+      { sector: "change", label: "Предложить заработать вместе", outcome: "Ты предложил работу вместо денег. Не все готовы.", effects: { money: 2, bonds: -1 } },
     ],
   },
   {
@@ -154,13 +173,15 @@ export const YOUTH: LifeEvent[] = [
         outcome: "",
         risk: {
           chance: 0.3,
-          successText: "Стартап выстрелил! Вложение вернулось многократно.",
-          successEffects: { money: 25 },
+          successText: "Стартап выстрелил! Но ты годами жил работой.",
+          successEffects: { money: 25, health: -5 },
           failText: "Стартап сгорел вместе с твоими вложениями.",
-          failEffects: { money: -12 },
+          failEffects: { money: -12, bonds: -2 },
         },
       },
-      { sector: "tradition", label: "Не лезть", outcome: "Ты остался в стороне. Спокойно.", effects: { money: 1 } },
+      { sector: "tradition", label: "Не лезть", outcome: "Ты остался в стороне. Спокойно, но без шанса.", effects: { money: 1, education: -1 } },
+      { sector: "bonds", label: "Помочь делом, а не деньгами", outcome: "Ты вкладываешь время. Денег нет, опыт есть.", effects: { bonds: 4, money: -2 } },
+      { sector: "self", label: "Сделать такое же самому", outcome: "Ты пошёл своим путём. Дружба пострадала.", effects: { education: 4, bonds: -3 } },
     ],
   },
   {
@@ -171,8 +192,10 @@ export const YOUTH: LifeEvent[] = [
     weight: 1.5,
     text: "Выгорание: работа не радует, сил нет.",
     choices: [
-      { sector: "self", label: "Взять паузу", outcome: "Ты взял отпуск и выдохнул. Постепенно отпускает.", effects: { health: 6, money: -5 } },
-      { sector: "tradition", label: "Терпеть", outcome: "Ты продолжаешь как был. Терпение на исходе.", effects: { health: -6 } },
+      { sector: "self", label: "Взять паузу", outcome: "Ты взял отпуск и выдохнул. Доход просел.", effects: { health: 6, money: -5 } },
+      { sector: "tradition", label: "Терпеть", outcome: "Ты продолжаешь как был. Терпение на исходе.", effects: { health: -6, money: 2 } },
+      { sector: "bonds", label: "Поговорить с близкими", outcome: "Тебя выслушали и поддержали. Пришлось признать слабость.", effects: { bonds: 5, money: -2 } },
+      { sector: "change", label: "Сменить работу", outcome: "Ты ушёл. Неопределённость вместо выгорания.", effects: { health: 3, money: -6 } },
     ],
   },
 ];

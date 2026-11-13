@@ -18,6 +18,16 @@
       "sheet": "person_senior_idle.png",
       "frames": 4,
       "fps": 24.0
+    },
+    "happy": {
+      "sheet": "person_senior_happy.png",
+      "frames": 4,
+      "fps": 24.0
+    },
+    "sad": {
+      "sheet": "person_senior_sad.png",
+      "frames": 4,
+      "fps": 24.0
     }
   }
 }

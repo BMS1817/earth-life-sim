@@ -48,8 +48,14 @@ export function crisisEvents(): LifeEvent[] {
       {
         sector: "bonds",
         label: "Держаться вместе с близкими",
-        outcome: "Семья пережила перемены вместе. Это главное.",
+        outcome: "Семья пережила перемены вместе. Это главное. Сил и денег ушло много.",
         effects: { bonds: 6, money: -4 },
+      },
+      {
+        sector: "self",
+        label: "Пережить в одиночку",
+        outcome: "Ты закрылся и справился сам. Близкие остались за дверью.",
+        effects: { education: 3, bonds: -5 },
       },
     ],
   }));

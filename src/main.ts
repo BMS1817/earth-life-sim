@@ -143,6 +143,7 @@ async function main(): Promise<void> {
       save();
       render();
     });
+    b.className = `btn-${choice.sector}`;
     const wrap = el("div", "choice");
     wrap.append(b);
     const a = arrows(choice.effects);

@@ -10,10 +10,10 @@ export const TEEN: LifeEvent[] = [
     weight: 10,
     text: "Пора выбрать кружок — или не выбирать вовсе.",
     choices: [
-      { sector: "tradition", label: "Тот, что советуют родители", outcome: "Родительский выбор оказался разумным, занятия идут.", effects: { education: 4, bonds: 3 } },
-      { sector: "change", label: "Что-то необычное и новое", outcome: "Новое занятие захватывает тебя целиком.", effects: { education: 8 } },
-      { sector: "bonds", label: "Туда, куда пошли друзья", outcome: "Вместе с друзьями любой кружок в радость.", effects: { bonds: 6, education: 3 } },
-      { sector: "self", label: "Никакого — своё время", outcome: "Ты распоряжаешься свободным временем сам.", effects: { education: 2 } },
+      { sector: "tradition", label: "Тот, что советуют родители", outcome: "Родительский выбор разумен. Не совсем твой, зато спокойно.", effects: { education: 4, bonds: -1 } },
+      { sector: "change", label: "Что-то необычное и новое", outcome: "Новое занятие захватывает тебя целиком. Друзья не разделяют.", effects: { education: 8, bonds: -2 } },
+      { sector: "bonds", label: "Туда, куда пошли друзья", outcome: "Вместе с друзьями любой кружок в радость. Прогресса меньше.", effects: { bonds: 6, education: -1 } },
+      { sector: "self", label: "Никакого — своё время", outcome: "Ты распоряжаешься свободным временем сам. Навык не растёт.", effects: { education: -1, health: 2 } },
     ],
   },
   {
@@ -24,8 +24,10 @@ export const TEEN: LifeEvent[] = [
     weight: 3,
     text: "Первая влюблённость. Сложно думать о чём-то ещё.",
     choices: [
-      { sector: "bonds", label: "Открыться в чувствах", outcome: "Вы признались друг другу — мир стал ярче.", effects: { bonds: 8 } },
-      { sector: "self", label: "Спрятать чувства", outcome: "Чувства остались при тебе. Иногда это ноет.", effects: { bonds: -4 } },
+      { sector: "bonds", label: "Открыться в чувствах", outcome: "Вы признались друг другу — мир стал ярче. Учёба немного страдает.", effects: { bonds: 8, education: -2 } },
+      { sector: "self", label: "Спрятать чувства", outcome: "Чувства остались при тебе. Иногда это ноет.", effects: { bonds: -4, education: 1 } },
+      { sector: "tradition", label: "Сосредоточиться на учёбе", outcome: "Ты решил: сначала дело. Сердце не совсем согласно.", effects: { education: 3, bonds: -3 } },
+      { sector: "change", label: "Пригласить на свидание", outcome: "Ты позвал первым. Неловко, зато всё началось.", effects: { bonds: 5, education: -1 } },
     ],
   },
   {
@@ -36,9 +38,10 @@ export const TEEN: LifeEvent[] = [
     weight: 8,
     text: "Экзамены и выбор профиля: от этого зависит, куда поступишь.",
     choices: [
-      { sector: "tradition", label: "Готовиться по программе", outcome: "Системная подготовка дала результат: хорошие оценки.", effects: { education: 6 } },
+      { sector: "tradition", label: "Готовиться по программе", outcome: "Системная подготовка дала результат. Жизнь на паузе.", effects: { education: 6, health: -2 } },
       { sector: "self", label: "Свои проекты важнее", outcome: "Экзамены прошли как прошли, зато твои проекты выросли.", effects: { education: -2, money: 2 } },
-      { sector: "change", label: "Сменить профиль на новый", outcome: "Ты рискнул новым направлением — и не пожалел.", effects: { education: 8 } },
+      { sector: "change", label: "Сменить профиль на новый", outcome: "Ты рискнул новым направлением — пришлось учить с нуля.", effects: { education: 8, health: -2 } },
+      { sector: "bonds", label: "Готовиться с друзьями", outcome: "Вы тянули друг друга. Твой результат — общий.", effects: { bonds: 4, education: -1 } },
     ],
   },
   {
@@ -49,7 +52,9 @@ export const TEEN: LifeEvent[] = [
     text: "На лето предлагают подработку.",
     choices: [
       { sector: "self", label: "Пойти работать", outcome: "Первые собственные деньги. На учёбу времени меньше.", effects: { money: 6, education: -2 } },
-      { sector: "tradition", label: "Учёба важнее", outcome: "Лето за книгами. Деньги потом.", effects: { education: 4 } },
+      { sector: "tradition", label: "Учёба важнее", outcome: "Лето за книгами. Деньги потом.", effects: { education: 4, money: -1 } },
+      { sector: "bonds", label: "Помогать в семейном деле", outcome: "Ты включился в дело семьи. Лето не отдых.", effects: { bonds: 4, health: -2 } },
+      { sector: "change", label: "Попробовать своё мини-дело", outcome: "Ты продавал своё. Опыт бесценный, прибыль копеечная.", effects: { education: 2, money: -1 } },
     ],
   },
   {
@@ -60,8 +65,10 @@ export const TEEN: LifeEvent[] = [
     weight: 2,
     text: "Хочется выглядеть иначе — не как все.",
     choices: [
-      { sector: "change", label: "Сменить стиль", outcome: "Новый образ. Кто-то удивился, кто-то восхитился.", effects: { bonds: 2 } },
-      { sector: "tradition", label: "Остаться как есть", outcome: "Привычный вид, привычный круг.", effects: { bonds: 1 } },
+      { sector: "change", label: "Сменить стиль", outcome: "Новый образ. Кто-то удивился, кто-то осудил.", effects: { bonds: -2, education: 1 } },
+      { sector: "tradition", label: "Остаться как есть", outcome: "Привычный вид, привычный круг. Ничего нового.", effects: { bonds: 1, education: -1 } },
+      { sector: "bonds", label: "Обсудить с близкими", outcome: "Вы выбрали вместе. Компромисс, но твой.", effects: { bonds: 3, money: -2 } },
+      { sector: "self", label: "Копить на вещи самому", outcome: "Ты откладываешь на свой образ. Ждать долго.", effects: { money: 2, bonds: -1 } },
     ],
   },
   {
@@ -72,7 +79,9 @@ export const TEEN: LifeEvent[] = [
     text: "Ссора с родителями: тебя не слышат.",
     choices: [
       { sector: "change", label: "Отстоять своё", outcome: "Вы наговорили друг другу лишнего, но тебя услышали.", effects: { bonds: -3, education: 1 } },
-      { sector: "tradition", label: "Согласиться с ними", outcome: "Ты уступил. Дома мир, внутри — не совсем.", effects: { bonds: 3 } },
+      { sector: "tradition", label: "Согласиться с ними", outcome: "Ты уступил. Дома мир, внутри — не совсем.", effects: { bonds: 3, education: -1 } },
+      { sector: "bonds", label: "Предложить поговорить спокойно", outcome: "Разговор получился. Пришлось уступить часть своего.", effects: { bonds: 4, education: -1 } },
+      { sector: "self", label: "Уйти в свою комнату", outcome: "Ты захлопнул дверь. Тихо, но нерешённо.", effects: { bonds: -2, health: 1 } },
     ],
   },
   {
@@ -83,8 +92,10 @@ export const TEEN: LifeEvent[] = [
     weight: 2,
     text: "Школа зовёт волонтёров: помощь пожилым и младшим.",
     choices: [
-      { sector: "bonds", label: "Помогать", outcome: "Ты помогаешь тем, кому труднее. Это меняет взгляд.", effects: { bonds: 6 } },
-      { sector: "self", label: "Не моё", outcome: "Ты остался при своих делах.", effects: { education: 1 } },
+      { sector: "bonds", label: "Помогать", outcome: "Ты помогаешь тем, кому труднее. На своё время меньше.", effects: { bonds: 6, education: -2 } },
+      { sector: "self", label: "Не моё", outcome: "Ты остался при своих делах. Совесть немного ноет.", effects: { bonds: -2, education: 1 } },
+      { sector: "tradition", label: "Только по расписанию школы", outcome: "Формально участвуешь. Польза есть, души меньше.", effects: { bonds: 2, education: -1 } },
+      { sector: "change", label: "Организовать своё дело помощи", outcome: "Ты собрал людей сам. Много работы, мало признания.", effects: { bonds: 4, health: -2 } },
     ],
   },
   {
@@ -95,7 +106,9 @@ export const TEEN: LifeEvent[] = [
     text: "Интернет затягивает до глубокой ночи.",
     choices: [
       { sector: "self", label: "И дальше сидеть", outcome: "Ночи за экраном. Утром — варёный.", effects: { health: -4, education: 1 } },
-      { sector: "tradition", label: "Ввести режим", outcome: "Телефон на зарядку за дверью. Сон наладился.", effects: { health: 3 } },
+      { sector: "tradition", label: "Ввести режим", outcome: "Телефон на зарядку за дверью. Меньше новостей и общения.", effects: { health: 3, bonds: -1 } },
+      { sector: "bonds", label: "Договориться с друзьями о паузах", outcome: "Вы вместе ограничили время. Не всем нравится.", effects: { bonds: 2, education: -1 } },
+      { sector: "change", label: "Сменить привычку на офлайн-хобби", outcome: "Ты заменил экран живым занятием. Друзья онлайн скучают.", effects: { health: 4, bonds: -2 } },
     ],
   },
   {
@@ -111,13 +124,15 @@ export const TEEN: LifeEvent[] = [
         outcome: "",
         risk: {
           chance: 0.5,
-          successText: "Призовое место! Тебя заметили.",
-          successEffects: { education: 7 },
+          successText: "Призовое место! Пришлось много тренироваться.",
+          successEffects: { education: 7, health: -2 },
           failText: "Не вышло. Друзья поддержали, но обидно.",
-          failEffects: { bonds: -2 },
+          failEffects: { bonds: -2, education: 1 },
         },
       },
-      { sector: "bonds", label: "Болеть за друзей", outcome: "Ты был самой громкой группой поддержки.", effects: { bonds: 4 } },
+      { sector: "bonds", label: "Болеть за друзей", outcome: "Ты был самой громкой группой поддержки. Свой талант не проверил.", effects: { bonds: 4, education: -1 } },
+      { sector: "tradition", label: "Смотреть со стороны", outcome: "Ты оценил чужие выступления. Своего не было.", effects: { education: -1, health: 1 } },
+      { sector: "change", label: "Выступить в необычном жанре", outcome: "Ты удивил жюри. Не всем зашло.", effects: { education: 4, bonds: -2 } },
     ],
   },
   {
@@ -129,7 +144,7 @@ export const TEEN: LifeEvent[] = [
     weight: 2,
     text: "За гаражами предложили сигарету. Все смотрят.",
     choices: [
-      { sector: "tradition", label: "Отказаться", outcome: "Ты сказал «нет». Кто-то фыркнул, но тебе всё равно.", effects: { health: 2 } },
+      { sector: "tradition", label: "Отказаться", outcome: "Ты сказал «нет». Кто-то фыркнул, но тебе всё равно.", effects: { health: 2, bonds: -2 } },
       {
         sector: "change",
         label: "Попробовать",
@@ -137,6 +152,8 @@ export const TEEN: LifeEvent[] = [
         effects: { health: -4, bonds: 2 },
         mortality: { mult: 1.1, untilAge: 30 },
       },
+      { sector: "bonds", label: "Уйти вместе с другом", outcome: "Вы вместе отказались. Компания осталась позади.", effects: { bonds: 3, education: -1 } },
+      { sector: "self", label: "Сказать: мне не интересно", outcome: "Ты ушёл по своим делам. Назвали белой вороной.", effects: { health: 1, bonds: -2 } },
     ],
   },
   {
@@ -147,8 +164,10 @@ export const TEEN: LifeEvent[] = [
     weight: 2,
     text: "Учитель заметил твой талант и предлагает заниматься дополнительно.",
     choices: [
-      { sector: "self", label: "Заниматься с ним", outcome: "Дополнительные занятия открывают новый уровень.", effects: { education: 7 } },
-      { sector: "bonds", label: "Не отрываться от друзей", outcome: "Ты остался с компанией. Талант подождёт.", effects: { bonds: 3 } },
+      { sector: "self", label: "Заниматься с ним", outcome: "Дополнительные занятия открывают новый уровень. Друзья реже.", effects: { education: 7, bonds: -2 } },
+      { sector: "bonds", label: "Не отрываться от друзей", outcome: "Ты остался с компанией. Талант подождёт.", effects: { bonds: 3, education: -2 } },
+      { sector: "tradition", label: "Только в рамках школьной программы", outcome: "Ты вежливо отказался. Учитель разочарован.", effects: { bonds: -1, health: 1 } },
+      { sector: "change", label: "Позвать друга с собой", outcome: "Вы занимаетесь вдвоём. Темп не тот, зато вместе.", effects: { bonds: 3, education: -1 } },
     ],
   },
 ];

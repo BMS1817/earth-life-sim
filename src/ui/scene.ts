@@ -70,9 +70,10 @@ export class Scene {
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
   private sheets = new Map<string, Sheet>();
-  private people = new Map<Stage, HTMLCanvasElement>();
+  private people = new Map<string, HTMLCanvasElement>();
   private state: LifeState | null = null;
   private px = 0;
+  private anim: "idle" | "happy" | "sad" = "idle";
 
   constructor() {
     this.canvas = document.createElement("canvas");
@@ -93,7 +94,9 @@ export class Scene {
 
   async load(): Promise<void> {
     for (const stage of ["child", "teen", "adult", "senior"] as Stage[]) {
-      this.sheets.set(`person_${stage}`, await loadSheet(`person_${stage}`));
+      for (const anim of ["idle", "happy", "sad"] as const) {
+        this.sheets.set(`person_${stage}_${anim}`, await loadSheet(`person_${stage}`, anim));
+      }
     }
     for (const level of ["poor", "mid", "rich"]) {
       this.sheets.set(`house_${level}`, await loadSheet(`house_${level}`, "static"));
@@ -109,8 +112,11 @@ export class Scene {
     this.state = state;
     const tone = SKIN_TONES[hashSeed(state.seed) % SKIN_TONES.length];
     const stage = stageForAge(state.age);
-    if (!this.people.has(stage)) {
-      const sheet = this.sheets.get(`person_${stage}`)!;
+    const sum = Object.values(state.lastArrows ?? {}).reduce((a, b) => a + b, 0);
+    this.anim = state.lastOutcome === null ? "idle" : sum >= 0 ? "happy" : "sad";
+    const key = `${stage}_${this.anim}`;
+    if (!this.people.has(key)) {
+      const sheet = this.sheets.get(`person_${key}`)!;
       const off = document.createElement("canvas");
       off.width = sheet.img.width;
       off.height = sheet.img.height;
@@ -129,7 +135,7 @@ export class Scene {
         }
       }
       c.putImageData(data, 0, 0);
-      this.people.set(stage, off);
+      this.people.set(key, off);
     }
   }
 
@@ -142,8 +148,9 @@ export class Scene {
     const far = this.sheets.get(`bg_${climate}_far`)!;
     const near = this.sheets.get(`bg_${climate}_near`)!;
     const house = this.sheets.get(`house_${houseForMoney(s.scales.money)}`)!;
-    const person = this.people.get(stageForAge(s.age))!;
-    const personSheet = this.sheets.get(`person_${stageForAge(s.age)}`)!;
+    const key = `${stageForAge(s.age)}_${this.anim}`;
+    const person = this.people.get(key)!;
+    const personSheet = this.sheets.get(`person_${key}`)!;
 
     ctx.clearRect(0, 0, W, H);
     ctx.fillStyle = SKY[climate];

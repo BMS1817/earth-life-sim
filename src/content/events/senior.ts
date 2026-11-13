@@ -9,9 +9,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 3,
     text: "Пенсия. Дни стали длинными.",
     choices: [
-      { sector: "bonds", label: "Больше времени с близкими", outcome: "Ты стал центром семейных обедов и праздников.", effects: { bonds: 10 } },
-      { sector: "self", label: "Хобби и тишина", outcome: "Наконец-то время на то, до чего руки не доходили.", effects: { health: 4 } },
-      { sector: "tradition", label: "Продолжать работать", outcome: "Ты остался на лёгкой ставке — и деньги, и привычка.", effects: { money: 6 } },
+      { sector: "bonds", label: "Больше времени с близкими", outcome: "Ты стал центром семейных обедов и праздников. На себя меньше.", effects: { bonds: 10, money: -2 } },
+      { sector: "self", label: "Хобби и тишина", outcome: "Наконец-то время на то, до чего руки не доходили. Близкие скучают.", effects: { health: 4, bonds: -2 } },
+      { sector: "tradition", label: "Продолжать работать", outcome: "Ты остался на лёгкой ставке. Отдыха меньше.", effects: { money: 6, health: -2 } },
+      { sector: "change", label: "Начать новую жизнь", outcome: "Ты решил: пенсия — старт, а не финал. Родня удивлена.", effects: { education: 4, bonds: -2 } },
     ],
   },
   {
@@ -22,8 +23,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Иногда дом кажется слишком тихим.",
     choices: [
-      { sector: "bonds", label: "Звонить близким первым", outcome: "Ты не ждёшь — звонишь сам. Дом снова звучит голосами.", effects: { bonds: 8 } },
-      { sector: "self", label: "Тишина — тоже компания", outcome: "Книги, воспоминания, спокойствие. Ты нашёл лад с собой.", effects: { education: 2 } },
+      { sector: "bonds", label: "Звонить близким первым", outcome: "Ты не ждёшь — звонишь сам. Дом снова звучит голосами.", effects: { bonds: 8, health: -1 } },
+      { sector: "self", label: "Тишина — тоже компания", outcome: "Книги, воспоминания, спокойствие. Близкие далеко.", effects: { education: 2, bonds: -3 } },
+      { sector: "tradition", label: "Привычный распорядок", outcome: "Режим спасает от тишины. Общения меньше.", effects: { health: 2, bonds: -2 } },
+      { sector: "change", label: "Завести питомца", outcome: "В доме появился кто-то живой. Заботы прибавилось.", effects: { bonds: 4, money: -2 } },
     ],
   },
   {
@@ -33,8 +36,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 3,
     text: "Внуки приезжают на каникулы.",
     choices: [
-      { sector: "bonds", label: "Нянчить и возиться", outcome: "Дом полон смеха. Ты устаёшь и счастлив.", effects: { bonds: 8 } },
-      { sector: "self", label: "Беречь свой режим", outcome: "Ты помогаешь понемногу и оставляешь время себе.", effects: { health: 3 } },
+      { sector: "bonds", label: "Нянчить и возиться", outcome: "Дом полон смеха. Ты устаёшь и счастлив.", effects: { bonds: 8, health: -2 } },
+      { sector: "self", label: "Беречь свой режим", outcome: "Ты помогаешь понемногу. Внуки немного обижаются.", effects: { health: 3, bonds: -2 } },
+      { sector: "tradition", label: "Учить их старинным занятиям", outcome: "Ты передаёшь ремёсла и правила. Не всем интересно.", effects: { bonds: 3, education: -1 } },
+      { sector: "change", label: "Увезти их в путешествие", outcome: "Ты устроил внукам приключение. Дорого и утомительно.", effects: { bonds: 6, money: -4 } },
     ],
   },
   {
@@ -44,8 +49,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Дача: вечный ремонт и грядки.",
     choices: [
-      { sector: "tradition", label: "Копать и строить", outcome: "Свежий воздух и урожай. Спина ноет, душа радуется.", effects: { health: 5, money: 2 } },
-      { sector: "self", label: "Продать", outcome: "Дача продана. Деньги на счету, свободные выходные.", effects: { money: 5 } },
+      { sector: "tradition", label: "Копать и строить", outcome: "Свежий воздух и урожай. Спина ноет.", effects: { health: 5, money: -2 } },
+      { sector: "self", label: "Продать", outcome: "Дача продана. Деньги на счету, любимого места нет.", effects: { money: 5, bonds: -2 } },
+      { sector: "bonds", label: "Собирать там всю семью", outcome: "Дача стала семейным местом. Хлопот много.", effects: { bonds: 5, money: -3 } },
+      { sector: "change", label: "Переделать под мастерскую", outcome: "Вместо грядок — верстак. Соседи не понимают.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -56,8 +63,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Курсы для пожилых: компьютер, языки, танцы.",
     choices: [
-      { sector: "change", label: "Пойти учиться", outcome: "Новые навыки и новые знакомства. Возраст не помеха.", effects: { education: 5, bonds: 3 } },
-      { sector: "tradition", label: "Не по возрасту это", outcome: "Остался дома. Привычное уютно.", effects: { health: 1 } },
+      { sector: "change", label: "Пойти учиться", outcome: "Новые навыки и знакомства. Нелегко в твоём возрасте.", effects: { education: 5, health: -2 } },
+      { sector: "tradition", label: "Не по возрасту это", outcome: "Остался дома. Привычное уютно, нового нет.", effects: { health: 1, education: -1 } },
+      { sector: "bonds", label: "Пойти с другом", outcome: "Вы учитесь вдвоём. Темп общий, не твой.", effects: { bonds: 3, education: -1 } },
+      { sector: "self", label: "Учиться онлайн", outcome: "Ты осваиваешь курсы из дома. Живого общения меньше.", effects: { education: 4, bonds: -2 } },
     ],
   },
   {
@@ -68,8 +77,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Дети зовут переехать к ним.",
     choices: [
-      { sector: "bonds", label: "Переехать", outcome: "Теперь вы рядом каждый день. Забота взаимна.", effects: { bonds: 7 } },
+      { sector: "bonds", label: "Переехать", outcome: "Теперь вы рядом каждый день. Твой дом остался позади.", effects: { bonds: 7, health: -1 } },
       { sector: "self", label: "Жить самостоятельно", outcome: "Ты остался в своём доме. Самостоятельность дорогого стоит.", effects: { health: 2, bonds: -3 } },
+      { sector: "tradition", label: "Остаться у своих стен", outcome: "Дом, где всё знакомо. Дети беспокоятся.", effects: { health: 1, bonds: -2 } },
+      { sector: "change", label: "Переехать в дом для пожилых", outcome: "Ты выбрал уход и компанию. Семья удивлена.", effects: { health: 3, bonds: -2 } },
     ],
   },
   {
@@ -80,7 +91,9 @@ export const SENIOR: LifeEvent[] = [
     text: "Предлагают подработку: немного денег к пенсии.",
     choices: [
       { sector: "tradition", label: "Работать", outcome: "Подработка идёт. Денег больше, отдыха меньше.", effects: { money: 5, health: -3 } },
-      { sector: "self", label: "Отдыхать", outcome: "Пенсия — тоже время жить.", effects: { health: 3 } },
+      { sector: "self", label: "Отдыхать", outcome: "Пенсия — тоже время жить. Бюджет теснее.", effects: { health: 3, money: -2 } },
+      { sector: "bonds", label: "Помогать внукам вместо работы", outcome: "Ты вкладываешь время в семью. Дохода нет.", effects: { bonds: 5, money: -1 } },
+      { sector: "change", label: "Монетизировать хобби", outcome: "Ты продаёшь своё рукоделие. Не все покупают.", effects: { money: 2, health: -1 } },
     ],
   },
   {
@@ -92,8 +105,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Память подводит: забываешь имена, даты, куда положил ключи.",
     choices: [
-      { sector: "tradition", label: "Сходить к врачу", outcome: "Врач назначил обследование и режим. Стало спокойнее.", effects: { health: 4, money: -3 } },
-      { sector: "self", label: "Это просто возраст", outcome: "Ты машешь рукой. Записные книжки — твоя память.", effects: { health: -2 } },
+      { sector: "tradition", label: "Сходить к врачу", outcome: "Врач назначил обследование и режим. Деньги и нервы.", effects: { health: 4, money: -3 } },
+      { sector: "self", label: "Это просто возраст", outcome: "Ты машешь рукой. Записные книжки — твоя память.", effects: { health: -2, education: 1 } },
+      { sector: "bonds", label: "Попросить близких помогать", outcome: "Они записывают и напоминают. Тебе неловко.", effects: { bonds: 4, health: -1 } },
+      { sector: "change", label: "Тренировать память", outcome: "Кроссворды и упражнения каждый день. Утомительно.", effects: { education: 3, health: -1 } },
     ],
   },
   {
@@ -104,8 +119,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Встреча старых друзей. Столько лет прошло.",
     choices: [
-      { sector: "bonds", label: "Пойти", outcome: "Вы вспоминали всё. Смеялись и молчали.", effects: { bonds: 6 } },
-      { sector: "self", label: "Не пойти", outcome: "Ты остался дома. Прошлое — в прошлом.", effects: { bonds: -2 } },
+      { sector: "bonds", label: "Пойти", outcome: "Вы вспоминали всё. Смеялись и молчали. Дорога была неблизкая.", effects: { bonds: 6, health: -2 } },
+      { sector: "self", label: "Не пойти", outcome: "Ты остался дома. Прошлое — в прошлом.", effects: { bonds: -2, health: 1 } },
+      { sector: "tradition", label: "Созвониться по телефону", outcome: "Голоса вместо встречи. Не то же самое.", effects: { bonds: 2, education: -1 } },
+      { sector: "change", label: "Собрать всех у себя", outcome: "Ты устроил встречу сам. Хлопот полон дом.", effects: { bonds: 5, money: -3 } },
     ],
   },
   {
@@ -117,8 +134,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 1.5,
     text: "Стоит подумать о завещании.",
     choices: [
-      { sector: "tradition", label: "Написать завещание", outcome: "Бумаги в порядке. Близкие будут защищены.", effects: { bonds: 3 } },
-      { sector: "self", label: "Не думать об этом", outcome: "Ты отложил. Мысли неприятные.", effects: { health: -1 } },
+      { sector: "tradition", label: "Написать завещание", outcome: "Бумаги в порядке. Близкие будут защищены. Разговоры тяжёлые.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Не думать об этом", outcome: "Ты отложил. Мысли неприятные.", effects: { health: -1, bonds: -1 } },
+      { sector: "bonds", label: "Обсудить с семьёй", outcome: "Вы всё обсудили открыто. Некоторым было больно.", effects: { bonds: 4, health: -2 } },
+      { sector: "change", label: "Раздать часть при жизни", outcome: "Ты помог сейчас, а не потом. Запас уменьшился.", effects: { bonds: 5, money: -6 } },
     ],
   },
   {
@@ -128,8 +147,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 3,
     text: "Врач советует ежедневные прогулки.",
     choices: [
-      { sector: "self", label: "Ходить каждый день", outcome: "Прогулки вошли в привычку. Ноги держат лучше.", effects: { health: 5 } },
-      { sector: "tradition", label: "Телевизор и диван", outcome: "Сериалы вместо прогулок.", effects: { health: -3 } },
+      { sector: "self", label: "Ходить каждый день", outcome: "Прогулки вошли в привычку. Меньше времени на диван и гостей.", effects: { health: 5, bonds: -1 } },
+      { sector: "tradition", label: "Телевизор и диван", outcome: "Сериалы вместо прогулок. Ноги слабеют.", effects: { health: -3, education: 1 } },
+      { sector: "bonds", label: "Гулять с соседями", outcome: "У вас целая компания. Разговоров больше, чем шагов.", effects: { bonds: 4, health: -1 } },
+      { sector: "change", label: "Записаться в группу скандинавской ходьбы", outcome: "Палки и маршруты. Недёшево и непривычно.", effects: { health: 6, money: -2 } },
     ],
   },
   {
@@ -140,8 +161,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Хочется записать историю своей жизни.",
     choices: [
-      { sector: "bonds", label: "Для детей и внуков", outcome: "Ты записал всю жизнь для семьи. Это останется.", effects: { bonds: 6, education: 2 } },
-      { sector: "self", label: "Для себя", outcome: "Ты перечитал свою жизнь как книгу. Хорошая книга.", effects: { education: 3 } },
+      { sector: "bonds", label: "Для детей и внуков", outcome: "Ты записал всю жизнь для семьи. Это останется. Сил ушло много.", effects: { bonds: 6, health: -2 } },
+      { sector: "self", label: "Для себя", outcome: "Ты перечитал свою жизнь как книгу. Хорошая книга. Никто не читал.", effects: { education: 3, bonds: -2 } },
+      { sector: "tradition", label: "Передавать устно", outcome: "Ты рассказываешь за столом. Не все слушают.", effects: { bonds: 3, education: -1 } },
+      { sector: "change", label: "Снять видеоисторию", outcome: "Ты записал себя на камеру. Техника далась нелегко.", effects: { education: 3, money: -2 } },
     ],
   },
 ];

@@ -15,11 +15,12 @@ describe("контент событий", () => {
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  it("каждое событие имеет текст и 2–4 выбора с осмысленными исходами", () => {
+  it("каждое событие имеет текст и ровно 4 выбора по 4 разным секторам", () => {
     for (const e of EVENTS) {
       expect(e.text.length).toBeGreaterThan(10);
-      expect(e.choices.length).toBeGreaterThanOrEqual(2);
-      expect(e.choices.length).toBeLessThanOrEqual(4);
+      expect(e.choices.length, e.id).toBe(4);
+      const sectors = new Set(e.choices.map((c) => c.sector));
+      expect(sectors.size, e.id).toBe(4);
       for (const c of e.choices) {
         const hasOutcome = c.outcome.length > 0 || (c.risk && c.risk.successText.length > 0);
         expect(hasOutcome, `${e.id}`).toBe(true);
@@ -31,6 +32,17 @@ describe("контент событий", () => {
           expect(c.mortality.mult).toBeGreaterThanOrEqual(0.8);
           expect(c.mortality.mult).toBeLessThanOrEqual(1.5);
         }
+      }
+    }
+  });
+
+  it("у каждого выбора есть трейд-офф: минус в эффектах или в успехе риска", () => {
+    const hasNegative = (effects?: Record<string, number>) =>
+      !!effects && Object.values(effects).some((v) => v < 0);
+    for (const e of EVENTS) {
+      for (const c of e.choices) {
+        const effects = c.risk ? c.risk.successEffects : c.effects;
+        expect(hasNegative(effects), `${e.id} / ${c.label}`).toBe(true);
       }
     }
   });

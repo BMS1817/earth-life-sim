@@ -126,16 +126,30 @@ def build_person(stage):
     if stage == "child":
         bpy.data.objects["head"].scale = (1.25, 1.25, 1.25)
     root.rotation_euler.z = math.pi / 2  # профиль: модель смотрит в +X
-    # idle: дыхание грудной клетки, 4 кадра (Action назначаем ДО вставки ключей)
-    torso.animation_data_create()
-    act = bpy.data.actions.new("idle")
-    torso.animation_data.action = act
-    if hasattr(torso.animation_data, "action_slot") and len(act.slots):
-        torso.animation_data.action_slot = act.slots[0]
-    for fr, sz in ((1, 1.0), (2, 1.04), (3, 1.0), (4, 0.98)):
-        torso.scale = (1, 1, sz)
-        torso.keyframe_insert(data_path="scale", frame=fr)
-    rs.render(cfg("person"), str(OUT), f"person_{stage}", PREVIEW)
+    # Все анимации на root: idle (дыхание), happy (прыжок), sad (понурость)
+    root.animation_data_create()
+    for name, keys in (
+        ("idle", [(1, 1.0), (2, 1.015), (3, 1.0), (4, 0.99)]),
+        ("happy", [(1, 1.0), (2, 1.03), (3, 1.0), (4, 1.0)]),
+        ("sad", [(1, 1.0), (2, 0.97), (3, 0.97), (4, 0.98)]),
+    ):
+        act = bpy.data.actions.new(name)
+        root.animation_data.action = act
+        if hasattr(root.animation_data, "action_slot") and len(act.slots):
+            root.animation_data.action_slot = act.slots[0]
+        for fr, sz in keys:
+            root.scale = (scale, scale, scale * sz)
+            root.keyframe_insert(data_path="scale", frame=fr)
+            if name == "happy":
+                root.location.z = {1: 0, 2: 0.15 * scale, 3: 0.03 * scale, 4: 0}[fr]
+                root.keyframe_insert(data_path="location", frame=fr)
+            if name == "sad":
+                root.location.z = 0
+                root.keyframe_insert(data_path="location", frame=fr)
+    person_cfg = cfg("person")
+    person_cfg["actor"] = "root"
+    person_cfg["animations"] = ["idle", "happy", "sad"]
+    rs.render(person_cfg, str(OUT), f"person_{stage}", PREVIEW)
 
 
 def build_house(level):
