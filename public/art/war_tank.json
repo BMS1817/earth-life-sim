@@ -1,0 +1,23 @@
+{
+  "name": "war_tank",
+  "frame": [
+    96,
+    64
+  ],
+  "pivot": [
+    48,
+    56
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 16,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "idle": {
+      "sheet": "war_tank_idle.png",
+      "frames": 4,
+      "fps": 24.0
+    }
+  }
+}

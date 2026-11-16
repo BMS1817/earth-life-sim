@@ -1,0 +1,23 @@
+{
+  "name": "war_smoke",
+  "frame": [
+    96,
+    80
+  ],
+  "pivot": [
+    48,
+    64
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 0,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "idle": {
+      "sheet": "war_smoke_idle.png",
+      "frames": 4,
+      "fps": 24.0
+    }
+  }
+}

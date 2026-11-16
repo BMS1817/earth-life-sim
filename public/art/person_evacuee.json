@@ -1,0 +1,23 @@
+{
+  "name": "person_evacuee",
+  "frame": [
+    48,
+    64
+  ],
+  "pivot": [
+    24,
+    58
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 12,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "idle": {
+      "sheet": "person_evacuee_idle.png",
+      "frames": 4,
+      "fps": 24.0
+    }
+  }
+}

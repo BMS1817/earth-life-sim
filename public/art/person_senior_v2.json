@@ -1,0 +1,33 @@
+{
+  "name": "person_senior_v2",
+  "frame": [
+    48,
+    64
+  ],
+  "pivot": [
+    24,
+    60
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 12,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "idle": {
+      "sheet": "person_senior_v2_idle.png",
+      "frames": 4,
+      "fps": 24.0
+    },
+    "happy": {
+      "sheet": "person_senior_v2_happy.png",
+      "frames": 4,
+      "fps": 24.0
+    },
+    "sad": {
+      "sheet": "person_senior_v2_sad.png",
+      "frames": 4,
+      "fps": 24.0
+    }
+  }
+}

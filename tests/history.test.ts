@@ -5,10 +5,16 @@ import { HISTORY } from "../src/content/history.ts";
 import { advanceYear, createLifeState, pickYearEvents } from "../src/core/turn.ts";
 import { EVENTS } from "../src/content/events.ts";
 import type { IndexData, MortData } from "../src/core/types.ts";
+import { loadFamily, names, worldFamily } from "./helpers.ts";
 
 const index: IndexData = JSON.parse(readFileSync("public/data/index.json", "utf-8"));
 const rus = index.countries.find((c) => c.iso3 === "RUS")!;
 const mort: MortData = JSON.parse(readFileSync("public/data/mort/RUS.json", "utf-8"));
+const family = loadFamily("RUS");
+
+function russianLife(seed: string) {
+  return createLifeState(seed, { year: 1960, country: rus, sex: "M", name: "Тест" }, 5000, family, names, worldFamily);
+}
 
 describe("исторические эпохи", () => {
   it("эпохи меняются по годам", () => {
@@ -25,13 +31,13 @@ describe("исторические эпохи", () => {
 
 describe("историческая летопись и кризисы", () => {
   it("мировые события попадают в летопись своего года", () => {
-    const s = createLifeState("hist-test", { year: 1960, country: rus, sex: "M", name: "Тест" }, 5000);
-    advanceYear(s, mort);
+    const s = russianLife("hist-test");
+    advanceYear(s, mort, family, names);
     expect(s.chronicle.some((e) => e.year === 1961 && e.text.includes("Гагарин"))).toBe(true);
   });
 
   it("кризис распада СССР доступен в 1991 в республиках и только один раз", () => {
-    const s = createLifeState("crisis-test", { year: 1960, country: rus, sex: "M", name: "Тест" }, 5000);
+    const s = russianLife("crisis-test");
     s.age = 31;
     const events = pickYearEvents(s, EVENTS);
     expect(events.some((e) => e.id === "crisis-1991-RUS")).toBe(true);

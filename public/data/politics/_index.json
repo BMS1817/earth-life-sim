@@ -1,0 +1,1602 @@
+{
+  "source": "Coppedge et al. (2026), V-Dem Country-Year Dataset v16, doi:10.23696/vdemds26",
+  "license": "CC BY-SA 4.0",
+  "years": [
+    1950,
+    2025
+  ],
+  "count": 236,
+  "profiles": {
+    "BDI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 9,
+      "presidentialElections": 5
+    },
+    "COM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 12,
+      "presidentialElections": 10
+    },
+    "DJI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 8
+    },
+    "ERI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 3,
+      "presidentialElections": 0
+    },
+    "ETH": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 0
+    },
+    "KEN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 12
+    },
+    "MDG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 12
+    },
+    "MWI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 8
+    },
+    "MUS": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "MYT": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "MOZ": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 8,
+      "presidentialElections": 7
+    },
+    "REU": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "RWA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 9
+    },
+    "SYC": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 11
+    },
+    "SOM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 7,
+      "presidentialElections": 1
+    },
+    "SSD": {
+      "estimatedYears": 61,
+      "fallbackReferences": [
+        "SDN"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "UGA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 6
+    },
+    "TZA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 14
+    },
+    "ZMB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 14
+    },
+    "ZWE": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 7
+    },
+    "AGO": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 5,
+      "presidentialElections": 1
+    },
+    "CMR": {
+      "estimatedYears": 11,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 13,
+      "presidentialElections": 12
+    },
+    "CAF": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 11
+    },
+    "TCD": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 8
+    },
+    "COG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 6
+    },
+    "COD": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 7
+    },
+    "GNQ": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 9,
+      "presidentialElections": 8
+    },
+    "GAB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 12
+    },
+    "STP": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 9,
+      "presidentialElections": 7
+    },
+    "DZA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 12
+    },
+    "EGY": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 14
+    },
+    "LBY": {
+      "estimatedYears": 1,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 7,
+      "presidentialElections": 0
+    },
+    "MAR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 0
+    },
+    "SDN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 11,
+      "presidentialElections": 7
+    },
+    "TUN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 12
+    },
+    "ESH": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "MAR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BWA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 0
+    },
+    "SWZ": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 0
+    },
+    "LSO": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 0
+    },
+    "NAM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 7
+    },
+    "ZAF": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 0
+    },
+    "BEN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 9
+    },
+    "BFA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 8
+    },
+    "CPV": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 9,
+      "presidentialElections": 7
+    },
+    "CIV": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 13
+    },
+    "GMB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 9
+    },
+    "GHA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 11
+    },
+    "GIN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 11
+    },
+    "GNB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 8,
+      "presidentialElections": 8
+    },
+    "LBR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 13
+    },
+    "MLI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 8
+    },
+    "MRT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 12
+    },
+    "NER": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 10
+    },
+    "NGA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 10
+    },
+    "SHN": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "SEN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 12
+    },
+    "SLE": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 7
+    },
+    "TGO": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 11
+    },
+    "KAZ": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 7
+    },
+    "KGZ": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 8
+    },
+    "TJK": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 8,
+      "presidentialElections": 6
+    },
+    "TKM": {
+      "estimatedYears": 41,
+      "fallbackReferences": [
+        "RUS",
+        "_world"
+      ],
+      "parliamentaryElections": 8,
+      "presidentialElections": 5
+    },
+    "UZB": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 8,
+      "presidentialElections": 7
+    },
+    "CHN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "HKG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 0
+    },
+    "MAC": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "CHN"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "TWN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 8
+    },
+    "PRK": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 0
+    },
+    "JPN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 26,
+      "presidentialElections": 0
+    },
+    "MNG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 21,
+      "presidentialElections": 8
+    },
+    "KOR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 21,
+      "presidentialElections": 15
+    },
+    "AFG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 4
+    },
+    "BGD": {
+      "estimatedYears": 21,
+      "fallbackReferences": [
+        "PAK"
+      ],
+      "parliamentaryElections": 11,
+      "presidentialElections": 3
+    },
+    "BTN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 4,
+      "presidentialElections": 0
+    },
+    "IND": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "IRN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 13
+    },
+    "MDV": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 12,
+      "presidentialElections": 12
+    },
+    "NPL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 0
+    },
+    "PAK": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 12,
+      "presidentialElections": 1
+    },
+    "LKA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 9
+    },
+    "BRN": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "MYS"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "KHM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 1
+    },
+    "IDN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 5
+    },
+    "LAO": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 0
+    },
+    "MYS": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "MMR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 0
+    },
+    "PHL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 14
+    },
+    "SGP": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 3
+    },
+    "THA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 0
+    },
+    "TLS": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 7,
+      "presidentialElections": 5
+    },
+    "VNM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 0
+    },
+    "ARM": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 6
+    },
+    "AZE": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 8,
+      "presidentialElections": 9
+    },
+    "BHR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 7,
+      "presidentialElections": 0
+    },
+    "CYP": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 12,
+      "presidentialElections": 11
+    },
+    "GEO": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 11,
+      "presidentialElections": 9
+    },
+    "IRQ": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 2
+    },
+    "ISR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 23,
+      "presidentialElections": 3
+    },
+    "JOR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "KWT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 21,
+      "presidentialElections": 0
+    },
+    "LBN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 0
+    },
+    "OMN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 7,
+      "presidentialElections": 0
+    },
+    "QAT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 1,
+      "presidentialElections": 0
+    },
+    "SAU": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "PSE": {
+      "estimatedYears": 17,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 2,
+      "presidentialElections": 2
+    },
+    "SYR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 10
+    },
+    "TUR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 3
+    },
+    "ARE": {
+      "estimatedYears": 21,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 5,
+      "presidentialElections": 0
+    },
+    "YEM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 5,
+      "presidentialElections": 3
+    },
+    "BLR": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 7
+    },
+    "BGR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 22,
+      "presidentialElections": 7
+    },
+    "CZE": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 3
+    },
+    "HUN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 0
+    },
+    "POL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 8
+    },
+    "MDA": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 11,
+      "presidentialElections": 5
+    },
+    "ROU": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 10
+    },
+    "RUS": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 8
+    },
+    "SVK": {
+      "estimatedYears": 43,
+      "fallbackReferences": [
+        "CZE"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 6
+    },
+    "UKR": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 7
+    },
+    "DNK": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 26,
+      "presidentialElections": 0
+    },
+    "EST": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 1
+    },
+    "FRO": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "DNK"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "FIN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 13
+    },
+    "GGY": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "ISL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 22,
+      "presidentialElections": 10
+    },
+    "IRL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 8
+    },
+    "IMN": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "JEY": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "LVA": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 11,
+      "presidentialElections": 0
+    },
+    "LTU": {
+      "estimatedYears": 40,
+      "fallbackReferences": [
+        "RUS"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 8
+    },
+    "NOR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 0
+    },
+    "SWE": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 22,
+      "presidentialElections": 0
+    },
+    "GBR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 0
+    },
+    "ALB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 21,
+      "presidentialElections": 0
+    },
+    "AND": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BIH": {
+      "estimatedYears": 42,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 8
+    },
+    "HRV": {
+      "estimatedYears": 41,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 8
+    },
+    "GIB": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "GRC": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 24,
+      "presidentialElections": 0
+    },
+    "ITA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "X412": {
+      "estimatedYears": 49,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 0
+    },
+    "MLT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "MNE": {
+      "estimatedYears": 48,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 9,
+      "presidentialElections": 5
+    },
+    "MKD": {
+      "estimatedYears": 41,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 7
+    },
+    "PRT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 24,
+      "presidentialElections": 12
+    },
+    "SMR": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "ITA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "SRB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 8
+    },
+    "SVN": {
+      "estimatedYears": 39,
+      "fallbackReferences": [
+        "SRB"
+      ],
+      "parliamentaryElections": 10,
+      "presidentialElections": 8
+    },
+    "ESP": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 0
+    },
+    "AUT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 22,
+      "presidentialElections": 14
+    },
+    "BEL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 22,
+      "presidentialElections": 0
+    },
+    "FRA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 11
+    },
+    "DEU": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 20,
+      "presidentialElections": 0
+    },
+    "LIE": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "CHE"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "LUX": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "MCO": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "NLD": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 23,
+      "presidentialElections": 0
+    },
+    "CHE": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 0
+    },
+    "AIA": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "ATG": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "ABW": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NLD"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BHS": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BRB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "BES": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NLD"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "VGB": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "CYM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "CUB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 10,
+      "presidentialElections": 2
+    },
+    "CUW": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NLD"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "DMA": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "DOM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 19
+    },
+    "GRD": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "GLP": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "HTI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 12
+    },
+    "JAM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 0
+    },
+    "MTQ": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "MSR": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "PRI": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "USA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BLM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "KNA": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "LCA": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "MAF": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "VCT": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "SXM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NLD"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "TTO": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "TCA": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "VIR": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "USA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "BLZ": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "JAM"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "CRI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 18
+    },
+    "SLV": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 28,
+      "presidentialElections": 14
+    },
+    "GTM": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 23,
+      "presidentialElections": 19
+    },
+    "HND": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 14,
+      "presidentialElections": 14
+    },
+    "MEX": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 25,
+      "presidentialElections": 13
+    },
+    "NIC": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 13,
+      "presidentialElections": 13
+    },
+    "PAN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 14
+    },
+    "ARG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 30,
+      "presidentialElections": 14
+    },
+    "BOL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 21,
+      "presidentialElections": 19
+    },
+    "BRA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 19,
+      "presidentialElections": 12
+    },
+    "CHL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 13
+    },
+    "COL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 23,
+      "presidentialElections": 17
+    },
+    "ECU": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 25,
+      "presidentialElections": 18
+    },
+    "FLK": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "GUF": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "GUY": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "PRY": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 18
+    },
+    "PER": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 14
+    },
+    "SUR": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 17,
+      "presidentialElections": 0
+    },
+    "URY": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 15
+    },
+    "VEN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 15
+    },
+    "BMU": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "GBR"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "CAN": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 24,
+      "presidentialElections": 0
+    },
+    "GRL": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "DNK"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "SPM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "USA": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 38,
+      "presidentialElections": 19
+    },
+    "AUS": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 29,
+      "presidentialElections": 0
+    },
+    "NZL": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 25,
+      "presidentialElections": 0
+    },
+    "FJI": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 18,
+      "presidentialElections": 0
+    },
+    "NCL": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "PNG": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 15,
+      "presidentialElections": 0
+    },
+    "SLB": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "VUT": {
+      "estimatedYears": 0,
+      "fallbackReferences": [],
+      "parliamentaryElections": 16,
+      "presidentialElections": 0
+    },
+    "GUM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "USA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "KIR": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "MHL": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "FSM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "NRU": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "MNP": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "USA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "PLW": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "ASM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "USA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "COK": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NZL"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "PYF": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "NIU": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NZL"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "WSM": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "TKL": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "NZL"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "TON": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "TUV": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "_world"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    },
+    "WLF": {
+      "estimatedYears": 76,
+      "fallbackReferences": [
+        "FRA"
+      ],
+      "parliamentaryElections": 0,
+      "presidentialElections": 0
+    }
+  }
+}

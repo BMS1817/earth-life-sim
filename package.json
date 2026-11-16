@@ -5,9 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "preview": "vite preview",
     "build": "tsc --noEmit && vite build",
     "test": "vitest run",
-    "data": "python -P scripts/build_data.py"
+    "data": "python -P scripts/build_data.py",
+    "politics-data": "uv run --with pyreadr --with pandas python scripts/build_politics.py",
+    "simulate": "node --experimental-strip-types scripts/simulate.ts",
+    "shots": "node --experimental-strip-types scripts/shots.ts"
   },
   "devDependencies": {
     "@types/node": "26.6.5",

@@ -21,12 +21,13 @@ export const SCHOOL: LifeEvent[] = [
     minAge: 6,
     maxAge: 11,
     weight: 3,
+    condition: (s) => s.people.filter((p) => p.role === "friend" && p.alive && p.status === "active").length < 2,
     text: "Во дворе появляется шумная компания ровесников.",
     choices: [
-      { sector: "bonds", label: "Пойти знакомиться", outcome: "Теперь у тебя есть с кем делить лето до темноты. Книги подождут.", effects: { bonds: 8, education: -2 } },
+      { sector: "bonds", label: "Пойти знакомиться", outcome: "Теперь у тебя есть с кем делить лето до темноты. Книги подождут.", effects: { bonds: 8, education: -2 }, action: "addFriend" },
       { sector: "self", label: "Держаться особняком", outcome: "Ты выбираешь книги и свои занятия вместо двора.", effects: { education: 2, bonds: -3 } },
-      { sector: "tradition", label: "Только с теми, кого одобряют родители", outcome: "Компания отфильтрована. Круг узкий, зато надёжный.", effects: { bonds: 2, education: -1 } },
-      { sector: "change", label: "Самому собрать свою компанию", outcome: "Ты стал заводилой. Уроки немного пострадали.", effects: { bonds: 5, education: -2 } },
+      { sector: "tradition", label: "Только с теми, кого одобряют родители", outcome: "Компания отфильтрована. Круг узкий, зато надёжный.", effects: { bonds: 2, education: -1 }, action: "addFriend" },
+      { sector: "change", label: "Самому собрать свою компанию", outcome: "Ты стал заводилой. Уроки немного пострадали.", effects: { bonds: 5, education: -2 }, action: "addFriend" },
     ],
   },
   {
@@ -178,7 +179,8 @@ export const SCHOOL: LifeEvent[] = [
     minAge: 8,
     maxAge: 11,
     weight: 2,
-    text: "Ты поссорился с лучшим другом.",
+    subject: "friend",
+    text: "Ты поссорился с лучшим другом — {person}.",
     choices: [
       { sector: "bonds", label: "Помириться первым", outcome: "Ты подошёл сам. Пришлось наступить на гордость.", effects: { bonds: 5, education: -1 } },
       { sector: "self", label: "Ждать его шага", outcome: "Никто не подошёл. Дружба остыла.", effects: { bonds: -3, education: 1 } },

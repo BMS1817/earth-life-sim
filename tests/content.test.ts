@@ -1,22 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { EVENTS } from "../src/content/events.ts";
-import { createLifeState } from "../src/core/turn.ts";
-import { createBirth } from "../src/core/life.ts";
-import { rngFromSeed } from "../src/core/rng.ts";
-import { readFileSync } from "node:fs";
-import type { IndexData, NamesData } from "../src/core/types.ts";
-
-const index: IndexData = JSON.parse(readFileSync("public/data/index.json", "utf-8"));
-const names: NamesData = JSON.parse(readFileSync("public/data/names.json", "utf-8"));
+import { ALL_EVENTS, EVENTS } from "../src/content/events.ts";
+import { newState } from "./helpers.ts";
 
 describe("контент событий", () => {
   it("id уникальны", () => {
-    const ids = EVENTS.map((e) => e.id);
+    const ids = ALL_EVENTS.map((e) => e.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
   it("каждое событие имеет текст и ровно 4 выбора по 4 разным секторам", () => {
-    for (const e of EVENTS) {
+    for (const e of ALL_EVENTS) {
       expect(e.text.length).toBeGreaterThan(10);
       expect(e.choices.length, e.id).toBe(4);
       const sectors = new Set(e.choices.map((c) => c.sector));
@@ -39,7 +32,7 @@ describe("контент событий", () => {
   it("у каждого выбора есть трейд-офф: минус в эффектах или в успехе риска", () => {
     const hasNegative = (effects?: Record<string, number>) =>
       !!effects && Object.values(effects).some((v) => v < 0);
-    for (const e of EVENTS) {
+    for (const e of ALL_EVENTS) {
       for (const c of e.choices) {
         const effects = c.risk ? c.risk.successEffects : c.effects;
         expect(hasNegative(effects), `${e.id} / ${c.label}`).toBe(true);
@@ -48,8 +41,7 @@ describe("контент событий", () => {
   });
 
   it("на каждом возрасте есть хотя бы одно событие", () => {
-    const birth = createBirth(rngFromSeed("coverage:birth"), index, names);
-    const s = createLifeState("coverage", birth, 5000);
+    const { s } = newState("coverage");
     const missing: number[] = [];
     for (let age = 0; age <= 100; age++) {
       s.age = age;

@@ -22,12 +22,13 @@ export const TEEN: LifeEvent[] = [
     maxAge: 18,
     once: true,
     weight: 3,
+    condition: (s) => !s.people.some((p) => p.role === "partner" && p.alive && p.status === "active"),
     text: "Первая влюблённость. Сложно думать о чём-то ещё.",
     choices: [
-      { sector: "bonds", label: "Открыться в чувствах", outcome: "Вы признались друг другу — мир стал ярче. Учёба немного страдает.", effects: { bonds: 8, education: -2 } },
+      { sector: "bonds", label: "Открыться в чувствах", outcome: "Вы признались друг другу — мир стал ярче. Учёба немного страдает.", effects: { bonds: 8, education: -2 }, action: "addPartner" },
       { sector: "self", label: "Спрятать чувства", outcome: "Чувства остались при тебе. Иногда это ноет.", effects: { bonds: -4, education: 1 } },
       { sector: "tradition", label: "Сосредоточиться на учёбе", outcome: "Ты решил: сначала дело. Сердце не совсем согласно.", effects: { education: 3, bonds: -3 } },
-      { sector: "change", label: "Пригласить на свидание", outcome: "Ты позвал первым. Неловко, зато всё началось.", effects: { bonds: 5, education: -1 } },
+      { sector: "change", label: "Пригласить на свидание", outcome: "Ты позвал первым. Неловко, зато всё началось.", effects: { bonds: 5, education: -1 }, action: "addPartner" },
     ],
   },
   {
@@ -76,7 +77,8 @@ export const TEEN: LifeEvent[] = [
     minAge: 13,
     maxAge: 17,
     weight: 3,
-    text: "Ссора с родителями: тебя не слышат.",
+    subject: "anyParent",
+    text: "Ссора с родителями: {person} тебя не слышит.",
     choices: [
       { sector: "change", label: "Отстоять своё", outcome: "Вы наговорили друг другу лишнего, но тебя услышали.", effects: { bonds: -3, education: 1 } },
       { sector: "tradition", label: "Согласиться с ними", outcome: "Ты уступил. Дома мир, внутри — не совсем.", effects: { bonds: 3, education: -1 } },

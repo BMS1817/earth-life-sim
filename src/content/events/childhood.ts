@@ -57,20 +57,6 @@ export const CHILDHOOD: LifeEvent[] = [
     ],
   },
   {
-    id: "sibling",
-    minAge: 2,
-    maxAge: 5,
-    once: true,
-    weight: 2,
-    text: "В семье родился братик или сестрёнка.",
-    choices: [
-      { sector: "bonds", label: "Любить и помогать", outcome: "Ты возишься с малышом и гордишься собой. На себя времени меньше.", effects: { bonds: 6, education: -1 } },
-      { sector: "self", label: "Ревновать", outcome: "Внимание делят на двоих. Ты требуешь своё.", effects: { education: 1, bonds: -4 } },
-      { sector: "tradition", label: "Помогать родителям по дому", outcome: "Ты стал помощником. Устаёшь, но дома тепло.", effects: { bonds: 3, health: -1 } },
-      { sector: "change", label: "Теперь я главный", outcome: "Ты командуешь малышом. Родители не в восторге.", effects: { education: 2, bonds: -3 } },
-    ],
-  },
-  {
     id: "picky-eater",
     minAge: 2,
     maxAge: 5,

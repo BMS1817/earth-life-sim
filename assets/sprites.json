@@ -7,10 +7,13 @@
   "engine": "workbench",
   "frame_step": 1,
   "presets": {
-    "person": { "frame": [48, 64], "pivot": [24, 58] },
+    "person": { "frame": [48, 64], "pivot": [24, 60] },
+    "evacuee": { "frame": [48, 64], "pivot": [24, 58] },
+    "tank": { "frame": [96, 64], "pivot": [48, 56], "elevation_deg": 16 },
+    "smoke": { "frame": [96, 80], "pivot": [48, 64], "elevation_deg": 0, "outline": false },
     "house": { "frame": [96, 80], "pivot": [48, 72], "elevation_deg": 20 },
     "sky": { "frame": [256, 96], "pivot": [128, 48], "elevation_deg": 0, "outline": false },
-    "far": { "frame": [256, 96], "pivot": [128, 48], "elevation_deg": 8, "outline": false },
+    "far": { "frame": [256, 96], "pivot": [128, 58], "elevation_deg": 8, "outline": false },
     "near": { "frame": [256, 64], "pivot": [128, 32], "elevation_deg": 8, "outline": false }
   }
 }

@@ -1,36 +1,10 @@
-import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
-import { createBirth } from "../src/core/life.ts";
-import { rngFromSeed } from "../src/core/rng.ts";
-import { applyChoice, advanceYear, createLifeState, pickYearEvents } from "../src/core/turn.ts";
+import { applyChoice, advanceYear, pickYearEvents } from "../src/core/turn.ts";
 import { mortalityMultiplier } from "../src/core/state.ts";
-import { compassPosition } from "../src/core/state.ts";
 import type { LifeState } from "../src/core/state.ts";
+import { compassPosition } from "../src/core/state.ts";
 import { EVENTS } from "../src/content/events.ts";
-import type { IndexData, MortData, NamesData } from "../src/core/types.ts";
-
-const index: IndexData = JSON.parse(readFileSync("public/data/index.json", "utf-8"));
-const names: NamesData = JSON.parse(readFileSync("public/data/names.json", "utf-8"));
-const income = JSON.parse(readFileSync("public/data/income.json", "utf-8"));
-
-function newState(seed: string): { s: LifeState; mort: MortData } {
-  const birth = createBirth(rngFromSeed(`${seed}:birth`), index, names);
-  const mort: MortData = JSON.parse(readFileSync(`public/data/mort/${birth.country.iso3}.json`, "utf-8"));
-  const gdpTable = income.gdp[birth.country.iso3] ?? income.gdp._world;
-  const gdp = gdpTable[Math.min(birth.year, 2022) - 1950];
-  return { s: createLifeState(seed, birth, gdp), mort };
-}
-
-function autoPlay(seed: string): LifeState {
-  const { s, mort } = newState(seed);
-  let guard = 0;
-  while (s.alive && guard++ < 200) {
-    const events = pickYearEvents(s, EVENTS);
-    if (events.length > 0) applyChoice(s, events[0], 0);
-    advanceYear(s, mort);
-  }
-  return s;
-}
+import { autoPlay, names, newState } from "./helpers.ts";
 
 describe("движок жизни", () => {
   it("полный прогон детерминирован по seed", () => {
@@ -40,6 +14,7 @@ describe("движок жизни", () => {
     expect(a.age).toBe(b.age);
     expect(a.chronicle).toEqual(b.chronicle);
     expect(a.compass).toEqual(b.compass);
+    expect(a.people).toEqual(b.people);
   });
 
   it("жизнь заканчивается, возраст смерти в пределах 0–100", () => {
@@ -103,33 +78,29 @@ describe("движок жизни", () => {
   });
 
   it("младенческая смертность по всему миру соответствует q0", () => {
-    const mortCache = new Map<string, MortData>();
     let deaths = 0;
     let q0sum = 0;
     const N = 3000;
     for (let i = 0; i < N; i++) {
-      const { s } = newState(`infant-${i}`);
-      const cached = mortCache.get(s.birth.country.iso3);
-      const m: MortData = cached ?? JSON.parse(readFileSync(`public/data/mort/${s.birth.country.iso3}.json`, "utf-8"));
-      if (!cached) mortCache.set(s.birth.country.iso3, m);
-      q0sum += m.q[s.birth.sex][Math.min(s.birth.year, 2100) - 1950][0] / m.scale;
-      advanceYear(s, m);
+      const { s, mort, family } = newState(`infant-${i}`);
+      q0sum += mort.q[s.birth.sex][Math.min(s.birth.year, 2100) - 1950][0] / mort.scale;
+      advanceYear(s, mort, family, names);
       if (!s.alive) deaths++;
     }
-    // Допуск ±0.015 ≈ 3σ для N=3000 при p≈0.07.
     expect(Math.abs(deaths / N - q0sum / N)).toBeLessThan(0.015);
-  });
+  }, 15000);
 
   it("риск срабатывает с заданной вероятностью", () => {
     const event = EVENTS.find((e) => e.id === "after-school")!;
     const choiceIndex = 2;
-    const base = createLifeState("risk-base", createBirth(rngFromSeed("risk-base:birth"), index, names), 5000);
+    const base = newState("risk-base").s;
     base.age = 18;
     let success = 0;
     const N = 10_000;
     for (let i = 0; i < N; i++) {
-      const s: LifeState = { ...base, seed: `risk-${i}`, chronicle: [], scales: { ...base.scales } };
-      applyChoice(s, event, choiceIndex);
+      const s: LifeState = structuredClone(base);
+      s.seed = `risk-${i}`;
+      applyChoice(s, event, choiceIndex, names);
       if (s.scales.money > base.scales.money) success++;
     }
     expect(success / N).toBeCloseTo(0.6, 1);

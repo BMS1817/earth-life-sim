@@ -1,0 +1,33 @@
+{
+  "name": "person_adult_v1",
+  "frame": [
+    48,
+    64
+  ],
+  "pivot": [
+    24,
+    60
+  ],
+  "px_per_unit": 32,
+  "elevation_deg": 12,
+  "directions": [
+    "S"
+  ],
+  "animations": {
+    "idle": {
+      "sheet": "person_adult_v1_idle.png",
+      "frames": 4,
+      "fps": 24.0
+    },
+    "happy": {
+      "sheet": "person_adult_v1_happy.png",
+      "frames": 4,
+      "fps": 24.0
+    },
+    "sad": {
+      "sheet": "person_adult_v1_sad.png",
+      "frames": 4,
+      "fps": 24.0
+    }
+  }
+}

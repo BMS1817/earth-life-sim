@@ -11,7 +11,7 @@ export const SENIOR: LifeEvent[] = [
     choices: [
       { sector: "bonds", label: "Больше времени с близкими", outcome: "Ты стал центром семейных обедов и праздников. На себя меньше.", effects: { bonds: 10, money: -2 } },
       { sector: "self", label: "Хобби и тишина", outcome: "Наконец-то время на то, до чего руки не доходили. Близкие скучают.", effects: { health: 4, bonds: -2 } },
-      { sector: "tradition", label: "Продолжать работать", outcome: "Ты остался на лёгкой ставке. Отдыха меньше.", effects: { money: 6, health: -2 } },
+      { sector: "tradition", label: "Продолжать работать", outcome: "Ты остался на лёгкой ставке. Отдыха меньше.", effects: { money: 6, health: -2 }, action: "work" },
       { sector: "change", label: "Начать новую жизнь", outcome: "Ты решил: пенсия — старт, а не финал. Родня удивлена.", effects: { education: 4, bonds: -2 } },
     ],
   },
@@ -77,10 +77,10 @@ export const SENIOR: LifeEvent[] = [
     weight: 2,
     text: "Дети зовут переехать к ним.",
     choices: [
-      { sector: "bonds", label: "Переехать", outcome: "Теперь вы рядом каждый день. Твой дом остался позади.", effects: { bonds: 7, health: -1 } },
-      { sector: "self", label: "Жить самостоятельно", outcome: "Ты остался в своём доме. Самостоятельность дорогого стоит.", effects: { health: 2, bonds: -3 } },
-      { sector: "tradition", label: "Остаться у своих стен", outcome: "Дом, где всё знакомо. Дети беспокоятся.", effects: { health: 1, bonds: -2 } },
-      { sector: "change", label: "Переехать в дом для пожилых", outcome: "Ты выбрал уход и компанию. Семья удивлена.", effects: { health: 3, bonds: -2 } },
+      { sector: "bonds", label: "Переехать", outcome: "Теперь вы рядом каждый день. Твой дом остался позади.", effects: { bonds: 7, health: -1 }, action: "parents" },
+      { sector: "self", label: "Жить самостоятельно", outcome: "Ты остался в своём доме. Самостоятельность дорогого стоит.", effects: { health: 2, bonds: -3 }, action: "owned" },
+      { sector: "tradition", label: "Остаться у своих стен", outcome: "Дом, где всё знакомо. Дети беспокоятся.", effects: { health: 1, bonds: -2 }, action: "owned" },
+      { sector: "change", label: "Переехать в дом для пожилых", outcome: "Ты выбрал уход и компанию. Семья удивлена.", effects: { health: 3, bonds: -2 }, action: "rent" },
     ],
   },
   {
