@@ -128,16 +128,20 @@ function dotsGrid(chance: number): HTMLElement {
   return container;
 }
 
+type CountryBundleIndex = { kinds: Record<string, { countries: Record<string, number> }> };
+
 async function main(): Promise<void> {
   app.textContent = s.loading;
   let index: IndexData, names: NamesData, income: IncomeData, ruNames: RuNames, worldFamily: FamilyData;
+  let bundleIndex: CountryBundleIndex | null = null;
   try {
-    [index, names, income, ruNames, worldFamily] = await Promise.all([
+    [index, names, income, ruNames, worldFamily, bundleIndex] = await Promise.all([
       loadJson<IndexData>("data/index.json"),
       loadJson<NamesData>("data/names.json"),
       loadJson<IncomeData>("data/income.json"),
       loadJson<RuNames>("data/countries_ru.json"),
       loadJson<FamilyData>("data/family/_world.json"),
+      import.meta.env.PROD ? loadJson<CountryBundleIndex>("data/bundles/index.json") : Promise.resolve(null),
     ]);
   } catch {
     app.textContent = s.loadError;
@@ -148,6 +152,7 @@ async function main(): Promise<void> {
   const familyCache = new Map<string, FamilyData>();
   const conflictCache = new Map<string, ConflictData>();
   const politicsCache = new Map<string, PoliticsData>();
+  const bundleCache = new Map<string, Record<string, unknown>>();
   const scene = new Scene();
   scene.element.setAttribute("role", "img");
   scene.element.setAttribute("aria-label", s.sceneAlt);
@@ -178,10 +183,24 @@ async function main(): Promise<void> {
   window.addEventListener("beforeunload", () => {
     if (state) save();
   });
+  async function countryOf<T>(kind: string, iso3: string): Promise<T> {
+    if (!bundleIndex) return loadJson<T>(`data/${kind}/${iso3}.json`);
+    const chunk = bundleIndex.kinds[kind]?.countries[iso3];
+    if (chunk === undefined) throw new Error(`Страна отсутствует в индексе данных: ${iso3}`);
+    const key = `${kind}/${chunk}`;
+    let bundle = bundleCache.get(key);
+    if (!bundle) {
+      bundle = await loadJson<Record<string, unknown>>(`data/bundles/${key}.json`);
+      bundleCache.set(key, bundle);
+    }
+    const data = bundle[iso3];
+    if (data === undefined) throw new Error(`Страна отсутствует в пакете данных: ${key}/${iso3}`);
+    return data as T;
+  }
   async function mortOf(iso3: string): Promise<MortData> {
     let m = mortCache.get(iso3);
     if (!m) {
-      m = await loadJson<MortData>(`data/mort/${iso3}.json`);
+      m = await countryOf<MortData>("mort", iso3);
       mortCache.set(iso3, m);
     }
     return m;
@@ -189,7 +208,7 @@ async function main(): Promise<void> {
   async function familyOf(iso3: string): Promise<FamilyData> {
     let f = familyCache.get(iso3);
     if (!f) {
-      f = await loadJson<FamilyData>(`data/family/${iso3}.json`);
+      f = await countryOf<FamilyData>("family", iso3);
       familyCache.set(iso3, f);
     }
     return f;
@@ -197,7 +216,7 @@ async function main(): Promise<void> {
   async function conflictOf(iso3: string): Promise<ConflictData> {
     let c = conflictCache.get(iso3);
     if (!c) {
-      c = await loadJson<ConflictData>(`data/conflicts/${iso3}.json`);
+      c = await countryOf<ConflictData>("conflicts", iso3);
       conflictCache.set(iso3, c);
     }
     return c;
@@ -205,7 +224,7 @@ async function main(): Promise<void> {
   async function politicsOf(iso3: string): Promise<PoliticsData> {
     let p = politicsCache.get(iso3);
     if (!p) {
-      p = await loadJson<PoliticsData>(`data/politics/${iso3}.json`);
+      p = await countryOf<PoliticsData>("politics", iso3);
       politicsCache.set(iso3, p);
     }
     return p;

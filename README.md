@@ -52,6 +52,7 @@ npm run test:scene             # сцена сохраняется при зад
 npm run test:politics-flag     # локальный флаг online и после оффлайн-перезагрузки
 npm run audit:i18n             # поиск непереведённых строк
 npm run test:i18n              # RU/EN production, 32 момента, 3 поколения и оффлайн
+npm run test:pwa:cache         # полный кэш и оффлайн-перезагрузка
 npm run audit:war -- --base "http://127.0.0.1:4173/" --out shots/war-layers
 npm run perf:startup -- --base "http://127.0.0.1:4173/" --runs 3 --assert
 npm run perf:runtime -- --base "http://127.0.0.1:4173/" --cycles 10 --assert
@@ -77,6 +78,7 @@ npm run flags
 ## Публикация на GitHub Pages
 
 Опубликованная игра: **https://bms1817.github.io/earth-life-sim/**.
+Страница itch.io: **https://bms1817.itch.io/earth-one-life**.
 Исходный код: **https://github.com/BMS1817/earth-life-sim**.
 
 Workflow `.github/workflows/pages.yml` устанавливает зависимости, запускает тесты, собирает `dist` и

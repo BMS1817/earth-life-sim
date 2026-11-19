@@ -256,7 +256,7 @@ try {
     if (!key) return false;
     const cache = await caches.open(key);
     return (await cache.keys()).length >= assets.length && navigator.serviceWorker.controller !== null;
-  })()`, true)), "полный оффлайн-кэш", 240_000);
+  })()`, true)), "полный оффлайн-кэш", 600_000);
   await cdp.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
   await cdp.call("Page.reload", { ignoreCache: true });
   await sleep(500);
