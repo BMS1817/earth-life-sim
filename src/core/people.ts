@@ -5,7 +5,7 @@ import type { Birth, FamilyData, MortData, NamesData, Sex } from "./types.ts";
 import { conflictForYear, conflictHazard } from "./conflicts.ts";
 import type { ConflictData, WarState } from "./conflicts.ts";
 
-export type PersonRole = "mother" | "father" | "sibling" | "partner" | "child" | "friend";
+export type PersonRole = "mother" | "father" | "sibling" | "partner" | "child" | "friend" | "grandparent" | "relative";
 export type PersonStatus = "active" | "estranged" | "ended";
 export type Trait = "warm" | "reserved" | "stubborn" | "curious" | "practical" | "impulsive" | "loyal" | "independent";
 export type MemoryKind = "support" | "conflict" | "care" | "loss" | "milestone";

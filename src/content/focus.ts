@@ -21,12 +21,9 @@ export interface FocusProfile {
 }
 
 export const FOCUS_PROFILES: Record<FocusId, FocusProfile> = {
-  balance: { minAge: 0, happiness: 0.2, health: 0, education: 0, money: 0, bonds: 0, hobbyXp: 0.25, careerPoints: 0 },
-  study: { minAge: 5, happiness: -0.5, health: 0, education: 1.5, money: 0, bonds: -0.25, hobbyXp: 0.25, careerPoints: 0 },
-  relationships: { minAge: 0, happiness: 0.75, health: 0, education: -0.25, money: 0, bonds: 1, hobbyXp: 0.25, careerPoints: 0 },
-  health: { minAge: 0, happiness: 0.25, health: 1.25, education: 0, money: -0.25, bonds: 0, hobbyXp: 0.25, careerPoints: 0 },
-  hobby: { minAge: 5, happiness: 1.25, health: 0, education: -0.25, money: 0, bonds: 0, hobbyXp: 1.5, careerPoints: 0, requiresHobby: true },
-  work: { minAge: 18, happiness: -0.5, health: -0.5, education: 0, money: 0.5, bonds: -0.5, hobbyXp: 0.1, careerPoints: 1, requiresCareer: true },
-  growth: { minAge: 12, happiness: -0.25, health: 0, education: 0.75, money: 0, bonds: 0, hobbyXp: 0.35, careerPoints: 0.5 },
-  rest: { minAge: 18, happiness: 1, health: 0.75, education: 0, money: -0.5, bonds: 0, hobbyXp: 0.25, careerPoints: 0 },
+  balance: { minAge: 0, happiness: 0.5, health: 0.5, education: 0.5, money: 0.5, bonds: 0.5, hobbyXp: 0.5, careerPoints: 0 },
+  money: { minAge: 18, happiness: -0.5, health: 0, education: -0.5, money: 2, bonds: -0.5, hobbyXp: 0.25, careerPoints: 1, requiresCareer: true },
+  education: { minAge: 5, happiness: -0.5, health: -0.5, education: 2, money: -0.5, bonds: 0, hobbyXp: 0.25, careerPoints: 0.5 },
+  bonds: { minAge: 0, happiness: 0.5, health: 0.5, education: 0, money: -0.5, bonds: 2, hobbyXp: 0.25, careerPoints: 0 },
+  happiness: { minAge: 0, happiness: 2, health: 0.5, education: -0.5, money: -0.5, bonds: 0, hobbyXp: 0.5, careerPoints: 0 },
 };

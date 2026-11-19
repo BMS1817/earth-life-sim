@@ -1,9 +1,12 @@
 import { MAX_FAVORITE_MOMENTS } from "../content/memorial.ts";
+import { createLineageState, initialHeroTraits } from "./inheritance.ts";
 import { createPoliticsState } from "./politics.ts";
 import type { LifeState } from "./state.ts";
 import type { Birth } from "./types.ts";
 
-const KEY = "earth:life:v8";
+const KEY = "earth:life:v10";
+const V9_KEY = "earth:life:v9";
+const V8_KEY = "earth:life:v8";
 const V7_KEY = "earth:life:v7";
 const V6_KEY = "earth:life:v6";
 const V5_KEY = "earth:life:v5";
@@ -22,15 +25,36 @@ export function saveLife(s: LifeState): void {
   }
 }
 
-function migrateV7(state: LifeState): LifeState {
-  state.version = 8;
-  state.politics ??= createPoliticsState(undefined, state.birth.year + state.age);
-  state.finance.lastBreakdown.politics ??= 0;
+function migrateV9(state: LifeState): LifeState {
+  const mapping: Record<string, string> = { study: "education", work: "money", relationships: "bonds", rest: "happiness", growth: "education", health: "balance", hobby: "happiness" };
+  state.focus ??= { current: "balance", fractions: {}, careerPoints: 0 };
+  state.focus.current = (mapping[state.focus.current] ?? state.focus.current) as LifeState["focus"]["current"];
+  state.focusTotals = Object.fromEntries(
+    Object.entries(state.focusTotals ?? {}).reduce((totals, [id, value]) => {
+      const target = mapping[id] ?? id;
+      totals.set(target, (totals.get(target) ?? 0) + value);
+      return totals;
+    }, new Map<string, number>()),
+  ) as LifeState["focusTotals"];
+  state.version = 10;
   return state;
 }
 
+function migrateV8(state: LifeState): LifeState {
+  state.lineage ??= createLineageState(state.seed);
+  state.lineage.ancestors ??= [];
+  state.lineage.heroTraits ??= initialHeroTraits(state.seed);
+  state.lineage.lastInheritance ??= null;
+  return migrateV9(state);
+}
+
+function migrateV7(state: LifeState): LifeState {
+  state.politics ??= createPoliticsState(undefined, state.birth.year + state.age);
+  state.finance.lastBreakdown.politics ??= 0;
+  return migrateV8(state);
+}
+
 function migrateV6(state: LifeState): LifeState {
-  state.focusTotals ??= {};
   state.focusTotals ??= {};
   state.favoriteMomentIndexes = Array.isArray(state.favoriteMomentIndexes)
     ? [...new Set(state.favoriteMomentIndexes)]
@@ -59,7 +83,7 @@ function migrateV5(state: LifeState): LifeState {
 
 function valid(state: LifeState): boolean {
   return Boolean(
-    state.version === 8 &&
+    state.version === 10 &&
     Array.isArray(state.people) &&
     state.war &&
     state.finance &&
@@ -76,6 +100,10 @@ function valid(state: LifeState): boolean {
     state.politics.alternative &&
     Array.isArray(state.politics.alternative.pending) &&
     Array.isArray(state.politics.alternative.changes) &&
+    state.lineage &&
+    state.lineage.generation >= 1 &&
+    Array.isArray(state.lineage.ancestors) &&
+    Array.isArray(state.lineage.heroTraits) &&
     Array.isArray(state.chronicle) &&
     Array.isArray(state.favoriteMomentIndexes) &&
     Array.isArray(state.happinessHistory) &&
@@ -93,11 +121,11 @@ export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): 
         legacyDiscarded = true;
       }
     }
-    for (const key of [KEY, V7_KEY, V6_KEY, V5_KEY]) {
+    for (const key of [KEY, V9_KEY, V8_KEY, V7_KEY, V6_KEY, V5_KEY]) {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
       const parsed = JSON.parse(raw) as LifeState;
-      const state = key === V5_KEY ? migrateV5(parsed) : key === V6_KEY ? migrateV6(parsed) : key === V7_KEY ? migrateV7(parsed) : parsed;
+      const state = key === V5_KEY ? migrateV5(parsed) : key === V6_KEY ? migrateV6(parsed) : key === V7_KEY ? migrateV7(parsed) : key === V8_KEY ? migrateV8(parsed) : key === V9_KEY ? migrateV9(parsed) : parsed;
       if (valid(state)) {
         if (key !== KEY) {
           localStorage.removeItem(key);
@@ -117,6 +145,8 @@ export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): 
 export function clearLife(): void {
   try {
     localStorage.removeItem(KEY);
+    localStorage.removeItem(V9_KEY);
+    localStorage.removeItem(V8_KEY);
     localStorage.removeItem(V7_KEY);
     localStorage.removeItem(V6_KEY);
     localStorage.removeItem(V5_KEY);

@@ -3,6 +3,7 @@ import type { Person, PeopleNews } from "./people.ts";
 import type { WarState } from "./conflicts.ts";
 import type { CareerId, FinanceState } from "./finance.ts";
 import type { PoliticsState } from "./politics.ts";
+import type { LineageState } from "./inheritance.ts";
 
 export interface Scales {
   health: number;
@@ -11,7 +12,7 @@ export interface Scales {
   bonds: number;
 }
 
-export type FocusId = "balance" | "study" | "relationships" | "health" | "hobby" | "work" | "growth" | "rest";
+export type FocusId = "balance" | "money" | "education" | "bonds" | "happiness";
 export type HobbyId = "games" | "sports" | "reading" | "music" | "crafts" | "nature";
 
 export interface FocusState {
@@ -108,7 +109,7 @@ export interface PendingChoice {
 }
 
 export interface LifeState {
-  version: 8;
+  version: 10;
   seed: string;
   birth: Birth;
   age: number;
@@ -148,6 +149,7 @@ export interface LifeState {
   war: WarState;
   finance: FinanceState;
   politics: PoliticsState;
+  lineage: LineageState;
 }
 
 export const SCALE_MIN = 0;

@@ -24,7 +24,7 @@ describe("отложенные планы", () => {
     expect(startPlan(s, "courses")).toBe(true);
     expect(s.finance.lastBreakdown.property).toBeLessThan(0);
     advanceYear(s, mort, family, names);
-    expect(s.scales.education).toBe(education + 8);
+    expect(s.scales.education).toBe(education + 8.5);
     expect(s.focus.careerPoints).toBeGreaterThan(0);
   });
 

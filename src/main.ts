@@ -14,8 +14,10 @@ import type { Choice, LifeEvent } from "./core/events.ts";
 import { EVENTS } from "./content/events.ts";
 import { FAMILY_EVENTS } from "./content/family-events.ts";
 import { eraName } from "./content/eras.ts";
+import { COUNTRIES_EN } from "./content/en/countries.ts";
 import type { FamilyData, IndexData, MortData, NamesData } from "./core/types.ts";
-import { ru as s } from "./ui/strings.ts";
+import { s, t } from "./ui/strings.ts";
+import { getLanguage, setLanguage } from "./i18n.ts";
 import { Scene } from "./ui/scene.ts";
 import { peopleView } from "./ui/people-view.ts";
 import { financeView } from "./ui/finance-view.ts";
@@ -31,6 +33,8 @@ import { MAX_FAVORITE_MOMENTS } from "./content/memorial.ts";
 import { politicsView } from "./ui/politics-view.ts";
 import { attemptUsurpation, holdReferendum, startCampaign, syncPoliticsBaseline } from "./core/politics.ts";
 import type { PoliticalLevel, PoliticalPlatform, PoliticsData } from "./core/politics.ts";
+import { lineageView } from "./ui/lineage-view.ts";
+import { inheritLife } from "./core/inheritance.ts";
 
 interface IncomeData {
   gdp: Record<string, number[]>;
@@ -38,12 +42,18 @@ interface IncomeData {
 
 type RuNames = Record<string, string>;
 
+interface InstallPromptEvent extends Event {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+}
+
 function flagEmoji(iso2: string | null): string {
   if (!iso2 || iso2.length !== 2) return "";
   return String.fromCodePoint(...[...iso2].map((c) => 0x1f1e6 + c.charCodeAt(0) - 65));
 }
 
 const app = document.querySelector<HTMLElement>("#app")!;
+document.documentElement.lang = getLanguage();
 document.title = s.title;
 
 async function loadJson<T>(url: string): Promise<T> {
@@ -76,6 +86,11 @@ function setSeed(seed: string): void {
   history.replaceState(null, "", url);
 }
 
+function switchLanguage(): void {
+  setLanguage(getLanguage() === "ru" ? "en" : "ru");
+  location.reload();
+}
+
 function arrows(effects: Partial<Scales> | undefined, personal: boolean): string {
   if (!effects) return "";
   return (Object.keys(effects) as (keyof Scales)[])
@@ -95,6 +110,15 @@ function dotsGrid(chance: number): HTMLElement {
   };
   wrap.addEventListener("pointerdown", () => {
     timer = setTimeout(toggle, 600);
+  });
+  wrap.tabIndex = 0;
+  wrap.setAttribute("role", "button");
+  wrap.setAttribute("aria-label", s.riskSource);
+  wrap.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggle();
+    }
   });
   for (const ev of ["pointerup", "pointerleave", "pointercancel"]) {
     wrap.addEventListener(ev, () => clearTimeout(timer));
@@ -125,11 +149,12 @@ async function main(): Promise<void> {
   const conflictCache = new Map<string, ConflictData>();
   const politicsCache = new Map<string, PoliticsData>();
   const scene = new Scene();
-  await scene.load();
+  scene.element.setAttribute("role", "img");
+  scene.element.setAttribute("aria-label", s.sceneAlt);
   requestAnimationFrame(function loop(t) {
     const delta = lastFrame === 0 ? 0 : Math.min(250, t - lastFrame);
     lastFrame = t;
-    if (state?.alive && !manualPaused && !peopleOpen && !financeOpen && !lifestyleOpen && !memorialOpen && !politicsOpen && !document.hidden) {
+    if (state?.alive && !manualPaused && !peopleOpen && !financeOpen && !lifestyleOpen && !memorialOpen && !politicsOpen && !lineageOpen && !document.hidden) {
       if (!hasDecision()) {
         elapsed += delta * state.time.speed;
         const tickMs = YEAR_MS / TICKS_PER_YEAR;
@@ -200,15 +225,57 @@ async function main(): Promise<void> {
   let lifestyleOpen = false;
   let memorialOpen = false;
   let politicsOpen = false;
+  let lineageOpen = false;
   let selectedPersonId: string | null = null;
   let legacyNotice = false;
   let manualPaused = false;
   let elapsed = 0;
   let lastFrame = 0;
   let autoDeadline = 0;
+  let installPrompt: InstallPromptEvent | null = null;
+  let mobileTab: "event" | "hero" | "focus" | "menu" = "event";
+  let offlineStatus: string = s.offlineWaiting;
 
   function save(): void {
     saveLife(state);
+  }
+
+  function updateOfflineStatus(text: string): void {
+    offlineStatus = text;
+    const node = document.querySelector<HTMLElement>(".offline-status");
+    if (node) node.textContent = text;
+  }
+
+  function setupOffline(): void {
+    window.addEventListener("beforeinstallprompt", (event) => {
+      event.preventDefault();
+      installPrompt = event as InstallPromptEvent;
+      if (state) render();
+    });
+    window.addEventListener("appinstalled", () => {
+      installPrompt = null;
+      if (state) render();
+    });
+    if (!("serviceWorker" in navigator) || location.protocol === "file:") {
+      updateOfflineStatus(s.offlineError);
+      return;
+    }
+    navigator.serviceWorker.addEventListener("message", (event) => {
+      const data = event.data as { type?: string; loaded?: number; total?: number };
+      if (data.type === "earth:cache-progress") updateOfflineStatus(s.offlinePreparing(data.loaded ?? 0, data.total ?? 0));
+      if (data.type === "earth:cache-ready") updateOfflineStatus(s.offlineReady);
+    });
+    const register = () => {
+      if (!navigator.onLine && navigator.serviceWorker.controller) {
+        updateOfflineStatus(s.offlineReady);
+        return;
+      }
+      void navigator.serviceWorker.register("sw.js").then(() => {
+        if (navigator.serviceWorker.controller) updateOfflineStatus(s.offlineReady);
+      }).catch(() => updateOfflineStatus(s.offlineError));
+    };
+    if (document.readyState === "complete") register();
+    else window.addEventListener("load", register, { once: true });
   }
 
   function renderScales(): HTMLElement {
@@ -250,11 +317,23 @@ async function main(): Promise<void> {
       save();
       render();
     }));
+    row.append(button(`${s.softenLabel}: ${s.softenState(state.softenHeavy)}`, () => {
+      state.softenHeavy = !state.softenHeavy;
+      save();
+      render();
+    }));
+    row.append(button(s.language, switchLanguage));
+    if (installPrompt) row.append(button(s.installApp, () => {
+      const prompt = installPrompt;
+      installPrompt = null;
+      if (prompt) void prompt.prompt();
+      render();
+    }));
     const progress = el("div", "year-progress");
     const fill = el("span", "year-progress-fill");
     fill.style.width = `${(state.time.tick / TICKS_PER_YEAR) * 100}%`;
     progress.append(fill);
-    wrap.append(row, progress, el("div", "time-note", s.timeYearSeconds(state.time.speed)));
+    wrap.append(row, progress, el("div", "time-note", s.timeYearSeconds(state.time.speed)), el("p", "offline-status", offlineStatus));
     return wrap;
   }
 
@@ -278,7 +357,12 @@ async function main(): Promise<void> {
   function renderHobbies(): HTMLElement {
     const wrap = el("section", "hobbies-panel");
     wrap.append(el("h2", undefined, s.hobbiesTitle));
-    if (state.hobbies.length === 0) wrap.append(el("p", "muted", s.hobbyEmpty));
+    if (state.hobbies.length === 0) {
+      wrap.append(el("p", "muted", s.hobbyEmpty));
+      const guide = el("div", "hobby-guide");
+      for (const id of HOBBY_IDS.slice(0, 3)) guide.append(el("span", "room-item", `${s.hobbies[id]} · ${s.hobbyEffects[id]}`));
+      wrap.append(guide);
+    }
     const list = el("div", "hobby-list");
     for (const hobby of state.hobbies) {
       const active = state.activeHobbyId === hobby.id;
@@ -311,10 +395,41 @@ async function main(): Promise<void> {
     return wrap;
   }
 
+  function renderDashboard(): HTMLElement {
+    const root = el("div", "quiet-dashboard");
+    const work = el("section", "dashboard-card");
+    work.append(el("h2", undefined, s.dashboardWork));
+    work.append(el("p", undefined, state.finance.career ? `${s.careers[state.finance.career]} · ${s.employment[state.finance.employment]}` : s.employment[state.finance.employment]));
+    work.append(el("h3", undefined, s.dashboardPlan));
+    work.append(el("p", "muted", state.plan ? `${s.planStart[state.plan.kind]} · ${s.planRemaining(state.plan.remainingYears)}` : s.planNone));
+
+    const money = el("section", "dashboard-card");
+    money.append(el("h2", undefined, s.dashboardBalance));
+    money.append(el("p", undefined, `${s.financeCash}: ${s.money(state.finance.cash)}`));
+    money.append(el("p", "muted", `${s.financeNetYear}: ${s.money(state.finance.lastYearNet)}`));
+
+    const memory = el("section", "dashboard-card dashboard-memory");
+    memory.append(el("h2", undefined, s.dashboardLastMoment));
+    const last = state.chronicle.at(-1);
+    memory.append(el("p", undefined, last ? `${s.ageYear(last.age, last.year)}: ${t(last.text)}` : s.dashboardNoMoment));
+
+    const progress = el("section", "dashboard-card");
+    progress.append(el("h2", undefined, s.dashboardProgress));
+    progress.append(el("p", undefined, `${s.focuses[state.focus.current].label} · ${s.focuses[state.focus.current].detail}`));
+    const bar = el("div", "year-progress");
+    const fill = el("span", "year-progress-fill");
+    fill.style.width = `${(state.time.tick / TICKS_PER_YEAR) * 100}%`;
+    bar.append(fill);
+    progress.append(bar, el("p", "muted", s.timeYearSeconds(state.time.speed)));
+    root.append(work, money, memory, progress);
+    return root;
+  }
+
   function renderChoice(event: LifeEvent, choice: Choice, idx: number): HTMLElement {
-    const b = button(`${s.sectors[choice.sector]} ${choice.label}`, () => {
+    const b = button(`${s.sectors[choice.sector]} ${t(choice.label)}`, () => {
       autoDeadline = 0;
       applyChoice(state, event, idx, names, conflict);
+      scheduleFollowUpAfterChoice();
       save();
       render();
     });
@@ -333,6 +448,7 @@ async function main(): Promise<void> {
     lifestyleOpen = false;
     memorialOpen = false;
     politicsOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
     window.scrollTo(0, 0);
     render();
@@ -344,6 +460,7 @@ async function main(): Promise<void> {
     lifestyleOpen = false;
     memorialOpen = false;
     politicsOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
     window.scrollTo(0, 0);
     render();
@@ -355,6 +472,7 @@ async function main(): Promise<void> {
     financeOpen = false;
     memorialOpen = false;
     politicsOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
     window.scrollTo(0, 0);
     render();
@@ -366,6 +484,7 @@ async function main(): Promise<void> {
     financeOpen = false;
     lifestyleOpen = false;
     politicsOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
     window.scrollTo(0, 0);
     render();
@@ -377,22 +496,55 @@ async function main(): Promise<void> {
     financeOpen = false;
     lifestyleOpen = false;
     memorialOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
+    window.scrollTo(0, 0);
+    render();
+  }
+
+  function openLineage(): void {
+    lineageOpen = true;
+    peopleOpen = false;
+    financeOpen = false;
+    lifestyleOpen = false;
+    memorialOpen = false;
+    politicsOpen = false;
+    selectedPersonId = null;
+    window.scrollTo(0, 0);
+    render();
+  }
+
+  function inherit(heirId: string): void {
+    const result = inheritLife(state, heirId, family, names, worldFamily, politics);
+    if (!result) return;
+    state = result.state;
+    peopleOpen = false;
+    financeOpen = false;
+    lifestyleOpen = false;
+    memorialOpen = false;
+    politicsOpen = false;
+    lineageOpen = false;
+    selectedPersonId = null;
+    setSeed(state.seed);
+    save();
     window.scrollTo(0, 0);
     render();
   }
 
   function countryName(): string {
     const year = state.deathYear ?? state.birth.year + state.age;
-    return `${flagEmoji(state.birth.country.iso2)} ${eraName(state.birth.country.iso3, year, ruNames[state.birth.country.iso3] ?? state.birth.country.name)}`;
+    return `${flagEmoji(state.birth.country.iso2)} ${t(eraName(state.birth.country.iso3, year, (getLanguage() === "en" ? COUNTRIES_EN[state.birth.country.iso3] : ruNames[state.birth.country.iso3]) ?? state.birth.country.name))}`;
   }
 
   function renderMemorial(onBack: (() => void) | null): void {
-    app.replaceChildren(memorialView(state, scene, {
+    const giftedDayOpen = app.querySelector<HTMLDetailsElement>(".gifted-day")?.open ?? false;
+    const view = memorialView(state, scene, {
       countryName: countryName(),
       onBack,
       onPeople: openPeople,
       onFinance: openFinance,
+      onLineage: openLineage,
+      onInherit: inherit,
       onNewLife: state.alive ? null : newLife,
       onToggle: (index) => {
         const scroll = window.scrollY;
@@ -400,7 +552,10 @@ async function main(): Promise<void> {
         render();
         window.scrollTo(0, scroll);
       },
-    }));
+    });
+    app.replaceChildren(view);
+    const details = view.querySelector<HTMLDetailsElement>(".gifted-day");
+    if (details) details.open = giftedDayOpen;
   }
 
   function renderEnd(): void {
@@ -425,7 +580,7 @@ async function main(): Promise<void> {
   }
 
   function hasDecision(): boolean {
-    return state.lastOutcome !== null || state.pendingEventIds.length > 0 || state.pendingFamilyEventId !== null || state.war.pendingEventId !== null;
+    return state.pendingEventIds.length > 0 || state.pendingFamilyEventId !== null || state.war.pendingEventId !== null;
   }
 
   function skipToDecision(): void {
@@ -449,11 +604,10 @@ async function main(): Promise<void> {
     );
   }
 
-  type AutoAction = { kind: "choice"; event: LifeEvent; index: number } | { kind: "continue" };
+  type AutoAction = { kind: "choice"; event: LifeEvent; index: number };
 
   function currentAutoAction(): AutoAction | null {
-    if (!state.time.auto || manualPaused || peopleOpen || financeOpen || lifestyleOpen || memorialOpen || politicsOpen) return null;
-    if (state.lastOutcome !== null) return state.lastOutcomeKind === "conflict" ? null : { kind: "continue" };
+    if (!state.time.auto || manualPaused || peopleOpen || financeOpen || lifestyleOpen || memorialOpen || politicsOpen || lineageOpen) return null;
     if (state.war.pendingEventId) return null;
     if (state.pendingFamilyEventId) {
       const event = FAMILY_EVENTS.find((item) => item.id === state.pendingFamilyEventId);
@@ -479,50 +633,28 @@ async function main(): Promise<void> {
     if (countdown) countdown.textContent = s.autoCountdown(seconds);
     if (now < autoDeadline) return;
     autoDeadline = 0;
-    if (action.kind === "choice") applyChoice(state, action.event, action.index, names, conflict);
-    else {
-      continueAfterOutcome();
+    applyChoice(state, action.event, action.index, names, conflict);
+    scheduleFollowUpAfterChoice();
+    save();
+    render();
+  }
+
+  function scheduleFollowUpAfterChoice(): void {
+    if (state.lastOutcomeKind !== "life") return;
+    const conflictEvent = pickConflictEvent(state, conflict);
+    if (conflictEvent) {
+      state.war.pendingEventId = conflictEvent.id;
       return;
     }
-    save();
-    render();
+    const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
+    if (familyEvent) state.pendingFamilyEventId = familyEvent.id;
   }
 
-  function continueAfterOutcome(): void {
-    if (state.lastOutcomeKind === "life") {
-      const conflictEvent = pickConflictEvent(state, conflict);
-      if (conflictEvent) {
-        state.war.pendingEventId = conflictEvent.id;
-        state.lastOutcome = null;
-        state.lastOutcomeKind = null;
-        state.lastArrows = null;
-        save();
-        render();
-        return;
-      }
-      const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
-      if (familyEvent) {
-        state.pendingFamilyEventId = familyEvent.id;
-        state.lastOutcome = null;
-        state.lastOutcomeKind = null;
-        state.lastArrows = null;
-        save();
-        render();
-        return;
-      }
-    }
-    state.lastOutcome = null;
-    state.lastOutcomeKind = null;
-    state.lastArrows = null;
-    save();
-    render();
-  }
-
-  function renderEvent(event: LifeEvent): void {
+  function renderEvent(event: LifeEvent): HTMLElement {
     const card = el("div", `event${event.family ? " family-event" : event.conflict ? " conflict-event" : ""}`);
     if (event.family) card.append(el("div", "event-kicker", s.familySceneLabel));
     if (event.conflict) card.append(el("div", "event-kicker", s.conflictSceneLabel));
-    card.append(el("p", undefined, eventText(state, event)));
+    card.append(el("p", undefined, t(eventText(state, event))));
     if (event.conflict) {
       const year = state.birth.year + state.age;
       const row = conflictForYear(conflict, state.seed, year);
@@ -534,10 +666,24 @@ async function main(): Promise<void> {
     }
     if (state.time.auto && !importantEvent(event)) card.append(el("p", "auto-countdown", s.autoCountdown(Math.ceil(AUTO_DELAY_MS / 1000))));
     event.choices.forEach((choice, idx) => card.append(renderChoice(event, choice, idx)));
-    app.append(card);
+    return card;
+  }
+
+  let scenePrepareVersion = 0;
+
+  function prepareScene(): void {
+    const version = ++scenePrepareVersion;
+    void scene.prepare(state, memorialOpen || !state.alive, peopleOpen).then((loaded) => {
+      if (version === scenePrepareVersion && loaded) render();
+    }).catch((error) => {
+      if (version === scenePrepareVersion) console.error("Не удалось загрузить арт", error);
+    });
   }
 
   function render(): void {
+    prepareScene();
+    app.className = "";
+    document.body.classList.remove("playing");
     if (lifestyleOpen) {
       app.replaceChildren(lifestyleView(state, {
         onBack: () => {
@@ -617,6 +763,17 @@ async function main(): Promise<void> {
       }));
       return;
     }
+    if (lineageOpen) {
+      app.replaceChildren(lineageView(state, {
+        countryName: countryName(),
+        onBack: () => {
+          lineageOpen = false;
+          window.scrollTo(0, 0);
+          render();
+        },
+      }));
+      return;
+    }
     if (politicsOpen) {
       app.replaceChildren(politicsView(state, politics, {
         baseGdp: gdpForYear(state.birth.year + state.age),
@@ -666,56 +823,108 @@ async function main(): Promise<void> {
       return;
     }
     app.replaceChildren();
+    app.className = "game-shell";
+    app.dataset.active = mobileTab;
+    document.body.classList.add("playing");
     scene.update(state);
-    app.append(renderTimeControls());
-    app.append(scene.element);
-    app.append(el("h1", undefined, state.birth.name));
     const year = state.birth.year + state.age;
-    const country = `${flagEmoji(state.birth.country.iso2)} ${eraName(state.birth.country.iso3, year, ruNames[state.birth.country.iso3] ?? state.birth.country.name)}`;
-    app.append(el("p", "meta", `${country} · ${s.ageYear(state.age, year)}`));
-    if (state.war.displacedUntil !== null) app.append(el("p", "displaced", s.displacedStatus(state.war.displacedUntil)));
-    app.append(button(s.peopleButton(state.people.filter((p) => p.alive && p.status === "active").length), openPeople));
-    app.append(button(`${s.financeButton} · ${s.money(state.finance.cash)}`, openFinance));
-    app.append(button(s.lifestyleButton, openLifestyle));
-    app.append(button(s.politicsButton, openPolitics));
-    app.append(button(s.momentsButton(state.favoriteMomentIndexes.length, MAX_FAVORITE_MOMENTS), openMemorial));
-    app.append(renderScales());
-    app.append(renderFocus());
-    app.append(renderHobbies());
+    const country = `${flagEmoji(state.birth.country.iso2)} ${t(eraName(state.birth.country.iso3, year, (getLanguage() === "en" ? COUNTRIES_EN[state.birth.country.iso3] : ruNames[state.birth.country.iso3]) ?? state.birth.country.name))}`;
+
+    const tabs = el("nav", "mobile-tabs");
+    tabs.setAttribute("role", "tablist");
+    tabs.addEventListener("click", (event) => {
+      const target = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-tab]");
+      if (!target) return;
+      const selected = target.dataset.tab as "event" | "hero" | "focus" | "menu";
+      mobileTab = selected;
+      app.dataset.active = selected;
+      for (const child of tabs.children) child.setAttribute("aria-selected", String(child === target));
+      render();
+    });
+    for (const id of ["event", "hero", "focus", "menu"] as const) {
+      const tab = button(s.tabs[id], () => {});
+      tab.dataset.tab = id;
+      tab.id = `tab-${id}`;
+      tab.setAttribute("role", "tab");
+      tab.setAttribute("aria-selected", String(mobileTab === id));
+      tab.setAttribute("aria-controls", `panel-${id}`);
+      tabs.append(tab);
+    }
+    app.append(tabs);
+
+    const topbar = el("section", "game-topbar");
+    topbar.dataset.tab = "menu";
+    topbar.id = "panel-menu";
+    topbar.setAttribute("role", "tabpanel");
+    topbar.append(renderTimeControls());
+    const nav = el("div", "game-nav");
+    nav.append(button(s.peopleButton(state.people.filter((p) => p.alive && p.status === "active").length), openPeople));
+    nav.append(button(`${s.financeButton} · ${s.money(state.finance.cash)}`, openFinance));
+    nav.append(button(s.lifestyleButton, openLifestyle));
+    nav.append(button(s.politicsButton, openPolitics));
+    nav.append(button(s.lineageButton(state.lineage.generation), openLineage));
+    nav.append(button(s.momentsButton(state.favoriteMomentIndexes.length, MAX_FAVORITE_MOMENTS), openMemorial));
+    topbar.append(nav);
+    app.append(topbar);
+
+    const hero = el("section", "game-hero");
+    hero.dataset.tab = "hero";
+    hero.id = "panel-hero";
+    hero.setAttribute("role", "tabpanel");
+    hero.append(scene.element);
+    hero.append(el("h1", undefined, state.birth.name));
+    hero.append(el("p", "meta", `${country} · ${s.ageYear(state.age, year)}`));
+    if (state.war.displacedUntil !== null) hero.append(el("p", "displaced", s.displacedStatus(state.war.displacedUntil)));
+    hero.append(renderScales());
+    app.append(hero);
+
+    const eventPanel = el("section", "game-event");
+    eventPanel.dataset.tab = "event";
+    eventPanel.id = "panel-event";
+    eventPanel.setAttribute("role", "tabpanel");
     if (legacyNotice) {
-      app.append(el("p", "notice", s.legacyReset));
+      eventPanel.append(el("p", "notice", s.legacyReset));
       legacyNotice = false;
     }
     if (state.peopleNews.length > 0) {
       const news = el("section", "people-news");
       news.append(el("h2", undefined, s.newsTitle));
-      for (const item of state.peopleNews) news.append(el("p", undefined, item.text));
-      app.append(news);
+      for (const item of state.peopleNews) news.append(el("p", undefined, t(item.text)));
+      eventPanel.append(news);
     }
     if (state.lastOutcome !== null) {
-      app.append(el("p", "outcome", state.lastOutcome));
-      const label = state.lastOutcomeKind === "life" && pickConflictEvent(state, conflict)
-        ? s.nextConflictScene
-        : state.lastOutcomeKind === "life" && pickFamilyEvent(state, FAMILY_EVENTS)
-          ? s.nextFamilyScene
-          : s.nextYear;
-      app.append(button(label, continueAfterOutcome));
-    } else if (state.war.pendingEventId) {
+      const outcome = el("section", "outcome outcome-inline");
+      outcome.append(el("h2", undefined, s.outcomeTitle), el("p", undefined, t(state.lastOutcome)));
+      const changes = arrows(state.lastArrows ?? undefined, state.lastOutcomeKind !== "life");
+      if (changes) outcome.append(el("span", "arrows", changes));
+      eventPanel.append(outcome);
+    }
+    if (state.war.pendingEventId) {
       const event = CONFLICT_EVENTS.find((e) => e.id === state.war.pendingEventId);
-      if (event) renderEvent(event);
+      if (event) eventPanel.append(renderEvent(event));
     } else if (state.pendingFamilyEventId) {
       const event = FAMILY_EVENTS.find((e) => e.id === state.pendingFamilyEventId);
-      if (event) renderEvent(event);
-    } else {
+      if (event) eventPanel.append(renderEvent(event));
+    } else if (state.pendingEventIds.length > 0) {
       for (const id of state.pendingEventIds) {
         const event = EVENTS.find((e) => e.id === id);
-        if (event) renderEvent(event);
+        if (event) eventPanel.append(renderEvent(event));
       }
+    } else {
+      eventPanel.append(renderDashboard());
     }
-    app.append(el("p", "seed", `${s.seedLabel} ${location.href}`));
+    eventPanel.append(el("p", "seed", `${s.seedLabel} ${location.href}`));
+    app.append(eventPanel);
+
+    const side = el("aside", "game-side");
+    side.dataset.tab = "focus";
+    side.id = "panel-focus";
+    side.setAttribute("role", "tabpanel");
+    side.append(renderFocus(), renderHobbies());
+    app.append(side);
   }
 
-  async function startLife(seed: string): Promise<void> {
+  async function startLife(seed: string, softenHeavy = false): Promise<void> {
     const saved = loadLife((birth, age) => {
       const table = income.gdp[birth.country.iso3] ?? income.gdp._world;
       return table[Math.min(birth.year + age, 2022) - 1950];
@@ -725,6 +934,7 @@ async function main(): Promise<void> {
     lifestyleOpen = false;
     memorialOpen = false;
     politicsOpen = false;
+    lineageOpen = false;
     selectedPersonId = null;
     manualPaused = false;
     elapsed = 0;
@@ -740,15 +950,49 @@ async function main(): Promise<void> {
       const gdp = gdpTable[Math.min(birth.year, 2022) - 1950];
       [mort, family, conflict, politics] = await Promise.all([mortOf(birth.country.iso3), familyOf(birth.country.iso3), conflictOf(birth.country.iso3), politicsOf(birth.country.iso3)]);
       state = createLifeState(seed, birth, gdp, family, names, worldFamily, politics);
+      state.softenHeavy = softenHeavy;
     }
+    scheduleFollowUpAfterChoice();
     setSeed(seed);
     window.scrollTo(0, 0);
     render();
   }
 
+  function renderWelcome(seed: string): void {
+    scenePrepareVersion++;
+    manualPaused = true;
+    peopleOpen = false;
+    financeOpen = false;
+    lifestyleOpen = false;
+    memorialOpen = false;
+    politicsOpen = false;
+    lineageOpen = false;
+    app.replaceChildren();
+    app.append(el("h1", undefined, s.welcomeTitle));
+    app.append(el("p", undefined, s.welcomeText));
+    const label = el("label", "soften-start");
+    const checkbox = el("input");
+    checkbox.type = "checkbox";
+    checkbox.id = "soften-start";
+    label.append(checkbox, document.createTextNode(` ${s.softenLabel}`));
+    app.append(label);
+    app.append(el("h2", undefined, s.helpTitle));
+    app.append(el("p", "people-source", s.helpText));
+    const link = el("a", undefined, s.helpLink);
+    link.href = "https://findahelpline.com/";
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    app.append(link);
+    app.append(el("div", undefined, ""));
+    app.append(button(s.language, switchLanguage));
+    app.append(button(s.startLife, () => {
+      clearLife();
+      void startLife(seed, checkbox.checked);
+    }));
+  }
+
   function newLife(): void {
-    clearLife();
-    void startLife(randomSeed());
+    renderWelcome(randomSeed());
   }
 
   const seedParam = new URL(location.href).searchParams.get("seed");
@@ -763,9 +1007,12 @@ async function main(): Promise<void> {
     app.append(el("h1", undefined, s.title));
     app.append(button(saved.alive ? s.continueLife : s.memorialContinue, () => void startLife(saved.seed)));
     app.append(button(s.newLife, newLife));
+  } else if (seedParam && saved && saved.seed === seedParam) {
+    await startLife(seedParam);
   } else {
-    await startLife(seedParam ?? randomSeed());
+    renderWelcome(seedParam ?? randomSeed());
   }
+  setupOffline();
 }
 
 void main();

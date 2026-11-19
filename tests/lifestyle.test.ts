@@ -25,7 +25,7 @@ describe("образ жизни и имущество", () => {
     expect(buyProperty(s, "computer")).toBe(true);
     expect(buyProperty(s, "computer")).toBe(false);
     advanceYear(s, mort, family, names);
-    expect(s.scales.education).toBe(education + 0.5);
+    expect(s.scales.education).toBe(education + 1);
     expect(s.property.acquired.computer).toBe(s.birth.year + 18);
   });
 

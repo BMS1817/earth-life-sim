@@ -1,3 +1,5 @@
+import { getLanguage } from "../i18n.ts";
+import { en } from "./strings-en.ts";
 import type { Person, PersonStatus, Trait } from "../core/people.ts";
 import type { ConflictSource, WarRiskLevel } from "../core/conflicts.ts";
 import type { CareerId, EmploymentStatus, HousingStatus, YearBreakdownKind } from "../core/finance.ts";
@@ -12,9 +14,7 @@ export const ru = {
   newLife: "Новая жизнь",
   anotherLife: "Ещё одна жизнь",
   continueLife: "Продолжить",
-  nextYear: "Продолжить",
-  nextFamilyScene: "К семейной сцене",
-  nextConflictScene: "К сцене конфликта",
+  outcomeTitle: "Итог решения",
   conflictSceneLabel: "Конфликт",
   warRisk: { low: "Риск: низкий", noticeable: "Риск: заметный", high: "Риск: высокий" } as Record<WarRiskLevel, string>,
   warSource: {
@@ -81,14 +81,11 @@ export const ru = {
   autoCountdown: (seconds: number) => `Автовыбор через ${seconds} сек. Нажмите вариант сами, чтобы перехватить.`,
   focusTitle: "Фокус этого года",
   focuses: {
-    balance: { label: "Баланс", detail: "Понемногу всего" },
-    study: { label: "Учёба", detail: "Образование↑ Счастье↓" },
-    relationships: { label: "Близкие", detail: "Отношения↑ Счастье↑ Образование немного↓" },
-    health: { label: "Здоровье", detail: "Здоровье↑ Деньги немного↓" },
-    hobby: { label: "Увлечение", detail: "Счастье↑ Мастерство↑" },
-    work: { label: "Упор на работу", detail: "Карьера↑ Здоровье и отношения↓" },
-    growth: { label: "Саморазвитие", detail: "Образование и карьера↑ Счастье немного↓" },
-    rest: { label: "Отдых", detail: "Здоровье и счастье↑ Деньги↓" },
+    balance: { label: "Баланс", detail: "Все характеристики немного↑" },
+    money: { label: "Деньги", detail: "Деньги сильно↑ Образование, близкие и счастье немного↓" },
+    education: { label: "Образование", detail: "Образование сильно↑ Деньги, здоровье и счастье немного↓" },
+    bonds: { label: "Близкие", detail: "Близкие и здоровье сильно↑ Деньги немного↓ Счастье немного↑" },
+    happiness: { label: "Счастье", detail: "Счастье сильно↑ Здоровье немного↑ Деньги и образование немного↓" },
   } as Record<FocusId, { label: string; detail: string }>,
   hobbiesTitle: "Увлечения",
   hobbies: {
@@ -200,6 +197,8 @@ export const ru = {
     if (p.role === "sibling") return p.sex === "F" ? "сестра" : "брат";
     if (p.role === "child") return p.sex === "F" ? "дочь" : "сын";
     if (p.role === "partner") return spouse ? (p.sex === "F" ? "жена" : "муж") : (p.sex === "F" ? "партнёрша" : "партнёр");
+    if (p.role === "grandparent") return p.sex === "F" ? "бабушка" : "дедушка";
+    if (p.role === "relative") return p.sex === "F" ? "тётя" : "дядя";
     return p.sex === "F" ? "подруга" : "друг";
   },
   personStatus: (status: PersonStatus) => status === "estranged" ? "отчуждение" : status === "ended" ? "отношения завершены" : "активная связь",
@@ -285,23 +284,17 @@ export const ru = {
   giftedHobbyText: (hobby: string) => `В этом подаренном дне увлечение «${hobby}» доведено до мастерства. Получается то, к чему так долго шли.`,
   giftedFocusTitle: {
     balance: "День, в котором всего хватило",
-    study: "День долгожданного открытия",
-    relationships: "День за общим столом",
-    health: "День лёгкой дороги",
-    hobby: "День любимого дела",
-    work: "День завершённого труда",
-    growth: "День новой вершины",
-    rest: "День без спешки",
+    money: "День завершённого труда",
+    education: "День долгожданного открытия",
+    bonds: "День за общим столом",
+    happiness: "День без спешки",
   } as Record<FocusId, string>,
   giftedFocusText: {
     balance: "Работа, близкие, отдых и любопытство наконец уместились в одном спокойном дне.",
-    study: "В этот день найден ответ на вопрос, который когда-то казался слишком сложным.",
-    relationships: "В этот день собрались все дорогие люди — без опозданий, ссор и спешки.",
-    health: "В этот день тело легко несёт по длинной красивой дороге до самого заката.",
-    hobby: "В этот день всё время принадлежит любимому делу, и оно наконец получается.",
-    work: "В этот день завершается дело всей жизни, и результат можно увидеть и потрогать.",
-    growth: "В этот день пройдена ещё одна вершина, а впереди остаётся широкий мир.",
-    rest: "В этот день нет будильника и обязательств — только тишина, природа и спокойный вечер.",
+    money: "В этот день завершается дело всей жизни, и результат можно увидеть и потрогать.",
+    education: "В этот день найден ответ на вопрос, который когда-то казался слишком сложным.",
+    bonds: "В этот день собрались все дорогие люди — без опозданий, ссор и спешки.",
+    happiness: "В этот день нет будильника и обязательств — только тишина, природа и спокойный вечер.",
   } as Record<FocusId, string>,
   memorialFavorites: "Летопись и избранные моменты",
   memorialFavoriteCount: (count: number, max: number) => `Избрано ${count} из ${max}`,
@@ -389,4 +382,65 @@ export const ru = {
   politicsUsurpationMethod: "Узурпация",
   politicsUsurpationField: "Ослабление ограничений власти",
   politicsBooleanValue: (value: boolean) => value ? "восстановить" : "ослабить",
+  lineageButton: (generation: number) => `Род · ${generation}`,
+  lineageTitle: "Род и поколения",
+  lineageCurrent: "Текущий герой",
+  lineageGeneration: (generation: number) => `Поколение ${generation}`,
+  lineageAncestor: "Предок",
+  lineageYears: (birth: number, death: number) => `${birth}–${death}`,
+  lineageMoments: "Избранные моменты",
+  lineageNoMoments: "Этот предок не отмечал моменты для родовой летописи.",
+  lineageInheritanceTitle: "Продолжить род",
+  lineageInheritanceHint: "Выберите одного живого ребёнка. Игра продолжится в том же году и в его текущем возрасте; прошлая жизнь останется в мемориале.",
+  lineageChooseHeir: (name: string) => `Продолжить за ${name}`,
+  lineageHeirMeta: (age: number, birthYear: number) => `${age} лет · год рождения ${birthYear}`,
+  lineageReportTitle: "Последнее наследие",
+  lineageChildren: (count: number) => `Живых детей при разделе: ${count}`,
+  lineageCash: "Доля наличных",
+  lineageBonds: "Доля облигаций",
+  lineageRisky: "Доля рискованного портфеля",
+  lineageInsurance: "Страховая выплата",
+  lineageRentals: (count: number) => `Арендных объектов наследнику: ${count}`,
+  lineageBusiness: (present: boolean) => present ? "Семейный бизнес сохранён" : "Активного бизнеса не было",
+  lineageEducation: (value: number) => `Образование от родителя: ${value}`,
+  lineageTrait: "Унаследованная черта",
+  lineageNoInheritance: "Это первая жизнь рода. После смерти героя появится отчёт о наследии.",
+  lineageCountry: "Страна",
+  lineageNoInheritanceButton: "Наследников нет",
+  language: "English",
+  welcomeTitle: "Прежде чем начать",
+  welcomeText: "Earth — игра о жизни, смерти, войне и семейном наследии. Возрастная маркировка: 15+.",
+  softenState: (enabled: boolean) => enabled ? "вкл." : "выкл.",
+  startLife: "Начать новую жизнь",
+  helpTitle: "Если темы становятся тяжёлыми",
+  helpText: "Сделайте паузу и поговорите с близким человеком или специалистом. Игра не заменяет медицинскую помощь. Здесь можно найти бесплатную конфиденциальную линию поддержки по стране:",
+  helpLink: "Find A Helpline — каталог линий помощи",
+  sceneAlt: "Пиксельная сцена жизни героя, дома и окружающей природы",
+  offlinePreparing: (loaded: number, total: number) => `Оффлайн-кэш: ${loaded} из ${total} файлов`,
+  offlineReady: "Оффлайн-режим готов. Игра работает без сети.",
+  offlineWaiting: "Оффлайн-кэш устанавливается в фоне…",
+  offlineError: "Оффлайн-кэш пока недоступен. Проверьте установку service worker.",
+  installApp: "Установить игру",
+  tabs: { event: "Событие", hero: "Герой", focus: "Фокус", menu: "Меню" } as const,
+  quietYear: "Тихий год. Можно продолжить время или перейти к следующему решению.",
+  dashboardWork: "Текущее занятие",
+  dashboardPlan: "Крупный план",
+  dashboardBalance: "Финансовый год",
+  dashboardLastMoment: "Последний момент",
+  dashboardNoMoment: "Первый момент появится после события.",
+  dashboardProgress: "Прогресс года",
+  hobbyEffects: {
+    games: "Счастье и мастерство",
+    sports: "Здоровье и мастерство",
+    reading: "Образование и мастерство",
+    music: "Счастье и мастерство",
+    crafts: "Образование и мастерство",
+    nature: "Здоровье и мастерство",
+  } as Record<HobbyId, string>,
 } as const;
+
+export const s = new Proxy({} as typeof ru, {
+  get: (_, property: keyof typeof ru) => getLanguage() === "en" ? en[property] : ru[property],
+});
+
+export { translateContent as t } from "../content/en/catalog.ts";

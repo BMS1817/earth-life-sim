@@ -3,29 +3,23 @@ import type { CareerId } from "../core/finance.ts";
 
 export const MAX_FAVORITE_MOMENTS = 32;
 export const BIOGRAPHY_LIMIT = 12;
-export const ALBUM_LIMIT = 6;
+export const ALBUM_LIMIT = 32;
 export const FINAL_SCENE_LIMIT = 3;
 
 export const FOCUS_HUES: Record<FocusId, number> = {
   balance: 42,
-  study: 215,
-  relationships: 330,
-  health: 135,
-  hobby: 285,
-  work: 22,
-  growth: 185,
-  rest: 96,
+  money: 22,
+  education: 215,
+  bonds: 330,
+  happiness: 96,
 };
 
 export const DREAM_CAREERS: Record<FocusId, CareerId> = {
   balance: "services",
-  study: "medicine",
-  relationships: "education",
-  health: "medicine",
-  hobby: "services",
-  work: "engineering",
-  growth: "engineering",
-  rest: "agriculture",
+  money: "engineering",
+  education: "medicine",
+  bonds: "education",
+  happiness: "agriculture",
 };
 
 export const MEMORIAL_PALETTE = {

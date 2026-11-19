@@ -31,7 +31,7 @@ export function crisisEvents(): LifeEvent[] {
         sector: "tradition",
         label: "Остаться и строить жизнь здесь",
         outcome: "Ты остался. Непростые годы, но это твой дом.",
-        effects: { bonds: 4, money: -6 },
+        effects: { health: 4, money: -2 },
       },
       {
         sector: "change",
@@ -40,22 +40,22 @@ export function crisisEvents(): LifeEvent[] {
         risk: {
           chance: 0.6,
           successText: "Эмиграция удалась: новая страна, новые возможности.",
-          successEffects: { money: 6, bonds: -4 },
+          successEffects: { education: 4, bonds: -2 },
           failText: "Эмиграция далась тяжело: потери и тоска.",
-          failEffects: { money: -8, bonds: -6 },
+          failEffects: { education: -6, bonds: -3 },
         },
       },
       {
         sector: "bonds",
         label: "Держаться вместе с близкими",
         outcome: "Семья пережила перемены вместе. Это главное. Сил и денег ушло много.",
-        effects: { bonds: 6, money: -4 },
+        effects: { bonds: 4, health: -2 },
       },
       {
         sector: "self",
         label: "Пережить в одиночку",
         outcome: "Ты закрылся и справился сам. Близкие остались за дверью.",
-        effects: { education: 3, bonds: -5 },
+        effects: { money: 3, education: -2 },
       },
     ],
   }));

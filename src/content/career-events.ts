@@ -15,9 +15,9 @@ export function careerEvent(seed: string, education: number): LifeEvent {
     text: "Школа позади. Выбери профессиональное направление.",
     choices: [
       tradition === "education"
-        ? { sector: "tradition", label: "Образование и преподавание", outcome: "Ты выбрал работу с людьми и знаниями. Доход скромнее, зато путь понятен.", effects: { money: 5, education: -2 }, career: "education" }
-        : { sector: "tradition", label: "Промышленность и ремесло", outcome: "Ты устроился рядом с домом — спокойно и понятно. Роста меньше.", effects: { money: 5, education: -2 }, career: "industry" },
-      { sector: "change", label: "Инженерия и техническая работа", outcome: "Переезд, учёба и новые люди. Дорого и вдали от своих.", effects: { education: 12, money: -8, bonds: -4 }, career: "engineering" },
+        ? { sector: "tradition", label: "Образование и преподавание", outcome: "Ты выбрал работу с людьми и знаниями. Доход скромнее, зато путь понятен.", effects: { health: 3, money: -2 }, career: "education" }
+        : { sector: "tradition", label: "Промышленность и ремесло", outcome: "Ты устроился рядом с домом — спокойно и понятно. Роста меньше.", effects: { health: 3, money: -2 }, career: "industry" },
+      { sector: "change", label: "Инженерия и техническая работа", outcome: "Переезд, учёба и новые люди. Дорого и вдали от своих.", effects: { education: 9, bonds: -5 }, career: "engineering" },
       {
         sector: "self",
         label: "Услуги и своё дело",
@@ -26,14 +26,14 @@ export function careerEvent(seed: string, education: number): LifeEvent {
         risk: {
           chance: 0.6,
           successText: "Своё дело пошло. Но ты всё делаешь сам, поддержки меньше.",
-          successEffects: { money: 10, bonds: -3 },
+          successEffects: { money: 6, education: -3 },
           failText: "Своё дело не пошло, пришлось подрабатывать где придётся.",
-          failEffects: { money: -6, education: -1 },
+          failEffects: { money: -3, education: -2 },
         },
       },
       bonds === "medicine"
-        ? { sector: "bonds", label: "Медицина и забота", outcome: "Ты выбрал долгий путь учёбы и помощи людям. Свободного времени меньше.", effects: { bonds: 6, education: -3 }, career: "medicine" }
-        : { sector: "bonds", label: "Сельское хозяйство", outcome: "Ты выбрал землю и физический труд. Погода и доход не всегда предсказуемы.", effects: { bonds: 5, health: -2 }, career: "agriculture" },
+        ? { sector: "bonds", label: "Медицина и забота", outcome: "Ты выбрал долгий путь учёбы и помощи людям. Свободного времени меньше.", effects: { bonds: 4, health: -2 }, career: "medicine" }
+        : { sector: "bonds", label: "Сельское хозяйство", outcome: "Ты выбрал землю и физический труд. Погода и доход не всегда предсказуемы.", effects: { bonds: 3, health: -2 }, career: "agriculture" },
     ],
   };
 }

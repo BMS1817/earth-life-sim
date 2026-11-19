@@ -1,8 +1,10 @@
 import { MAX_FAVORITE_MOMENTS } from "../content/memorial.ts";
 import { buildAlbum, finalSceneMoments, giftedDay, lifePattern, mainTurns, roomItems } from "../core/memorial.ts";
+import { eligibleHeirs } from "../core/inheritance.ts";
 import { compassPosition } from "../core/state.ts";
 import type { LifeState, Scales } from "../core/state.ts";
-import { ru as s } from "./strings.ts";
+import { s, t } from "./strings.ts";
+import { thematicHeader } from "./thematic-header.ts";
 import type { Scene } from "./scene.ts";
 import { drawGiftedDay, drawHappinessChart, drawMemorialRoom } from "./memorial-art.ts";
 
@@ -12,6 +14,8 @@ interface MemorialViewOptions {
   onBack: (() => void) | null;
   onPeople: () => void;
   onFinance: () => void;
+  onLineage: () => void;
+  onInherit: (heirId: string) => void;
   onNewLife: (() => void) | null;
 }
 
@@ -78,14 +82,27 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
   const root = el("div", `memorial-view${state.alive ? "" : " ended"}`);
   if (options.onBack) root.append(button(s.back, options.onBack));
   const year = state.deathYear ?? state.birth.year + state.age;
-  root.append(el("h1", undefined, state.alive ? s.journalTitle : s.gameOver));
+  root.append(el("h1", undefined, state.alive ? s.journalTitle : s.gameOver), thematicHeader(state.alive ? "journal" : "memories"));
   if (state.alive) root.append(el("p", "meta", `${state.birth.name} · ${options.countryName}`));
   else root.append(el("p", undefined, s.diedAt(state.birth.name, state.age, year)), el("p", "meta", options.countryName));
   root.append(el("p", "people-source", s.memorialLocal));
   if (!state.alive) {
     const actions = el("div", "memorial-actions");
-    actions.append(button(s.peopleButton(state.people.length), options.onPeople), button(s.financeButton, options.onFinance));
+    actions.append(button(s.peopleButton(state.people.length), options.onPeople), button(s.financeButton, options.onFinance), button(s.lineageButton(state.lineage.generation), options.onLineage));
     root.append(actions);
+    const heirs = eligibleHeirs(state);
+    if (heirs.length > 0) {
+      const inheritance = section(s.lineageInheritanceTitle, "inheritance-offers");
+      inheritance.append(el("p", "muted", s.lineageInheritanceHint));
+      const list = el("div", "inheritance-heirs");
+      for (const heir of heirs) {
+        const item = button(`${s.lineageChooseHeir(heir.name)} · ${s.lineageHeirMeta(year - heir.birthYear, heir.birthYear)}`, () => options.onInherit(heir.id));
+        item.className = "inheritance-heir";
+        list.append(item);
+      }
+      inheritance.append(list);
+      root.append(inheritance);
+    }
   }
 
   const pattern = lifePattern(state);
@@ -115,7 +132,7 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
     const list = el("ol", "biography-turns");
     for (const moment of turns) {
       const item = el("li");
-      item.append(el("span", "memory-meta", momentMeta(moment.age, moment.year)), el("span", undefined, moment.text));
+      item.append(el("span", "memory-meta", momentMeta(moment.age, moment.year)), el("span", undefined, t(moment.text)));
       list.append(item);
     }
     biography.append(list);
@@ -141,7 +158,7 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
   const roomCanvas = document.createElement("canvas");
   roomCanvas.setAttribute("role", "img");
   roomCanvas.setAttribute("aria-label", items.length > 0 ? items.map((item) => s.roomItemNames[item]).join(", ") : s.memorialRoomEmpty);
-  drawMemorialRoom(roomCanvas, state, scene.heroPortrait(state, state.age, "happy"), items, pattern.color);
+  drawMemorialRoom(roomCanvas, state, scene.heroPortrait(state, state.age, "happy"), items);
   room.append(roomCanvas);
   if (items.length > 0) {
     const list = el("div", "room-item-list");
@@ -156,10 +173,10 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
     const grid = el("div", "photo-album");
     for (const moment of photos) {
       const figure = el("figure", "memory-photo");
-      const portrait = scene.heroPortrait(state, moment.age, "happy");
+      const portrait = scene.memoryScene(state, moment.age, moment.source, state.finance.career);
       portrait.setAttribute("role", "img");
       portrait.setAttribute("aria-label", s.memorialPhotoAlt(state.birth.name, moment.age));
-      figure.append(portrait, el("figcaption", undefined, momentMeta(moment.age, moment.year)), el("p", undefined, moment.text));
+      figure.append(portrait, el("figcaption", undefined, momentMeta(moment.age, moment.year)), el("p", undefined, t(moment.text)));
       grid.append(figure);
     }
     album.append(grid);
@@ -172,13 +189,14 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
     const finalMoments = finalSceneMoments(state);
     finalScene.append(el("p", "muted", state.favoriteMomentIndexes.length > 0 ? s.memorialFinalFromFavorites : s.memorialFinalAuto));
     if (finalMoments.length > 0) {
-      const portrait = scene.heroPortrait(state, state.age, "happy");
+      const moment = finalMoments.at(-1)!;
+      const portrait = scene.memoryScene(state, moment.age, moment.source, state.finance.career);
       portrait.classList.add("final-portrait");
       finalScene.append(portrait);
       const list = el("ol", "final-moments");
       for (const moment of finalMoments) {
         const item = el("li");
-        item.append(el("span", "memory-meta", momentMeta(moment.age, moment.year)), el("span", undefined, moment.text));
+        item.append(el("span", "memory-meta", momentMeta(moment.age, moment.year)), el("span", undefined, t(moment.text)));
         list.append(item);
       }
       finalScene.append(list);
@@ -202,7 +220,7 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
     const giftCanvas = document.createElement("canvas");
     giftCanvas.setAttribute("role", "img");
     giftCanvas.setAttribute("aria-label", giftTitle);
-    drawGiftedDay(giftCanvas, state, scene.heroPortrait(state, gift.age, "happy", gift.career), gift, pattern.color);
+    drawGiftedDay(giftCanvas, state, scene.heroPortrait(state, gift.age, "happy", gift.career), gift);
     details.append(giftCanvas);
     finalScene.append(details);
     root.append(finalScene);
@@ -217,7 +235,7 @@ export function memorialView(state: LifeState, scene: Scene, options: MemorialVi
       const selected = state.favoriteMomentIndexes.includes(index);
       const item = el("li", selected ? "favorite" : undefined);
       const text = el("div", "chronicle-entry");
-      text.append(el("span", "memory-meta", momentMeta(entry.age, entry.year)), el("span", undefined, entry.text));
+      text.append(el("span", "memory-meta", momentMeta(entry.age, entry.year)), el("span", undefined, t(entry.text)));
       const toggle = button(selected ? s.memorialFavoriteRemove : s.memorialFavoriteAdd, () => options.onToggle(index));
       toggle.className = `favorite-button${selected ? " active" : ""}`;
       toggle.setAttribute("aria-pressed", String(selected));

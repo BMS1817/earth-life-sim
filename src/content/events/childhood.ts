@@ -9,10 +9,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 2,
     text: "Этой зимой ты болеешь чаще обычного.",
     choices: [
-      { sector: "tradition", label: "Домашний уход и спокойный режим", outcome: "Тёплый дом и режим делают своё дело — ты окреп. Но лекарства стоят денег.", effects: { health: 5, money: -2 } },
-      { sector: "change", label: "Новый врач и обследование", outcome: "Обследование нашло причину, лечение помогло. Счёт заметный.", effects: { money: -3, health: 8 } },
-      { sector: "bonds", label: "Больше времени с мамой", outcome: "Мама почти не выходит из дома. Тебе лучше, ей тяжело.", effects: { bonds: 4, health: -1 } },
-      { sector: "self", label: "Терпеть и играть как обычно", outcome: "Ты не останавливаешься. Зима тянется дольше, зато ты самостоятельный.", effects: { education: 2, health: -3 } },
+      { sector: "tradition", label: "Домашний уход и спокойный режим", outcome: "Тёплый дом и режим делают своё дело — ты окреп. Но лекарства стоят денег.", effects: { health: 3, money: -2 } },
+      { sector: "change", label: "Новый врач и обследование", outcome: "Обследование нашло причину, лечение помогло. Счёт заметный.", effects: { education: 5, bonds: -3 } },
+      { sector: "bonds", label: "Больше времени с мамой", outcome: "Мама почти не выходит из дома. Тебе лучше, ей тяжело.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Терпеть и играть как обычно", outcome: "Ты не останавливаешься. Зима тянется дольше, зато ты самостоятельный.", effects: { money: 3, education: -2 } },
     ],
   },
   {
@@ -22,10 +22,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 3,
     text: "Двор полон детей. Мама зовёт тебя играть с ними.",
     choices: [
-      { sector: "bonds", label: "Играть с другими детьми", outcome: "Ты влезаешь в игры двора и находишь первых друзей. На свои занятия времени меньше.", effects: { bonds: 5, education: -1 } },
-      { sector: "self", label: "Остаться со своими игрушками", outcome: "Ты строишь свои миры в одиночку — интересно, но без компании.", effects: { education: 3, bonds: -2 } },
-      { sector: "tradition", label: "Делать, как велит мама", outcome: "Ты послушный, мама спокойна. Своих идей меньше.", effects: { bonds: 2, education: -1 } },
-      { sector: "change", label: "Затеять новую игру самому", outcome: "Твоя игра собрала весь двор. Синяков тоже прибавилось.", effects: { bonds: 3, health: -2 } },
+      { sector: "bonds", label: "Играть с другими детьми", outcome: "Ты влезаешь в игры двора и находишь первых друзей. На свои занятия времени меньше.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Остаться со своими игрушками", outcome: "Ты строишь свои миры в одиночку — интересно, но без компании.", effects: { money: 3, education: -2 } },
+      { sector: "tradition", label: "Делать, как велит мама", outcome: "Ты послушный, мама спокойна. Своих идей меньше.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Затеять новую игру самому", outcome: "Твоя игра собрала весь двор. Синяков тоже прибавилось.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -36,9 +36,9 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 4,
     text: "Ты учишься говорить. Все ждут первое слово.",
     choices: [
-      { sector: "bonds", label: "«Мама!»", outcome: "Мама плачет от счастья. Тебя обнимают весь вечер.", effects: { bonds: 4, education: -1 } },
-      { sector: "self", label: "Назвать любимую игрушку", outcome: "Первое слово — имя игрушки. Родители смеются, но ждали другого.", effects: { education: 2, bonds: -1 } },
-      { sector: "tradition", label: "Повторять за старшими", outcome: "Ты повторяешь слова за взрослыми. Быстро, но не своё.", effects: { bonds: 2, education: -1 } },
+      { sector: "bonds", label: "«Мама!»", outcome: "Мама плачет от счастья. Тебя обнимают весь вечер.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Назвать любимую игрушку", outcome: "Первое слово — имя игрушки. Родители смеются, но ждали другого.", effects: { money: 2, education: -1 } },
+      { sector: "tradition", label: "Повторять за старшими", outcome: "Ты повторяешь слова за взрослыми. Быстро, но не своё.", effects: { health: 2, money: -1 } },
       { sector: "change", label: "Придумать своё слово", outcome: "Ты выдал что-то своё. Никто не понял, зато оригинально.", effects: { education: 3, bonds: -2 } },
     ],
   },
@@ -50,10 +50,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 3,
     text: "Родители собираются отдать тебя в детский сад.",
     choices: [
-      { sector: "tradition", label: "Пойти в садик", outcome: "Друзья и занятия, но и вирусы с собой домой.", effects: { bonds: 4, health: -2 } },
-      { sector: "self", label: "Остаться дома с бабушкой", outcome: "Бабушкины сказки и пирожки. С коллективом познакомишься позже.", effects: { bonds: 3, education: -2 } },
-      { sector: "change", label: "Новый садик подальше от дома", outcome: "Сильная группа и новые занятия. Дорога отнимает время у семьи.", effects: { education: 4, bonds: -3 } },
-      { sector: "bonds", label: "Плакать и проситься домой", outcome: "Родители сдались — ты дома. Садик отложен.", effects: { bonds: 2, education: -1 } },
+      { sector: "tradition", label: "Пойти в садик", outcome: "Друзья и занятия, но и вирусы с собой домой.", effects: { health: 3, money: -2 } },
+      { sector: "self", label: "Остаться дома с бабушкой", outcome: "Бабушкины сказки и пирожки. С коллективом познакомишься позже.", effects: { money: 3, education: -2 } },
+      { sector: "change", label: "Новый садик подальше от дома", outcome: "Сильная группа и новые занятия. Дорога отнимает время у семьи.", effects: { education: 3, bonds: -2 } },
+      { sector: "bonds", label: "Плакать и проситься домой", outcome: "Родители сдались — ты дома. Садик отложен.", effects: { bonds: 2, health: -1 } },
     ],
   },
   {
@@ -63,10 +63,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 2,
     text: "Ты отказываешься от еды, кроме любимой.",
     choices: [
-      { sector: "tradition", label: "Слушаться родителей", outcome: "Каша и суп вернулись в твою жизнь. Не без слёз.", effects: { health: 4, bonds: -1 } },
-      { sector: "self", label: "Только любимое", outcome: "Победа за тобой, но питание так себе.", effects: { health: -2, bonds: 1 } },
-      { sector: "bonds", label: "Есть за компанию с другими", outcome: "За общим столом ешь лучше. Не всегда то, что любишь.", effects: { bonds: 3, health: -1 } },
-      { sector: "change", label: "Пробовать новое", outcome: "Новые вкусы открыты. Споров было много.", effects: { health: 3, bonds: -2 } },
+      { sector: "tradition", label: "Слушаться родителей", outcome: "Каша и суп вернулись в твою жизнь. Не без слёз.", effects: { health: 3, money: -2 } },
+      { sector: "self", label: "Только любимое", outcome: "Победа за тобой, но питание так себе.", effects: { money: 2, education: -1 } },
+      { sector: "bonds", label: "Есть за компанию с другими", outcome: "За общим столом ешь лучше. Не всегда то, что любишь.", effects: { bonds: 2, health: -1 } },
+      { sector: "change", label: "Пробовать новое", outcome: "Новые вкусы открыты. Споров было много.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -76,10 +76,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 3,
     text: "Вечер. Что перед сном?",
     choices: [
-      { sector: "bonds", label: "Сказка с родителями", outcome: "Голос мамы, страницы с картинками. Ложишься позже обычного.", effects: { bonds: 4, health: -1 } },
-      { sector: "self", label: "Мультики", outcome: "Ещё одна серия — и сон. Глаза устают.", effects: { education: 1, health: -2 } },
-      { sector: "tradition", label: "Сразу спать", outcome: "Режим — прежде всего. Сказок меньше.", effects: { health: 3, education: -1 } },
-      { sector: "change", label: "Читать самому", outcome: "Ты разбираешь слова сам. Родители немного обделены вниманием.", effects: { education: 4, bonds: -2 } },
+      { sector: "bonds", label: "Сказка с родителями", outcome: "Голос мамы, страницы с картинками. Ложишься позже обычного.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Мультики", outcome: "Ещё одна серия — и сон. Глаза устают.", effects: { money: 2, education: -1 } },
+      { sector: "tradition", label: "Сразу спать", outcome: "Режим — прежде всего. Сказок меньше.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Читать самому", outcome: "Ты разбираешь слова сам. Родители немного обделены вниманием.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -90,10 +90,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 2,
     text: "Ты упал с качелей. Коленка в кровь.",
     choices: [
-      { sector: "self", label: "Встать и дальше играть", outcome: "Ты отряхнулся и полез снова. Стойкость без чьей-либо поддержки.", effects: { health: 2, bonds: -1 } },
-      { sector: "bonds", label: "Заплакать и бежать к маме", outcome: "Мама подула на коленку и обняла. Уже не больно.", effects: { bonds: 3, education: -1 } },
-      { sector: "tradition", label: "Больше не лезть на качели", outcome: "Осторожность прежде всего. Качели остались в прошлом.", effects: { health: 1, bonds: -2 } },
-      { sector: "change", label: "Полезть ещё выше", outcome: "Ты решил доказать себе. Синяков прибавилось.", effects: { education: 2, health: -4 } },
+      { sector: "self", label: "Встать и дальше играть", outcome: "Ты отряхнулся и полез снова. Стойкость без чьей-либо поддержки.", effects: { money: 2, education: -1 } },
+      { sector: "bonds", label: "Заплакать и бежать к маме", outcome: "Мама подула на коленку и обняла. Уже не больно.", effects: { bonds: 2, health: -1 } },
+      { sector: "tradition", label: "Больше не лезть на качели", outcome: "Осторожность прежде всего. Качели остались в прошлом.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Полезть ещё выше", outcome: "Ты решил доказать себе. Синяков прибавилось.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -104,10 +104,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 3,
     text: "Ты задаёшь сто вопросов в день: почему небо? зачем спать?",
     choices: [
-      { sector: "self", label: "Спрашивать обо всём", outcome: "Ответы рождают новые вопросы. Родители устают отвечать.", effects: { education: 5, bonds: -2 } },
-      { sector: "tradition", label: "Принимать как есть", outcome: "«Так устроен мир» — тебя это устраивает. Любопытства меньше.", effects: { bonds: 2, education: -1 } },
-      { sector: "bonds", label: "Разбираться вместе с родителями", outcome: "Вы ищите ответы вместе. Книги и энциклопедии стоят денег.", effects: { bonds: 4, money: -1 } },
-      { sector: "change", label: "Искать ответы самому", outcome: "Ты копаешь сам. Близкие слышат только итог.", effects: { education: 4, bonds: -2 } },
+      { sector: "self", label: "Спрашивать обо всём", outcome: "Ответы рождают новые вопросы. Родители устают отвечать.", effects: { money: 3, education: -2 } },
+      { sector: "tradition", label: "Принимать как есть", outcome: "«Так устроен мир» — тебя это устраивает. Любопытства меньше.", effects: { health: 2, money: -1 } },
+      { sector: "bonds", label: "Разбираться вместе с родителями", outcome: "Вы ищите ответы вместе. Книги и энциклопедии стоят денег.", effects: { bonds: 3, health: -2 } },
+      { sector: "change", label: "Искать ответы самому", outcome: "Ты копаешь сам. Близкие слышат только итог.", effects: { education: 3, bonds: -2 } },
     ],
   },
   {
@@ -117,10 +117,10 @@ export const CHILDHOOD: LifeEvent[] = [
     weight: 2,
     text: "Другой ребёнок хочет твою игрушку. Прямо сейчас.",
     choices: [
-      { sector: "bonds", label: "Поделиться", outcome: "Вы играете вместе. Игрушка теперь общая.", effects: { bonds: 4, money: -1 } },
-      { sector: "self", label: "Не отдавать", outcome: "Игрушка осталась твоей. Играешь один.", effects: { money: 1, bonds: -2 } },
-      { sector: "tradition", label: "Как скажет мама", outcome: "Ты сделал по маминому слову. Свой выбор не потренировал.", effects: { bonds: 2, education: -1 } },
-      { sector: "change", label: "Предложить меняться", outcome: "Ты выменял другую игрушку. Своей больше нет.", effects: { education: 2, money: -1 } },
+      { sector: "bonds", label: "Поделиться", outcome: "Вы играете вместе. Игрушка теперь общая.", effects: { bonds: 3, health: -2 } },
+      { sector: "self", label: "Не отдавать", outcome: "Игрушка осталась твоей. Играешь один.", effects: { money: 2, education: -1 } },
+      { sector: "tradition", label: "Как скажет мама", outcome: "Ты сделал по маминому слову. Свой выбор не потренировал.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Предложить меняться", outcome: "Ты выменял другую игрушку. Своей больше нет.", effects: { education: 2, bonds: -1 } },
     ],
   },
 ];

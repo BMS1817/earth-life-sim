@@ -1,22 +1,38 @@
 {
   "name": "earth",
   "private": true,
-  "version": "0.0.1",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "preview": "vite preview",
-    "build": "tsc --noEmit && vite build",
-    "test": "vitest run",
+    "build": "node scripts/build-flags.mjs && node scripts/build-pwa.mjs && tsc --noEmit && vite build && node scripts/build-pwa.mjs --dist",
+    "test": "node scripts/build-flags.mjs && node scripts/build-pwa.mjs && vitest run",
     "data": "python -P scripts/build_data.py",
+    "art:kimi": "python -P scripts/build_kimi_art.py",
+    "fonts": "python -P scripts/build_font.py",
+    "flags": "node scripts/build-flags.mjs",
+    "perf:startup": "node scripts/perf-startup.mjs",
+    "perf:runtime": "node scripts/perf-runtime.mjs",
     "politics-data": "uv run --with pyreadr --with pandas python scripts/build_politics.py",
     "simulate": "node --experimental-strip-types scripts/simulate.ts",
-    "shots": "node --experimental-strip-types scripts/shots.ts"
+    "simulate-generations": "node --experimental-strip-types scripts/simulate-generations.ts",
+    "shots": "node --experimental-strip-types scripts/shots.ts",
+    "test:scene": "node scripts/verify-scene-loading.mjs",
+    "test:politics-flag": "node scripts/verify-politics-flag.mjs",
+    "audit:i18n": "node scripts/audit-i18n.mjs",
+    "test:i18n": "node scripts/verify-i18n.mjs",
+    "audit:art": "node scripts/audit-kimi-art.mjs",
+    "audit:art:static": "python -P scripts/audit_static_art.py",
+    "audit:war": "node scripts/audit-war-layers.mjs"
   },
   "devDependencies": {
     "@types/node": "26.6.5",
     "typescript": "7.0.2",
     "vite": "8.3.5",
     "vitest": "5.0.5"
+  },
+  "dependencies": {
+    "flag-icons": "^7.6.0"
   }
 }

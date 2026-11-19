@@ -85,11 +85,19 @@
 - **Референсы:** доска пользователя «1 in a billion» на Pinterest и открытые наборы Kenney Pixel UI,
   Kenney UI Pack RPG Extension, Mana Soul GUI (все три набора — CC0). Использованы только для выбора
   направления силуэтов, природы и фиолетово-золотых рамок; изображения не входят в игру.
-- **Производство арта:** оригинальные модели и CSS, исходники `scripts/blender/build_all.py` и
-  `index.html`, общая палитра `assets/palette.hex`.
+- **Производство арта:** прежние оригинальные модели и CSS — `scripts/blender/build_all.py`,
+  `index.html`, `assets/palette.hex`. Текущий модульный пакет сгенерирован Kimi по запросу
+  владельца проекта с использованием его доски референсов; чужие спрайты не копируются. Исходники —
+  `assets/kimi/`, производственное преобразование и проверка — `scripts/build_kimi_art.py`,
+  выход — `public/art/kimi/`.
+- **Флаги стран:** пакет `flag-icons` 7.6.0, Panayiotis Lipiridis, MIT
+  (https://github.com/lipis/flag-icons). `scripts/build-flags.mjs` копирует 235 используемых ISO2 SVG
+  в `public/flags/4x3/`; загружается только флаг текущей страны, без CDN и системных emoji.
+  Лицензия сохранена в `public/licenses/flag-icons.txt`. Для записи без ISO2 флаг не показывается.
 - **Шрифт заголовков:** Press Start 2P, CodeMan38 / The Press Start 2P Project Authors.
   Источник: https://github.com/google/fonts/tree/main/ofl/pressstart2p . Поддерживает Cyrillic и
-  Cyrillic Extended. Локальный файл `public/fonts/PressStart2P-Regular.ttf`, лицензия SIL OFL 1.1
+  Cyrillic Extended. Исходный `public/fonts/PressStart2P-Regular.ttf` конвертируется без изменения
+  начертаний в `PressStart2P-Regular.woff2` командой `npm run fonts`. Лицензия SIL OFL 1.1
   сохранена в `public/fonts/OFL.txt`. Основной текст остаётся системным шрифтом.
 
 ## Доходы

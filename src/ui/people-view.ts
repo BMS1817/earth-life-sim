@@ -2,7 +2,8 @@ import type { LifeState } from "../core/state.ts";
 import { relationshipOf } from "../core/people.ts";
 import type { Person } from "../core/people.ts";
 import type { Scene } from "./scene.ts";
-import { ru as s } from "./strings.ts";
+import { s, t } from "./strings.ts";
+import { thematicHeader } from "./thematic-header.ts";
 
 interface PeopleViewOptions {
   selectedId: string | null;
@@ -93,7 +94,7 @@ function personCard(state: LifeState, scene: Scene, p: Person, onSelect: (id: st
   else body.append(el("span", "person-state", s.personStatus(p.status)));
   body.append(traits(p));
   const last = p.memories.at(-1);
-  if (last) body.append(el("span", "person-last-memory", last.text));
+  if (last) body.append(el("span", "person-last-memory", t(last.text)));
   summary.append(body);
   card.append(summary);
   if (p.alive && p.status === "active") card.append(relationshipBar(p));
@@ -110,7 +111,7 @@ function personDetail(state: LifeState, scene: Scene, p: Person, onSelect: (id: 
   const list = el("ol", "memories");
   for (const memory of [...p.memories].reverse()) {
     const item = el("li", "memory");
-    item.append(el("span", "memory-meta", s.memoryYear(memory.age, memory.year)), el("span", undefined, memory.text));
+    item.append(el("span", "memory-meta", s.memoryYear(memory.age, memory.year)), el("span", undefined, t(memory.text)));
     list.append(item);
   }
   root.append(list);
@@ -127,7 +128,7 @@ export function peopleView(state: LifeState, scene: Scene, options: PeopleViewOp
       return root;
     }
   }
-  root.append(el("h1", undefined, s.peopleTitle));
+  root.append(el("h1", undefined, s.peopleTitle), thematicHeader("people"));
   root.append(el("p", "people-source", s.peopleSource));
   const active = state.people.filter((p) => p.alive && p.status === "active");
   const inactive = state.people.filter((p) => p.alive && p.status !== "active");

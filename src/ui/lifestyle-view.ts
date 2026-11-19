@@ -1,7 +1,8 @@
 import type { LifeState, PetKind, PlanKind, PropertyItemId, BusinessKind, LifestyleState } from "../core/state.ts";
 import type { CareerId } from "../core/finance.ts";
 import { LIFESTYLE_RULES, PLAN_RULES, planCost, propertyCost } from "../content/lifestyle.ts";
-import { ru as s } from "./strings.ts";
+import { s } from "./strings.ts";
+import { thematicHeader } from "./thematic-header.ts";
 
 interface LifestyleViewOptions {
   onBack: () => void;
@@ -43,7 +44,7 @@ function section(title: string): HTMLElement {
 export function lifestyleView(state: LifeState, options: LifestyleViewOptions): HTMLElement {
   const root = el("div", "lifestyle-view");
   root.append(button(s.back, options.onBack));
-  root.append(el("h1", undefined, s.lifestyleTitle));
+  root.append(el("h1", undefined, s.lifestyleTitle), thematicHeader("lifestyle"));
   root.append(el("p", "people-source", s.lifestyleSource));
 
   const plan = section(s.planTitle);
@@ -118,7 +119,7 @@ export function lifestyleView(state: LifeState, options: LifestyleViewOptions): 
   const auto = section(s.autoTitle);
   auto.append(el("p", "muted", s.autoGuard));
   for (const key of ["autoGifts", "autoCourses", "autoHealth", "autoTravel", "autoHobbyLessons", "insurance"] as const) {
-    const b = button(`${s[key]} · ${state.lifestyle[key] ? "вкл." : "выкл."}`, () => options.onToggle(key, !state.lifestyle[key]));
+    const b = button(`${s[key]} · ${s.softenState(state.lifestyle[key])}`, () => options.onToggle(key, !state.lifestyle[key]));
     if (state.lifestyle[key]) b.classList.add("active");
     auto.append(b);
   }

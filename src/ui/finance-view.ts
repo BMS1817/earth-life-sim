@@ -1,7 +1,8 @@
 import type { LifeState } from "../core/state.ts";
 import { incomeForYear, netWorth } from "../core/finance.ts";
 import type { InvestmentKind } from "../core/finance.ts";
-import { ru as s } from "./strings.ts";
+import { s } from "./strings.ts";
+import { thematicHeader } from "./thematic-header.ts";
 
 interface FinanceViewOptions {
   onBack: () => void;
@@ -33,7 +34,7 @@ export function financeView(state: LifeState, options: FinanceViewOptions): HTML
   const year = state.birth.year + state.age;
   const root = el("div", "finance-view");
   root.append(button(s.back, options.onBack));
-  root.append(el("h1", undefined, s.financeTitle));
+  root.append(el("h1", undefined, s.financeTitle), thematicHeader("finance"));
   root.append(el("p", "people-source", s.financeSource));
 
   const work = el("section", "finance-section");

@@ -80,16 +80,8 @@ export function mainTurns(s: LifeState, limit = BIOGRAPHY_LIMIT): MemorialMoment
 
 export function buildAlbum(s: LifeState): MemorialMoment[] {
   const favorites = favoriteMoments(s);
-  const selected = sampleEvenly(favorites, ALBUM_LIMIT);
-  const selectedIndexes = new Set(selected.map((moment) => moment.index));
-  for (const moment of mainTurns(s)) {
-    if (selected.length >= ALBUM_LIMIT) break;
-    if (!selectedIndexes.has(moment.index)) {
-      selected.push(moment);
-      selectedIndexes.add(moment.index);
-    }
-  }
-  return selected.sort((a, b) => a.year - b.year || a.index - b.index).slice(0, ALBUM_LIMIT);
+  if (favorites.length === 0) return mainTurns(s, s.chronicle.length).slice(-FINAL_SCENE_LIMIT);
+  return favorites.sort((a, b) => a.year - b.year || a.index - b.index).slice(0, ALBUM_LIMIT);
 }
 
 export function finalSceneMoments(s: LifeState): MemorialMoment[] {
@@ -171,7 +163,7 @@ export function giftedDay(s: LifeState): GiftedDay {
   if (hobby) return { ...base, kind: "hobby", career: null, hobby: hobby.id };
   if (s.age >= 18 && !s.finance.career) return { ...base, kind: "career", career: DREAM_CAREERS[focus], hobby: null };
   if (s.age >= 5 && s.hobbies.length === 0) {
-    const hobbies: Record<FocusId, HobbyId> = { balance: "nature", study: "reading", relationships: "music", health: "sports", hobby: "games", work: "crafts", growth: "reading", rest: "nature" };
+    const hobbies: Record<FocusId, HobbyId> = { balance: "nature", money: "crafts", education: "reading", bonds: "music", happiness: "games" };
     return { ...base, kind: "hobby", career: null, hobby: hobbies[focus] };
   }
   return { ...base, kind: "focus", career: null, hobby: null };

@@ -1,7 +1,8 @@
 import { alternativeGdp, campaignCost, canRunForOffice, nextElectionYear, politicsYear, referendumChance, usurpationChance } from "../core/politics.ts";
 import type { AmendmentField, AmendmentValue, PoliticalLevel, PoliticalPlatform, PoliticsData } from "../core/politics.ts";
 import type { LifeState } from "../core/state.ts";
-import { ru as s } from "./strings.ts";
+import type { CountryEntry } from "../core/types.ts";
+import { s, t } from "./strings.ts";
 
 interface PoliticsViewOptions {
   baseGdp: number;
@@ -10,6 +11,31 @@ interface PoliticsViewOptions {
   onCampaign: (level: PoliticalLevel, platform: PoliticalPlatform) => void;
   onReferendum: (field: AmendmentField, value: AmendmentValue) => void;
   onUsurpation: () => void;
+}
+
+function politicsScene(country: CountryEntry): HTMLElement {
+  const root = el("div", "politics-scene");
+  const canvas = el("canvas", "politics-city");
+  canvas.width = 256;
+  canvas.height = 192;
+  canvas.setAttribute("aria-hidden", "true");
+  const ctx = canvas.getContext("2d")!;
+  ctx.imageSmoothingEnabled = false;
+  const image = new Image();
+  image.onload = () => {
+    image.onload = null;
+    image.onerror = null;
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  };
+  image.src = "art/kimi/politics_city.png";
+  root.append(canvas);
+  if (country.iso2) {
+    const flag = el("span", "politics-flag fi");
+    flag.style.backgroundImage = `url("flags/4x3/${country.iso2.toLowerCase()}.svg")`;
+    flag.setAttribute("aria-hidden", "true");
+    root.append(flag);
+  }
+  return root;
 }
 
 function el<K extends keyof HTMLElementTagNameMap>(tag: K, className?: string, text?: string): HTMLElementTagNameMap[K] {
@@ -79,7 +105,7 @@ export function politicsView(state: LifeState, data: PoliticsData, options: Poli
   const profile = politicsYear(data, year);
   const career = state.politics.career;
   root.append(button(s.back, options.onBack));
-  root.append(el("h1", undefined, s.politicsTitle));
+  root.append(el("h1", undefined, s.politicsTitle), politicsScene(state.birth.country));
   root.append(el("p", "meta", `${state.birth.name} · ${year}`));
 
   const current = section(s.politicsCurrent);
@@ -97,7 +123,7 @@ export function politicsView(state: LifeState, data: PoliticsData, options: Poli
   if (career.status !== "none") careerSection.append(row(s.politicsSupportLabel, s.politicsSupport(career.support)));
   if (career.status === "candidate" && career.nextElectionYear !== null) careerSection.append(el("p", "notice", s.politicsCandidate(career.nextElectionYear)));
   if (career.status === "inOffice" && career.level && career.termEndYear !== null) careerSection.append(el("p", "notice", s.politicsInOffice(s.politicsLevels[career.level], career.termEndYear)));
-  if (state.politics.lastResult) careerSection.append(el("p", "politics-result", state.politics.lastResult));
+  if (state.politics.lastResult) careerSection.append(el("p", "politics-result", t(state.politics.lastResult)));
   if (!state.politics.trainingComplete) {
     const plan = button(s.planStart.localPolitics, options.onPlan);
     plan.disabled = !state.alive || state.age < 18 || state.plan !== null;

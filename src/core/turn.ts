@@ -22,10 +22,11 @@ import { processLifestyleYear } from "./lifestyle.ts";
 import { recordHappiness } from "./memorial.ts";
 import { alternativeGdp, alternativeMortality, createPoliticsState, processPoliticsYear } from "./politics.ts";
 import type { PoliticsData } from "./politics.ts";
+import { createLineageState } from "./inheritance.ts";
 
 export const MILESTONE_AGES = [6, 12, 16, 18];
 export const QUIET_YEAR_CHANCE = 0.35;
-export const EVENT_COOLDOWN_YEARS = 5;
+export const EVENT_COOLDOWN_YEARS = 8;
 export const WAR_PHASE_COOLDOWN_YEARS = 5;
 export const FAMILY_SCENE_INTERVAL = 3;
 export const MAX_CHILDREN = 3;
@@ -46,7 +47,7 @@ export function createLifeState(
   scales.bonds = bondsSummary(people);
   scales.money = moneyScale(finance);
   return {
-    version: 8,
+    version: 10,
     seed,
     birth,
     age: 0,
@@ -86,6 +87,7 @@ export function createLifeState(
     war: emptyWarState(),
     finance,
     politics: createPoliticsState(politicsData, birth.year),
+    lineage: createLineageState(seed),
   };
 }
 

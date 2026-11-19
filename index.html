@@ -5,38 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#171226" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+    <meta name="description" content="Earth — симулятор одной жизни и продолжения рода: решения, семья, карьера, политика и наследие." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Earth" />
     <title>Earth</title>
     <style>
       @font-face {
         font-family: "Press Start 2P";
-        src: url("/fonts/PressStart2P-Regular.ttf") format("truetype");
+        src: url("/fonts/PressStart2P-Regular.woff2") format("woff2");
         font-style: normal;
         font-weight: 400;
         font-display: swap;
       }
       :root {
-        color-scheme: dark;
-        --night: #100d1b;
-        --night-soft: #171226;
-        --panel: #211937;
-        --panel-raised: #2c2147;
-        --violet: #554078;
-        --violet-light: #80629d;
-        --gold-dark: #76503c;
-        --gold: #c79a52;
-        --gold-light: #f0d58a;
-        --parchment: #f0dfa8;
-        --ink: #30213e;
-        --text: #f1e9d2;
-        --muted: #b8acc4;
-        --health: #82b77a;
-        --money: #d8b65c;
-        --education: #78a9d8;
-        --bonds: #d78aaa;
-        --danger: #c87862;
+        color-scheme: light;
+        --night: #f3ecdf;
+        --night-soft: #f8f3e9;
+        --panel: #fffaf2;
+        --panel-raised: #f1e7d7;
+        --violet: #b7a6c4;
+        --violet-light: #9d87b2;
+        --gold-dark: #9a7654;
+        --gold: #b78b52;
+        --gold-light: #8a653c;
+        --parchment: #5d4a36;
+        --paper: #f4e6bf;
+        --ink: #2f3440;
+        --text: #343a45;
+        --muted: #6f7480;
+        --health: #6f9a79;
+        --money: #b08a45;
+        --education: #6e92b5;
+        --bonds: #b87d99;
+        --danger: #b76d5e;
+        --shadow: #d7c8b4;
+        --track: #e1d6c8;
+        --line: #d7c8b8;
         --pixel-font: "Press Start 2P", monospace;
       }
       * { box-sizing: border-box; }
+      canvas { box-sizing: content-box; }
       html { min-width: 320px; background: var(--night); }
       body {
         margin: 0;
@@ -128,6 +138,11 @@
         border-left: 4px solid var(--gold);
         font-size: 14px;
       }
+      .soften-start { display: flex; align-items: center; gap: 8px; min-height: 48px; margin: 16px 0; padding: 12px; color: var(--parchment); background: var(--night-soft); border: 2px solid var(--violet); }
+      .soften-start input { width: 24px; height: 24px; accent-color: var(--gold); }
+      .offline-status { margin: 10px 0; color: var(--muted); font-size: 12px; }
+      a { color: var(--gold-light); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+      a:focus-visible { outline: 3px solid var(--gold-light); outline-offset: 3px; }
       .scene {
         display: block;
         width: 512px;
@@ -294,8 +309,8 @@
       .person-summary:active { transform: none; }
       .person-portrait {
         display: block;
-        width: 96px;
-        height: 128px;
+        width: 64px;
+        height: 64px;
         background: var(--panel-raised);
         border: 2px solid var(--gold-dark);
         image-rendering: pixelated;
@@ -371,17 +386,17 @@
       .biography-turns li { margin-bottom: 14px; padding-left: 4px; }
       .biography-turns li::marker, .final-moments li::marker { color: var(--gold); }
       .biography-turns li > span, .final-moments li > span { display: block; }
-      .happiness-chart { display: block; width: 100%; height: auto; border: 2px solid var(--violet); image-rendering: pixelated; }
-      .memorial-canvas { display: block; width: 512px; max-width: 100%; height: auto; margin: 4px auto 16px; border: 4px solid var(--gold); image-rendering: pixelated; }
+      .happiness-chart { display: block; width: 512px; height: 224px; border: 2px solid var(--violet); image-rendering: pixelated; }
+      .memorial-canvas { display: block; width: 512px; height: 384px; max-width: none; margin: 4px auto 16px; border: 4px solid var(--gold); image-rendering: pixelated; }
       .room-item-list { display: flex; flex-wrap: wrap; gap: 7px; }
       .room-item { padding: 5px 8px; color: var(--parchment); background: var(--panel-raised); border: 1px solid var(--violet-light); font-size: 12px; }
-      .photo-album { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+      .photo-album { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
       .memory-photo { margin: 0; padding: 12px; color: var(--ink); background: var(--parchment); border: 3px solid var(--gold-dark); box-shadow: 4px 4px 0 var(--night); }
-      .memory-photo .memory-portrait { display: block; width: 96px; height: 128px; margin: 0 auto 10px; background: var(--panel-raised); border: 2px solid var(--gold-dark); image-rendering: pixelated; }
+      .memory-photo .memory-portrait { display: block; width: 64px; height: 96px; margin: 0 auto 10px; background: var(--panel-raised); border: 2px solid var(--gold-dark); image-rendering: pixelated; }
       .memory-photo figcaption { color: var(--ink); font-size: 12px; font-weight: 700; text-align: center; }
       .memory-photo p { margin: 8px 0 0; font-size: 13px; line-height: 1.45; }
       .final-scene { border-color: var(--life-color); }
-      .final-scene .final-portrait { display: block; width: 96px; height: 128px; margin: 14px auto; border: 3px solid var(--life-color); image-rendering: pixelated; }
+      .final-scene .final-portrait { display: block; width: 64px; height: 96px; margin: 14px auto; border: 3px solid var(--life-color); image-rendering: pixelated; }
       .final-moments { padding-left: 26px; }
       .final-moments li { margin-bottom: 16px; }
       .gifted-day { margin-top: 22px; padding-top: 12px; border-top: 2px solid var(--violet); }
@@ -403,6 +418,17 @@
       .politics-changes { padding-left: 26px; }
       .politics-changes li { margin-bottom: 12px; }
       .politics-changes li > span { display: block; }
+      .lineage-current { border-color: var(--life-color); }
+      .lineage-ancestors { display: grid; gap: 18px; margin-bottom: 22px; }
+      .lineage-card { padding: 16px; background: var(--night-soft); border: 2px solid var(--life-color); box-shadow: 4px 4px 0 var(--night); }
+      .lineage-card h2 { margin: 8px 0; }
+      .lineage-card h3 { color: var(--gold); font-size: 15px; }
+      .lineage-moments { padding-left: 26px; }
+      .lineage-moments li { margin-bottom: 12px; }
+      .lineage-moments li > span { display: block; }
+      .inheritance-offers { border-color: var(--bonds); }
+      .inheritance-heirs { display: grid; gap: 10px; }
+      .inheritance-heir { width: 100%; margin: 0; text-align: left; border-color: var(--bonds); }
       @media (max-width: 640px) {
         body { font-size: 16px; }
         main { width: calc(100% - 24px); margin: 20px auto; padding: 22px 16px 28px; border-width: 3px; box-shadow: 0 0 0 5px var(--violet), 7px 7px 0 #090711, inset 0 0 0 2px var(--gold-dark); }
@@ -433,6 +459,141 @@
         main { width: calc(100% - 16px); padding-right: 11px; padding-left: 11px; }
         .scale-name { width: 80px; }
         .person-summary { gap: 8px; padding: 8px; }
+      }
+      body {
+        background-image:
+          linear-gradient(90deg, transparent 31px, #e9dfd0 31px, #e9dfd0 32px),
+          linear-gradient(transparent 31px, #e9dfd0 31px, #e9dfd0 32px),
+          radial-gradient(circle at 50% -20%, #fff8ed 0, transparent 62%);
+        background-size: 32px 32px, 32px 32px, 100% 100%;
+      }
+      main { border-radius: 12px; box-shadow: 0 0 0 3px var(--violet), 8px 8px 0 var(--shadow), inset 0 0 0 2px var(--gold-dark); }
+      main::before, main::after { display: none; }
+      button, .event, .finance-section, .time-controls, .focus-panel, .hobbies-panel, .scales, .axis, .person-card, .memorial-section, .lineage-card, .memory-photo { border-radius: 12px; }
+      button { box-shadow: inset 0 0 0 2px var(--panel), 3px 3px 0 var(--shadow); }
+      button:hover { color: var(--ink); background: #ece0f0; border-color: var(--gold); }
+      .choice button, .hobby-item, .focus-option, .time-buttons button, .person-summary, .gifted-day summary { border-radius: 8px; }
+      .scene { box-shadow: 0 0 0 4px var(--violet), 6px 6px 0 var(--shadow); }
+      .bar, .axis-track { background: var(--track); border-color: var(--line); }
+      .axis-center { background: var(--violet-light); }
+      .axis-marker { background: var(--paper); border-color: var(--gold-dark); }
+      .event::before, .event::after { display: none; }
+      .outcome { color: var(--ink); background: var(--paper); box-shadow: inset 0 0 0 3px var(--shadow), 5px 5px 0 var(--shadow); }
+      .dots i { background: var(--track); }
+      .dots i.on { background: var(--health); }
+      .btn-tradition { --sector: #a77f35 !important; background: #f3e7c8 !important; }
+      .btn-change { --sector: #6e92b5 !important; background: #e1edf7 !important; }
+      .btn-bonds { --sector: #b87d99 !important; background: #f3e0e8 !important; }
+      .btn-self { --sector: #9678b5 !important; background: #e9e1f3 !important; }
+      .finance-row { border-color: var(--line); }
+      .memory-photo { background: var(--paper); }
+      .politics-usurpation { background: #f1dddd; }
+      .quiet-year { margin: 0; padding: 22px; color: var(--muted); background: var(--night-soft); border: 2px dashed var(--violet); border-radius: 12px; text-align: center; }
+      body.playing { position: fixed; inset: 0; overflow: hidden; }
+      main.game-shell {
+        width: min(1560px, calc(100% - 32px));
+        max-width: 1560px;
+        height: calc(100dvh - 32px);
+        margin: 16px auto;
+        padding: 14px;
+        display: grid;
+        grid-template-columns: minmax(512px, 0.9fr) minmax(360px, 1.3fr) minmax(250px, 0.85fr);
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: 14px;
+        overflow: hidden;
+      }
+      .game-topbar { grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px; }
+      .game-topbar .time-controls { flex: 1 1 620px; margin: 0; padding: 8px 10px; }
+      .game-nav { display: flex; flex-wrap: wrap; gap: 6px; max-width: 430px; }
+      .game-nav button, .time-buttons button { min-height: 38px; margin: 0; padding: 7px 10px; font-size: 12px; }
+      .game-hero { min-height: 0; overflow-y: auto; }
+      .game-hero .scene { width: 512px; height: 384px; margin-bottom: 12px; }
+      .game-hero h1 { margin: 8px 0; font-size: 16px; }
+      .game-hero .meta { margin-bottom: 10px; font-size: 12px; }
+      .game-hero .scales { margin: 10px 0; padding: 8px; }
+      .game-event { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px; scrollbar-color: var(--gold) var(--night-soft); }
+      .game-event .event { flex: 1 0 auto; min-height: 100%; display: grid; grid-template-rows: auto repeat(4, minmax(0, 1fr)) auto; gap: 8px; margin: 0 0 12px; padding: 16px; }
+      .game-event .outcome-inline { flex: 0 0 auto; margin: 0 0 12px; padding: 12px 14px; }
+      .game-event .outcome-inline h2 { margin: 0 0 6px; font-size: 14px; }
+      .game-event .outcome-inline p { margin: 0; font-size: 14px; line-height: 1.45; }
+      .game-event .outcome-inline .arrows { color: var(--muted); }
+      .game-event .seed { margin-top: auto; }
+      .game-side { min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+      .game-side .focus-panel, .game-side .hobbies-panel { margin: 0; padding: 10px; }
+      .focus-option { min-height: 40px; padding: 7px 8px; font-size: 11px; }
+      .focus-panel h2, .hobbies-panel h2 { font-size: 10px; }
+      .time-buttons button.active, .focus-option.active, .hobby-item.active { color: var(--gold-light); background: var(--paper); }
+      .game-topbar .time-controls { padding: 6px 8px; }
+      .game-topbar .time-buttons { gap: 4px; }
+      .game-topbar .time-note, .game-topbar .offline-status { display: inline-block; margin: 4px 8px 0 0; font-size: 11px; }
+      .game-topbar .year-progress { height: 5px; margin-top: 6px; }
+      .game-event .event { padding: 12px; }
+      .game-event .event > p:first-of-type { font-size: 16px; line-height: 1.45; }
+      .game-event .choice { display: flex; flex-direction: column; justify-content: center; margin: 8px 0; padding: 7px; }
+      .game-event .choice button { min-height: 44px; padding: 9px 12px; }
+      .game-event .arrows { margin-top: 5px; }
+      .quiet-dashboard { flex: 1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+      .dashboard-card { padding: 16px; background: var(--night-soft); border: 2px solid var(--violet); border-radius: 12px; }
+      .dashboard-card h2 { margin: 0 0 12px; font-size: 11px; }
+      .dashboard-card h3 { margin: 14px 0 8px; color: var(--gold); font-size: 14px; }
+      .dashboard-memory { grid-column: 1 / -1; }
+      .hobby-guide { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+      .mobile-tabs { display: none; }
+      @media (max-width: 1200px) {
+        main.game-shell { grid-template-columns: minmax(190px, 0.7fr) minmax(340px, 1.35fr) minmax(220px, 0.8fr); gap: 10px; }
+        .game-hero .scene { width: 256px; height: 192px; }
+        .game-nav { max-width: 340px; }
+      }
+      @media (max-width: 900px) {
+        main.game-shell {
+          width: 100%;
+          height: 100dvh;
+          margin: 0;
+          padding: 10px;
+          display: grid;
+          grid-template-columns: 1fr;
+          grid-template-rows: auto minmax(0, 1fr);
+          gap: 10px;
+          border-width: 2px;
+          box-shadow: none;
+          outline: 0;
+        }
+        .mobile-tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+        .mobile-tabs button { min-height: 44px; margin: 0; padding: 8px 4px; font-size: 11px; }
+        .mobile-tabs button[aria-selected="true"] { color: #fffaf2; background: var(--gold); border-color: var(--gold-dark); }
+        .game-topbar, .game-hero, .game-event, .game-side { display: none; min-height: 0; overflow-y: auto; }
+        .game-shell[data-active="menu"] .game-topbar, .game-shell[data-active="hero"] .game-hero, .game-shell[data-active="event"] .game-event, .game-shell[data-active="focus"] .game-side { display: block; }
+        .game-topbar .time-controls { padding: 8px; }
+        .game-nav { max-width: none; }
+        .game-event .event { padding: 14px; }
+      }
+      .thematic-header { display: block; width: 512px; height: 128px; margin: 0 auto 14px; border: 2px solid var(--gold-dark); border-radius: 12px; image-rendering: pixelated; }
+      .people-view, .lifestyle-view { background-color: var(--paper); background-image: url("art/kimi/texture_sage.png"); background-size: 64px 64px; }
+      .finance-view, .memorial-view { background-color: var(--paper); background-image: url("art/kimi/texture_parchment.png"); background-size: 64px 64px; }
+      .politics-view { background-color: var(--paper); background-image: url("art/kimi/texture_blue.png"); background-size: 64px 64px; }
+      .politics-scene { position: relative; width: 512px; height: 384px; margin: 0 auto 18px; overflow: hidden; border: 2px solid var(--gold-dark); border-radius: 12px; box-shadow: 5px 5px 0 var(--shadow); }
+      .politics-city { display: block; width: 512px; height: 384px; image-rendering: pixelated; }
+      .politics-scene .politics-flag.fi { position: absolute; top: 16px; right: 16px; display: block; width: 48px; height: 36px; line-height: 1; border: 3px solid var(--panel); border-radius: 4px; box-shadow: 2px 2px 0 var(--gold-dark); background-size: 100% 100%; }
+      .politics-view .finance-section { background: var(--panel); }
+      .lineage-view { background-color: var(--paper); background-image: url("art/kimi/texture_lavender.png"); background-size: 64px 64px; }
+      .photo-album { grid-template-columns: repeat(auto-fit, minmax(256px, 1fr)); }
+      .memory-photo .memory-scene, .final-scene .final-portrait { display: block; width: 256px; height: 144px; margin: 0 auto 10px; border: 2px solid var(--gold-dark); border-radius: 8px; image-rendering: pixelated; }
+      .final-scene .final-portrait { margin: 14px auto; }
+      .people-view, .finance-view, .lifestyle-view, .politics-view, .memorial-view, .lineage-view { width: 100%; min-width: 0; }
+      .people-view .finance-section, .finance-view .finance-section, .lifestyle-view .finance-section, .politics-view .finance-section, .memorial-view .finance-section, .lineage-view .finance-section { min-width: 0; }
+      .people-view .finance-row, .finance-view .finance-row, .lifestyle-view .finance-row, .politics-view .finance-row, .memorial-view .finance-row, .lineage-view .finance-row { min-width: 0; flex-wrap: wrap; }
+      .people-view .finance-row strong, .finance-view .finance-row strong, .lifestyle-view .finance-row strong, .politics-view .finance-row strong, .memorial-view .finance-row strong, .lineage-view .finance-row strong { min-width: 0; overflow-wrap: anywhere; }
+      @media (max-width: 700px) {
+        .thematic-header { width: 256px; height: 64px; }
+        .politics-scene, .politics-city { width: 256px; height: 192px; }
+        .politics-scene .politics-flag.fi { top: 10px; right: 10px; width: 36px; height: 27px; border-width: 2px; }
+        .memorial-canvas { width: 256px; height: 192px; }
+        .happiness-chart { width: 256px; height: 112px; }
+      }
+      @media (max-width: 340px) {
+        .photo-album { grid-template-columns: minmax(0, 1fr); }
+        .memory-photo { min-width: 0; }
+        .memory-photo .memory-scene { width: 128px; height: 72px; }
       }
     </style>
   </head>

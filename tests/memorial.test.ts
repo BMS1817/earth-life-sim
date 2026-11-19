@@ -24,14 +24,14 @@ describe("локальный мемориал", () => {
 
   it("суммирует доли разных фокусов и очищает только текущий год", () => {
     const { s } = newState("memorial-focus");
-    s.focus.fractions = { study: 0.25, rest: 0.75 };
+    s.focus.fractions = { education: 0.25, happiness: 0.75 };
     completeFocusYear(s);
-    expect(s.focusTotals.study).toBeCloseTo(0.25);
-    expect(s.focusTotals.rest).toBeCloseTo(0.75);
+    expect(s.focusTotals.education).toBeCloseTo(0.25);
+    expect(s.focusTotals.happiness).toBeCloseTo(0.75);
     expect(s.focus.fractions).toEqual({});
-    s.focus.fractions = { study: 1 };
+    s.focus.fractions = { education: 1 };
     completeFocusYear(s);
-    expect(s.focusTotals.study).toBeCloseTo(1.25);
+    expect(s.focusTotals.education).toBeCloseTo(1.25);
   });
 
   it("ограничивает избранное 32 уникальными существующими моментами", () => {
@@ -46,6 +46,7 @@ describe("локальный мемориал", () => {
     expect(s.favoriteMomentIndexes).toHaveLength(31);
     expect(toggleFavoriteMoment(s, 32)).toBe(true);
     expect(favoriteMoments(s).at(-1)?.index).toBe(32);
+    expect(buildAlbum(s)).toHaveLength(32);
   });
 
   it("собирает биографию, альбом и последнюю сцену из избранного", () => {
@@ -55,7 +56,7 @@ describe("локальный мемориал", () => {
     expect(mainTurns(s)).toHaveLength(12);
     expect(mainTurns(s).some((moment) => moment.source === "history")).toBe(false);
     const album = buildAlbum(s);
-    expect(album).toHaveLength(6);
+    expect(album).toHaveLength(4);
     for (const index of [2, 5, 8, 11]) expect(album.some((moment) => moment.index === index)).toBe(true);
     expect(finalSceneMoments(s)).toHaveLength(3);
     for (const moment of finalSceneMoments(s)) expect([2, 5, 8, 11]).toContain(moment.index);
@@ -63,11 +64,11 @@ describe("локальный мемориал", () => {
 
   it("детерминированно вычисляет цвет и название по фокусам и компасу", () => {
     const { s } = newState("memorial-pattern");
-    s.focusTotals = { study: 4, rest: 1 };
+    s.focusTotals = { education: 4, happiness: 1 };
     const first = lifePattern(s);
     expect(lifePattern(s)).toEqual(first);
     expect(first.color).toMatch(/^#[0-9a-f]{6}$/);
-    s.focusTotals = { relationships: 5 };
+    s.focusTotals = { bonds: 5 };
     expect(lifePattern(s).color).not.toBe(first.color);
     s.compass = { tradition: 10, bonds: 10, choices: 10 };
     expect(lifePattern(s).name).toBe("hearthKeeper");

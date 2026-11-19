@@ -21,13 +21,13 @@ function event(phase: "start" | "escalation", adult: boolean): LifeEvent {
     text: TEXT[phase],
     choices: [
       adult
-        ? { sector: "tradition", label: "Остаться и защитить дом", outcome: "Ты остался. Дом и привычная жизнь стоят дорого.", effects: { money: -4, health: -2, bonds: 2 }, action: "protectPeople" }
-        : { sector: "tradition", label: "Укрыться и сохранять быт", outcome: "Ты выбрал укрытие и осторожность. Расходы и тревога остались.", effects: { money: -3, health: -1 } },
-      { sector: "change", label: "Эвакуироваться с близкими", outcome: "Вы переместились вместе. Деньги и привычный дом остались позади.", effects: { money: -5, bonds: 4 }, action: "evacuateTogether" },
-      { sector: "bonds", label: "Защищать близких", outcome: "Ты принял больше риска на себя. Близкие запомнят это.", effects: { health: -3, bonds: 6 }, action: "protectPeople" },
+        ? { sector: "tradition", label: "Остаться и защитить дом", outcome: "Ты остался. Дом и привычная жизнь стоят дорого.", effects: { health: 3, money: -2 }, action: "protectPeople" }
+        : { sector: "tradition", label: "Укрыться и сохранять быт", outcome: "Ты выбрал укрытие и осторожность. Расходы и тревога остались.", effects: { health: 2, money: -1 } },
+      { sector: "change", label: "Эвакуироваться с близкими", outcome: "Вы переместились вместе. Деньги и привычный дом остались позади.", effects: { education: 4, bonds: -2 }, action: "evacuateTogether" },
+      { sector: "bonds", label: "Защищать близких", outcome: "Ты принял больше риска на себя. Близкие запомнят это.", effects: { bonds: 4, health: -2 }, action: "protectPeople" },
       adult
-        ? { sector: "self", label: "Принять боевую роль", outcome: "Ты выбрал участие в боевых действиях. Это даёт средства, но смертельно опасно.", effects: { health: -4, money: 2 }, action: "combat" }
-        : { sector: "self", label: "Эвакуироваться одному", outcome: "Ты ушёл один и снизил свой риск. Близкие остались в опасности.", effects: { money: -4, bonds: -5 }, action: "evacuateAlone" },
+        ? { sector: "self", label: "Принять боевую роль", outcome: "Ты выбрал участие в боевых действиях. Это даёт средства, но смертельно опасно.", effects: { money: 3, education: -2 }, action: "combat" }
+        : { sector: "self", label: "Эвакуироваться одному", outcome: "Ты ушёл один и снизил свой риск. Близкие остались в опасности.", effects: { money: 4, education: -2 }, action: "evacuateAlone" },
     ],
   };
 }
@@ -44,10 +44,10 @@ function recovery(phase: "deescalation" | "end"): LifeEvent {
     subject: "closest",
     text: TEXT[phase],
     choices: [
-      { sector: "tradition", label: "Восстанавливать дом", outcome: "Ты начал восстановление. Это требует денег и времени.", effects: { money: -4, bonds: 2 }, action: "civilianAid" },
-      { sector: "change", label: "Выбрать новое безопасное место", outcome: "Ты закрепился в безопасном месте. Пришлось заново налаживать быт.", effects: { money: -3, education: 1 }, action: "evacuateTogether" },
-      { sector: "bonds", label: "Помогать восстанавливаться вместе", outcome: "Вы помогаете друг другу. Свободных средств меньше.", effects: { money: -3, bonds: 4 }, action: "civilianAid" },
-      { sector: "self", label: "Дать себе время", outcome: "Ты остановился, чтобы восстановиться. Накопления уменьшились.", effects: { health: 3, money: -2 } },
+      { sector: "tradition", label: "Восстанавливать дом", outcome: "Ты начал восстановление. Это требует денег и времени.", effects: { health: 3, money: -2 }, action: "civilianAid" },
+      { sector: "change", label: "Выбрать новое безопасное место", outcome: "Ты закрепился в безопасном месте. Пришлось заново налаживать быт.", effects: { education: 2, bonds: -1 }, action: "evacuateTogether" },
+      { sector: "bonds", label: "Помогать восстанавливаться вместе", outcome: "Вы помогаете друг другу. Свободных средств меньше.", effects: { bonds: 3, health: -2 }, action: "civilianAid" },
+      { sector: "self", label: "Дать себе время", outcome: "Ты остановился, чтобы восстановиться. Накопления уменьшились.", effects: { money: 3, education: -2 } },
     ],
   };
 }

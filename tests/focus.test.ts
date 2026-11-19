@@ -23,13 +23,13 @@ describe("время, фокус и хобби", () => {
   it("смена фокуса действует только на фактическую долю года", () => {
     const { s, mort, family } = newState("focus-fraction");
     s.age = 5;
-    setFocus(s, "study");
+    setFocus(s, "education");
     ticks(s, mort, family, 8);
-    setFocus(s, "relationships");
+    setFocus(s, "bonds");
     ticks(s, mort, family, 8);
-    expect(s.scales.education).toBeCloseTo(5.625);
-    const closest = s.people.find((p) => p.memories.some((m) => m.eventId === "focus-relationships"));
-    expect(closest?.memories.at(-1)?.impact).toBeCloseTo(0.5);
+    expect(s.scales.education).toBeCloseTo(6);
+    const closest = s.people.find((p) => p.memories.some((m) => m.eventId === "focus-bonds"));
+    expect(closest?.memories.at(-1)?.impact).toBeCloseTo(1);
     expect(s.focus.fractions).toEqual({});
   });
 
@@ -37,7 +37,7 @@ describe("время, фокус и хобби", () => {
     const { s } = newState("happiness-return");
     s.happiness = 90;
     completeFocusYear(s);
-    expect(s.happiness).toBeCloseTo(87.18);
+    expect(s.happiness).toBeCloseTo(87.45);
     s.happiness = 200;
     completeFocusYear(s);
     expect(s.happiness).toBe(96);
@@ -48,10 +48,10 @@ describe("время, фокус и хобби", () => {
     s.age = 5;
     addHobby(s, "games");
     setActiveHobby(s, "games");
-    setFocus(s, "hobby");
-    ticks(s, mort, family, TICKS_PER_YEAR * 3);
+    setFocus(s, "happiness");
+    ticks(s, mort, family, TICKS_PER_YEAR * 8);
     expect(s.hobbies[0].level).toBe(3);
-    expect(s.hobbies[0].xp).toBeCloseTo(4.5);
+    expect(s.hobbies[0].xp).toBeCloseTo(4);
     expect(s.chronicle.some((entry) => entry.text.includes("Первый турнир"))).toBe(true);
   });
 
@@ -68,9 +68,9 @@ describe("время, фокус и хобби", () => {
     s.finance.career = "engineering";
     s.finance.careerLevel = 1;
     s.finance.employment = "employed";
-    setFocus(s, "work");
+    setFocus(s, "money");
     ticks(s, mort, family, TICKS_PER_YEAR * 3);
     expect(s.finance.careerLevel).toBe(2);
-    expect(s.scales.health).toBeLessThan(80);
+    expect(s.scales.health).toBe(80);
   });
 });

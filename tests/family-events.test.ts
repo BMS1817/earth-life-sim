@@ -14,7 +14,7 @@ function familyEvent(id: string) {
 }
 
 describe("семейные сцены", () => {
-  it("дополнительная сцена не чаще одной за три года", () => {
+  it("дополнительная сцена не чаще одной за три года, повтор события — не чаще одной за восемь лет", () => {
     const { s } = newState("family-interval");
     s.age = 10;
     const event = pickFamilyEvent(s, FAMILY_EVENTS);
@@ -23,7 +23,7 @@ describe("семейные сцены", () => {
     expect(pickFamilyEvent(s, FAMILY_EVENTS)).toBeNull();
     s.age += 2;
     expect(pickFamilyEvent(s, FAMILY_EVENTS)).toBeNull();
-    s.age += 3;
+    s.age += 8;
     expect(pickFamilyEvent(s, FAMILY_EVENTS)).not.toBeNull();
   });
 
