@@ -41,7 +41,8 @@ describe("PWA и оффлайн-кэш", () => {
     expect(worker).toContain("earth:cache-ready");
     expect(worker).toContain("earth:cache-progress");
     expect(worker).toContain('request.mode === "navigate"');
-    expect(worker).toContain('caches.match("/index.html")');
+    expect(worker).toContain('caches.match("./index.html")');
+    expect(worker).not.toContain('"/index.html"');
     expect(worker).toContain("caches.delete");
   });
 });

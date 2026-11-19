@@ -5,3 +5,5 @@ assets/kimi/
 shots/
 __pycache__/
 *.pyc
+.webbridge-req-*.json
+release/*.zip

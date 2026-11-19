@@ -76,14 +76,12 @@ npm run flags
 
 ## Публикация на GitHub Pages
 
-В репозитории уже есть `.github/workflows/pages.yml`.
+Опубликованная игра: **https://bms1817.github.io/earth-life-sim/**.
+Исходный код: **https://github.com/BMS1817/earth-life-sim**.
 
-1. Создайте репозиторий на GitHub и отправьте ветку `main` с кодом.
-2. В **Settings → Pages → Source** выберите **GitHub Actions**.
-3. Запустите workflow **Deploy Earth to GitHub Pages** или отправьте коммит в `main`.
-4. Workflow установит зависимости, запустит тесты, соберёт `dist` и опубликует его.
-
-Внешняя публикация не выполняется автоматически из локальной машины без репозитория и действий владельца.
+Workflow `.github/workflows/pages.yml` устанавливает зависимости, запускает тесты, собирает `dist` и
+публикует его после отправки ветки `main`. В **Settings → Pages → Source** выбран **GitHub Actions**.
+Пути сборки относительные (`base: "./"`), поэтому игра и оффлайн-кэш работают на подпути репозитория.
 
 ## Данные и лицензии
 

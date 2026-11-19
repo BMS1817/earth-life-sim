@@ -46,11 +46,11 @@ self.addEventListener("fetch", (event) => {
         const response = await fetch(request);
         if (response.ok) {
           const cache = await caches.open(CACHE);
-          await cache.put("/index.html", response.clone());
+          await cache.put("./index.html", response.clone());
         }
         return response;
       } catch {
-        return (await caches.match(request)) || (await caches.match("/index.html"));
+        return (await caches.match(request)) || (await caches.match("./index.html"));
       }
     })());
     return;
