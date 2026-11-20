@@ -43,7 +43,6 @@ function section(title: string): HTMLElement {
 
 export function lifestyleView(state: LifeState, options: LifestyleViewOptions): HTMLElement {
   const root = el("div", "lifestyle-view");
-  root.append(button(s.back, options.onBack));
   root.append(el("h1", undefined, s.lifestyleTitle), thematicHeader("lifestyle"));
   root.append(el("p", "people-source", s.lifestyleSource));
 

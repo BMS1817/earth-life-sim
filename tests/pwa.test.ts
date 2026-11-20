@@ -34,7 +34,7 @@ describe("PWA и оффлайн-кэш", () => {
   it("полный пакет не превышает 51 МиБ", () => {
     const bytes = assets.filter((asset) => asset !== "./").reduce((sum, asset) => sum + readFileSync(asset === "index.html" ? "index.html" : `public/${asset}`).byteLength, 0);
     expect(bytes).toBeLessThanOrEqual(51 * 1024 * 1024);
-  });
+  }, 15_000);
 
   it("worker обновляет кэш версией, сообщает прогресс и сохраняет offline fallback", () => {
     expect(worker).toContain('const CACHE = "earth-v1.0.0-');

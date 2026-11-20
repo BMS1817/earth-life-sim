@@ -104,7 +104,6 @@ export function politicsView(state: LifeState, data: PoliticsData, options: Poli
   const year = state.birth.year + state.age;
   const profile = politicsYear(data, year);
   const career = state.politics.career;
-  root.append(button(s.back, options.onBack));
   root.append(el("h1", undefined, s.politicsTitle), politicsScene(state.birth.country));
   root.append(el("p", "meta", `${state.birth.name} · ${year}`));
 

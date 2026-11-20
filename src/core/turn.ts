@@ -361,7 +361,7 @@ export function applyChoice(s: LifeState, event: LifeEvent, choiceIndex: number,
     s.pendingFamilyEventId = null;
     s.lastFamilySceneAge = s.age;
   } else {
-    s.pendingEventIds = [];
+    s.pendingEventIds = s.pendingEventIds.filter((id) => id !== event.id);
   }
 }
 

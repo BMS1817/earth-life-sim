@@ -72,7 +72,7 @@ async function advanceToAge(cdp, targetAge) {
     const action = await evaluate(cdp, `(() => {
       const choice = document.querySelector(".choice button");
       if (choice) { choice.click(); return "choice"; }
-      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "До следующего решения");
+      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Прожить год");
       if (skip) { skip.click(); return "skip"; }
       return "waiting";
     })()`);

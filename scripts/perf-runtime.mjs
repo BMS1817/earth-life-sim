@@ -89,7 +89,7 @@ async function playToEnd(cdp) {
       if (document.querySelector(".memorial-view.ended")) return "end";
       const choice = document.querySelector(".choice button");
       if (choice) { choice.click(); return "choice"; }
-      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "До следующего решения");
+      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Прожить год");
       if (skip) { skip.click(); return "skip"; }
       return "waiting";
     })()`);
@@ -204,16 +204,14 @@ try {
     window.clearInterval = (id) => { active.delete(id); originalClearInterval(id); };
   })();` });
   const url = new URL(base);
-  url.searchParams.set("seed", "inheritance-production-13");
+  url.searchParams.set("seed", "turn-inheritance-0");
   await cdp.call("Page.navigate", { url: url.href });
   await waitSelector(cdp, "#soften-start");
   await clickButton(cdp, "Начать новую жизнь");
   await waitSelector(cdp, ".time-controls");
-  await clickButton(cdp, "Пауза");
   await waitSelector(cdp, ".game-shell");
   report.frames = await measureFrames(cdp);
   console.log(JSON.stringify({ frames: report.frames }));
-  for (let index = 0; index < 20; index++) report.ordinary.push(await measureAction(cdp, "pause", index % 2 === 0 ? "Продолжить" : "Пауза", ".time-controls"));
   if (mobile) {
     for (let index = 0; index < 12; index++) {
       const tab = ["hero", "focus", "menu", "event"][index % 4];

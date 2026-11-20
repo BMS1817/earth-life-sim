@@ -30,7 +30,6 @@ function button(label: string, onClick: () => void): HTMLButtonElement {
 
 export function lineageView(state: LifeState, options: LineageViewOptions): HTMLElement {
   const root = el("div", "lineage-view");
-  root.append(button(s.back, options.onBack));
   root.append(el("h1", undefined, s.lineageTitle), thematicHeader("lineage"));
   root.append(el("p", "meta", `${state.birth.name} · ${options.countryName}`));
 

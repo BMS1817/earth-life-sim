@@ -89,6 +89,7 @@ async function capture(cdp, name, width = 1280, height = 720, mobile = false, ga
   await sleep(150);
   const overflow = await evaluate(cdp, `({ horizontal: document.documentElement.scrollWidth > innerWidth, vertical: document.documentElement.scrollHeight > innerHeight })`);
   if (overflow.horizontal || (game && overflow.vertical)) throw new Error(`Переполнение ${name}: ${JSON.stringify(overflow)}`);
+  (report.layouts ??= []).push(await evaluate(cdp, `({ name: ${JSON.stringify(name)}, active: document.querySelector(".game-shell")?.dataset.active, hero: getComputedStyle(document.querySelector(".game-hero") ?? document.body).display, event: getComputedStyle(document.querySelector(".game-event") ?? document.body).display, width: innerWidth })`));
   const shot = await cdp.call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
   await writeFile(join(out, `${name}.png`), Buffer.from(String(shot.data), "base64"));
   screens.push(name);
@@ -99,7 +100,7 @@ async function playToEnd(cdp) {
       if (document.querySelector(".memorial-view.ended")) return "end";
       const choice = document.querySelector(".choice button");
       if (choice) { choice.click(); return "choice"; }
-      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Skip to next decision");
+      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Live this year");
       if (skip) { skip.click(); return "skip"; }
       return "waiting";
     })()`);
@@ -159,9 +160,8 @@ try {
   report.checks.languageSwitchToEn = true;
   await clickButton(cdp, "Start a new life", true);
   await waitSelector(cdp, ".time-controls");
-  await clickButton(cdp, "Skip to next decision", true);
+  await clickButton(cdp, "Live this year", true);
   await waitSelector(cdp, ".event");
-  await clickButton(cdp, "Pause", true);
   const choiceCount = await evaluate(cdp, `document.querySelectorAll(".event .choice button").length`);
   if (choiceCount !== 4) throw new Error(`Решений в английском событии: ${choiceCount}`);
   report.checks.englishChoices = choiceCount;
@@ -211,7 +211,7 @@ try {
   report.checks.familyMemory = familyText;
   await capture(cdp, "en-family-memory-1280", 1280, 720, false, true);
 
-  await navigate(cdp, "inheritance-production-13");
+  await navigate(cdp, "turn-inheritance-0");
   await clickButton(cdp, "Start a new life", true);
   await waitSelector(cdp, ".time-controls");
   await playToEnd(cdp);
@@ -274,9 +274,8 @@ try {
   await waitSelector(cdp, "#soften-start");
   await clickButton(cdp, "Начать новую жизнь", true);
   await waitSelector(cdp, ".time-controls");
-  await clickButton(cdp, "До следующего решения", true);
+  await clickButton(cdp, "Прожить год", true);
   await waitSelector(cdp, ".event");
-  await clickButton(cdp, "Пауза", true);
   const russianChoices = await evaluate(cdp, `document.querySelectorAll(".event .choice button").length`);
   if (russianChoices !== 4) throw new Error(`Решений в русском событии: ${russianChoices}`);
   report.checks.russianChoices = russianChoices;

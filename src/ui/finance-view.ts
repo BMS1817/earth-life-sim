@@ -33,7 +33,6 @@ export function financeView(state: LifeState, options: FinanceViewOptions): HTML
   const f = state.finance;
   const year = state.birth.year + state.age;
   const root = el("div", "finance-view");
-  root.append(button(s.back, options.onBack));
   root.append(el("h1", undefined, s.financeTitle), thematicHeader("finance"));
   root.append(el("p", "people-source", s.financeSource));
 

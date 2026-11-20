@@ -120,7 +120,6 @@ function personDetail(state: LifeState, scene: Scene, p: Person, onSelect: (id: 
 
 export function peopleView(state: LifeState, scene: Scene, options: PeopleViewOptions): HTMLElement {
   const root = el("div", "people-view");
-  root.append(button(s.back, options.onBack));
   if (options.selectedId) {
     const selected = state.people.find((p) => p.id === options.selectedId);
     if (selected) {

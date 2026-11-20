@@ -133,7 +133,7 @@ async function advanceToAge(cdp: Cdp, targetAge: number): Promise<void> {
     const action = await evaluate(cdp, `(() => {
       const choice = document.querySelector(".choice button");
       if (choice) { choice.click(); return "choice"; }
-      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "До следующего решения");
+      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Прожить год");
       if (skip) { skip.click(); return "skip"; }
       return "waiting";
     })()`);
@@ -181,7 +181,7 @@ async function playToEnd(cdp: Cdp): Promise<void> {
       if (document.querySelector(".memorial-view.ended")) return "end";
       const choice = document.querySelector(".choice button");
       if (choice) { choice.click(); return "choice"; }
-      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "До следующего решения");
+      const skip = [...document.querySelectorAll("button")].find((node) => node.textContent === "Прожить год");
       if (skip) { skip.click(); return "skip"; }
       return "waiting";
     })()`);
@@ -271,9 +271,8 @@ async function main(): Promise<void> {
     if (!(await savedState(page)).softenHeavy) throw new Error("Смягчение на старте не применилось");
     await clickButton(page, "Смягчить тяжёлые темы");
     if ((await savedState(page)).softenHeavy) throw new Error("Переключатель смягчения не выключился");
-    await clickButton(page, "До следующего решения");
+    await clickButton(page, "Прожить год");
     await waitForSelector(page, ".event");
-    await clickButton(page, "Пауза");
     await captureGame(page, out, "main-1920", 1920, 1080);
     await captureGame(page, out, "main-1440", 1440, 1080);
     await captureGame(page, out, "main-1280", 1280, 720);
@@ -290,16 +289,9 @@ async function main(): Promise<void> {
     await waitForSelector(page, ".outcome-inline");
     const outcomeFlow = await evaluate(page, `(() => ({
       continueButton: Boolean(document.querySelector(".outcome + button")),
-      nextAction: Boolean(document.querySelector(".choice button") || [...document.querySelectorAll("button")].find((node) => node.textContent === "До следующего решения")),
+      nextAction: Boolean(document.querySelector(".choice button") || [...document.querySelectorAll("button")].find((node) => node.textContent === "Прожить год")),
     }))()`) as { continueButton: boolean; nextAction: boolean };
     if (outcomeFlow.continueButton || !outcomeFlow.nextAction) throw new Error(`Итог блокирует темп: ${JSON.stringify(outcomeFlow)}`);
-    await clickButton(page, "16×");
-    const ticksBeforeOutcome = (await savedState(page)).time.tick;
-    await clickButton(page, "Продолжить");
-    await new Promise((resolveWait) => setTimeout(resolveWait, 550));
-    const outcomeAdvancedTicks = (await savedState(page)).time.tick - ticksBeforeOutcome;
-    if (outcomeAdvancedTicks <= 0) throw new Error(`После итога время не продолжилось без дополнительного нажатия; ошибки: ${page.errors.join("\n")}`);
-    await clickButton(page, "Пауза");
     await captureGame(page, out, "outcome-inline-1920", 1920, 1080);
     await captureGame(page, out, "outcome-inline-mobile", 390, 844, true);
     await clickButton(page, "Люди ·");
@@ -420,7 +412,7 @@ async function main(): Promise<void> {
     if (savedBefore !== savedAfter) throw new Error("Подаренный день изменил сохранение");
 
     const inheritanceBase = new URL(String(await evaluate(page, "location.href")));
-    inheritanceBase.searchParams.set("seed", "inheritance-production-13");
+    inheritanceBase.searchParams.set("seed", "turn-inheritance-0");
     await page.call("Page.navigate", { url: inheritanceBase.href });
     await waitForSelector(page, "#soften-start");
     await clickButton(page, "Начать новую жизнь");
@@ -481,7 +473,7 @@ async function main(): Promise<void> {
     await writeFile(join(out, "contact.png"), Buffer.from(String(contact.data), "base64"));
     const badPixelRatios = Object.entries(PIXEL_RATIOS).flatMap(([screen, items]) => items.flatMap((item) => item.ratio.some((ratio) => ratio !== 1 && ratio !== 2) ? [{ screen, ...item }] : []));
     const badLayoutOverflow = Object.entries(LAYOUT_OVERFLOW).flatMap(([screen, items]) => items.map((item) => ({ screen, ...item })));
-    await writeFile(join(out, "report.json"), JSON.stringify({ screens: names, welcomeMs, interactiveMs, lifeEnded: ended, outcomeAdvancedTicks, restoredFavorites, giftedDayPreservedSave: savedBefore === savedAfter, politicalLevel: politicalState.politics.career.level, referendumAccepted, alternativeMortalityFactor: politicalState.politics.alternative.mortalityFactor, restoredPoliticalLevel: restoredPolitics.career.lastLevel, restoredAlternativeChanges: restoredPolitics.alternative.changes.length, inheritedGeneration, offlineGeneration, pixelRatios: PIXEL_RATIOS, badPixelRatios, layoutOverflow: LAYOUT_OVERFLOW, badLayoutOverflow, consoleErrors: page.errors }, null, 2));
+    await writeFile(join(out, "report.json"), JSON.stringify({ screens: names, welcomeMs, interactiveMs, lifeEnded: ended, restoredFavorites, giftedDayPreservedSave: savedBefore === savedAfter, politicalLevel: politicalState.politics.career.level, referendumAccepted, alternativeMortalityFactor: politicalState.politics.alternative.mortalityFactor, restoredPoliticalLevel: restoredPolitics.career.lastLevel, restoredAlternativeChanges: restoredPolitics.alternative.changes.length, inheritedGeneration, offlineGeneration, pixelRatios: PIXEL_RATIOS, badPixelRatios, layoutOverflow: LAYOUT_OVERFLOW, badLayoutOverflow, consoleErrors: page.errors }, null, 2));
     if (badPixelRatios.length > 0) throw new Error(`Нецелый масштаб canvas: ${JSON.stringify(badPixelRatios)}`);
     if (badLayoutOverflow.length > 0) throw new Error(`Элементы выходят за viewport: ${JSON.stringify(badLayoutOverflow)}`);
     console.log(`Снимки: ${out}`);

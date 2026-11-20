@@ -117,7 +117,6 @@ try {
         const url = auditUrl({ auditIso: iso3, auditMoney: money, auditAge: age });
         await cdp.call("Page.navigate", { url });
         await waitFor(async () => evaluate(cdp, `Boolean(document.querySelector("canvas.scene"))`), `${climate}/${level}/${age}`);
-        await evaluate(cdp, `[...document.querySelectorAll("button")].find((node) => node.textContent === "Пауза")?.click()`);
         await waitFor(async () => evaluate(cdp, `(() => {
           const canvas = document.querySelector("canvas.scene");
           if (!canvas) return false;

@@ -80,7 +80,6 @@ function momentMeta(age: number, year: number): string {
 
 export function memorialView(state: LifeState, scene: Scene, options: MemorialViewOptions): HTMLElement {
   const root = el("div", `memorial-view${state.alive ? "" : " ended"}`);
-  if (options.onBack) root.append(button(s.back, options.onBack));
   const year = state.deathYear ?? state.birth.year + state.age;
   root.append(el("h1", undefined, state.alive ? s.journalTitle : s.gameOver), thematicHeader(state.alive ? "journal" : "memories"));
   if (state.alive) root.append(el("p", "meta", `${state.birth.name} · ${options.countryName}`));

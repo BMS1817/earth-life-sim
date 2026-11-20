@@ -128,7 +128,6 @@ try {
   async function capture(name, overrides = {}) {
     await cdp.call("Page.navigate", { url: auditUrl(overrides) });
     await waitFor(async () => evaluate(cdp, `Boolean(document.querySelector("canvas.scene"))`), name);
-    await evaluate(cdp, `[...document.querySelectorAll("button")].find((node) => node.textContent === "Пауза")?.click()`);
     await waitFor(async () => evaluate(cdp, `(() => {
       const canvas = document.querySelector("canvas.scene");
       if (!canvas) return false;
