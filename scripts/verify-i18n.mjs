@@ -154,7 +154,7 @@ try {
   cdp = await Cdp.open(target.webSocketDebuggerUrl);
   await cdp.call("Network.enable");
   if (standalone) await cdp.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
-  await cdp.call("Page.addScriptToEvaluateOnNewDocument", { source: `if (!localStorage.getItem("earth:language")) localStorage.setItem("earth:language", "en");` });
+  await cdp.call("Page.addScriptToEvaluateOnNewDocument", { source: `if (["http:", "https:", "file:"].includes(location.protocol) && !localStorage.getItem("earth:language")) localStorage.setItem("earth:language", "en");` });
   await navigate(cdp, "i18n-ui");
   if (await evaluate(cdp, `document.querySelector("h1").textContent`) !== "Before you begin") throw new Error("Английский старт не открылся");
   await capture(cdp, "en-welcome-1280");

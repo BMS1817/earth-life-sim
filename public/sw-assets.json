@@ -1559,5 +1559,12 @@
   "icons/icon-192.png",
   "icons/icon-512.png",
   "licenses/flag-icons.txt",
-  "manifest.webmanifest"
+  "manifest.webmanifest",
+  "promo/01-choices.png",
+  "promo/02-people.png",
+  "promo/03-family.png",
+  "promo/04-memorial.png",
+  "promo/05-lineage.png",
+  "promo/earth-life.gif",
+  "promo/itch-banner.png"
 ]
