@@ -51,6 +51,7 @@ if (process.argv.includes("--dist")) {
 }
 
 const assets = (await files(root))
+  .filter((path) => !relative(root, path).replaceAll(sep, "/").startsWith("downloads/"))
   .filter((path) => !excluded.has(relative(root, path).replaceAll(sep, "/")))
   .map((path) => relative(root, path).replaceAll(sep, "/"))
   .sort();

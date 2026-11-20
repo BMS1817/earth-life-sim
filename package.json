@@ -10,6 +10,7 @@
     "offline:html": "npm run build && node scripts/build-offline.mjs",
     "offline:windows": "npm run build && node scripts/build-windows.mjs",
     "release:art": "python -P scripts/build_release_art.py && node scripts/build_itch_preview.mjs",
+    "release:html5": "node scripts/package-html5.mjs",
     "test:preview": "node scripts/verify-itch-preview.mjs",
     "test": "node scripts/build-flags.mjs && node scripts/build-pwa.mjs && vitest run",
     "data": "python -P scripts/build_data.py",
