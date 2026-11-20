@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { clearLife, loadLife, saveLife } from "../src/core/save.ts";
+import { clearLife, loadLife, parseLife, saveLife, serializeLife } from "../src/core/save.ts";
 import { newState } from "./helpers.ts";
 
 const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
@@ -163,5 +163,29 @@ describe("сейв v10", () => {
     localStorage.setItem("earth:life:v10", JSON.stringify({ version: 10, seed: "bad" }));
     expect(loadLife().state).toBeNull();
     expect(localStorage.getItem("earth:life:v10")).toBeNull();
+  });
+
+  it("экспорт и импорт сохраняют жизнь и род без изменения данных", () => {
+    const { s } = newState("portable-save");
+    s.lineage.generation = 3;
+    s.chronicle.push({ age: 0, year: s.birth.year, text: "Перенос", source: "hero" });
+    expect(parseLife(serializeLife(s))).toEqual(s);
+  });
+
+  it("импорт проходит миграцию v5 и отклоняет повреждённые данные", () => {
+    const { s } = newState("portable-migration");
+    const legacy = structuredClone(s) as unknown as Record<string, unknown>;
+    legacy.version = 5;
+    delete legacy.happinessHistory;
+    delete legacy.focusTotals;
+    delete legacy.favoriteMomentIndexes;
+    delete legacy.politics;
+    delete legacy.lineage;
+    const migrated = parseLife(JSON.stringify(legacy));
+    expect(migrated?.version).toBe(10);
+    expect(migrated?.lineage.generation).toBe(1);
+    expect(parseLife("not json")).toBeNull();
+    expect(parseLife(JSON.stringify({ version: 10, seed: "bad" }))).toBeNull();
+    expect(parseLife(JSON.stringify(s).replace('"version":10', '"version":4'))).toBeNull();
   });
 });

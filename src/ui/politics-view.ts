@@ -3,6 +3,7 @@ import type { AmendmentField, AmendmentValue, PoliticalLevel, PoliticalPlatform,
 import type { LifeState } from "../core/state.ts";
 import type { CountryEntry } from "../core/types.ts";
 import { s, t } from "./strings.ts";
+import { resourceUrl } from "./resource.ts";
 
 interface PoliticsViewOptions {
   baseGdp: number;
@@ -27,11 +28,11 @@ function politicsScene(country: CountryEntry): HTMLElement {
     image.onerror = null;
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
   };
-  image.src = "art/kimi/politics_city.png";
+  image.src = resourceUrl("art/kimi/politics_city.png");
   root.append(canvas);
   if (country.iso2) {
     const flag = el("span", "politics-flag fi");
-    flag.style.backgroundImage = `url("flags/4x3/${country.iso2.toLowerCase()}.svg")`;
+    flag.style.backgroundImage = `url("${resourceUrl(`flags/4x3/${country.iso2.toLowerCase()}.svg`)}")`;
     flag.setAttribute("aria-hidden", "true");
     root.append(flag);
   }

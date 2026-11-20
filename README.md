@@ -46,6 +46,19 @@ npm run preview
 
 Первая установка требует сети. Сохранения находятся в localStorage текущего браузера (`earth:life:v10`),
 не в service worker и не в облаке. Очистка данных браузера удалит жизнь и родовую историю.
+
+Отдельные загрузки на itch.io:
+
+- **Offline HTML** — один автономный файл с игрой, данными и артом; открывается напрямую через `file://`
+  без сервера и установки в desktop-браузерах Windows, macOS и Linux. На Android используйте
+  браузер/PWA: Chrome блокирует прямые локальные HTML-файлы.
+- **Портативный Windows ZIP** — распакуйте и запустите `Earth.exe` на Windows 10/11 x64. Требуется
+  Microsoft Edge WebView2 Runtime. Установленный .NET и локальный сервер не нужны; сейвы хранятся
+  в профиле пользователя отдельно от папки игры.
+- Кнопки **«Экспорт сейва» / «Импорт сейва»** в меню, на старте и в мемориале переносят жизнь и род
+  в JSON между браузером, HTML, Windows и новыми версиями. Импорт поддерживает миграции v5–v10.
+- На телефоне используется строгая портретная ориентация. В landscape появляется экран с просьбой
+  повернуть устройство; установленная PWA запрашивает portrait через manifest и Orientation API.
 Старые v5–v8 переносятся автоматически; v1–v4 по ранее принятому решению не переносятся.
 
 ## Проверки
@@ -62,6 +75,12 @@ npm run audit:i18n             # поиск непереведённых стр�
 npm run test:i18n              # RU/EN production, 32 момента, 3 поколения и оффлайн
 npm run test:pwa:cache         # полный кэш и оффлайн-перезагрузка
 npm run test:touch             # тач: старт, год, вкладки и решение
+npm run offline:html           # production + автономный single-file HTML
+npm run offline:windows        # production + портативный Windows ZIP (нужен .NET SDK в .tools)
+npm run test:offline           # file://, сеть выключена, сейвы, RU/EN и 3 поколения
+npm run test:windows           # WebView2 на 127.0.0.1:19001: offline и перенос сейва
+npm run release:art            # баннер, 5 скриншотов, GIF и локальный itch preview
+npm run test:preview           # витрина на 1920/1440/1280/390 px
 npm run audit:war -- --base "http://127.0.0.1:4173/" --out shots/war-layers
 npm run perf:startup -- --base "http://127.0.0.1:4173/" --runs 3 --assert
 npm run perf:runtime -- --base "http://127.0.0.1:4173/" --cycles 10 --assert

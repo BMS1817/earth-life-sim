@@ -7,6 +7,7 @@ import { climateForCountry } from "../content/climates.ts";
 import { GROUND, PIXEL_INK, SKIN_TONES, SKY } from "./palette.ts";
 import { AGE_STAGES, ageStageForAge, appearanceForSeed } from "./appearance.ts";
 import type { AgeStage } from "./appearance.ts";
+import { resourceUrl } from "./resource.ts";
 
 export { climateForCountry } from "../content/climates.ts";
 export type { Climate } from "../content/climates.ts";
@@ -97,7 +98,7 @@ function loadImage(url: string): Promise<HTMLImageElement> {
       img.onerror = null;
       reject(new Error(url));
     };
-    img.src = url;
+    img.src = resourceUrl(url);
   });
 }
 
@@ -239,7 +240,7 @@ export class Scene {
   private ensureManifest(): Promise<ArtManifest> {
     if (this.manifest) return Promise.resolve(this.manifest);
     if (!this.manifestPending) {
-      this.manifestPending = fetch("art/kimi/manifest.json").then((response) => response.json()).then((manifest: ArtManifest) => {
+      this.manifestPending = fetch(resourceUrl("art/kimi/manifest.json")).then((response) => response.json()).then((manifest: ArtManifest) => {
         this.manifest = manifest;
         return manifest;
       });

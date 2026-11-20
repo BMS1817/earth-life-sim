@@ -1,4 +1,7 @@
 node_modules/
+.tools/
+windows/**/bin/
+windows/**/obj/
 dist/
 data/raw/
 assets/kimi/
@@ -7,3 +10,4 @@ __pycache__/
 *.pyc
 .webbridge-req-*.json
 release/*.zip
+release/earth-one-life-offline.html

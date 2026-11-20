@@ -1,0 +1,104 @@
+@font-face {
+  font-family: "Earth Pixel";
+  src: url("https://bms1817.github.io/earth-life-sim/fonts/PressStart2P-Regular.woff2") format("woff2"), url("../public/fonts/PressStart2P-Regular.woff2") format("woff2");
+  font-display: swap;
+}
+
+body {
+  color: #eee4d4;
+  background-color: #0e0c14;
+  background-image: radial-gradient(circle at 15% 12%, #33244966 0, transparent 34%), radial-gradient(circle at 82% 40%, #5c421f44 0, transparent 30%), linear-gradient(#0e0c14, #17121d);
+}
+
+.wrapper {
+  background: transparent;
+}
+
+.inner_column, .game_description {
+  color: #eee4d4;
+  background: #17141f;
+  border-color: #8f6c3c;
+}
+
+.game_description {
+  padding: 28px;
+  font: 17px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.earth-page { max-width: 100%; overflow-wrap: anywhere; }
+.earth-page p, .earth-page li { max-width: 100%; }
+.earth-page h2 {
+  margin: 34px 0 16px;
+  color: #e0b85c;
+  font: 18px/1.8 "Earth Pixel", monospace;
+  letter-spacing: 0;
+}
+.earth-page h2:first-child { margin-top: 0; }
+.earth-page a { color: #f0c96f; text-decoration-color: #9e7b42; text-underline-offset: 4px; }
+.earth-page a:hover, .earth-page a:focus { color: #fff4c8; }
+.earth-page img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 2px solid #9c7844;
+  border-radius: 8px;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.earth-page ul { padding-left: 24px; }
+.earth-page li { margin: 8px 0; }
+.earth-lead { color: #fff2d2; font-size: 20px; line-height: 1.6; }
+.earth-muted { color: #b9adbe; font-size: 14px; }
+.earth-center { text-align: center; }
+.earth-gif { max-width: 100%; }
+.earth-feature {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 24px;
+  margin: 30px 0;
+}
+.earth-feature h2 { margin-top: 0; }
+.earth-note {
+  margin: 30px 0;
+  padding: 20px 22px;
+  background: #241d2d;
+  border-left: 4px solid #e0b85c;
+  border-radius: 8px;
+}
+.earth-note h2 { margin-top: 0; }
+.earth-page code { color: #f7d991; }
+.earth-page hr { margin: 38px 0; border: 0; border-top: 2px solid #6f5636; }
+.earth-page section { min-width: 0; }
+
+.itch-shell {
+  width: min(960px, calc(100% - 32px));
+  margin: 24px auto 60px;
+  background: #17141f;
+  border: 1px solid #8f6c3c;
+  box-shadow: 0 16px 60px #0008;
+}
+.earth-banner { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.itch-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 18px 24px; border-bottom: 1px solid #4c3a28; }
+.itch-button {
+  display: inline-block;
+  padding: 12px 20px;
+  color: #1a1420 !important;
+  background: #e0b85c;
+  border: 2px solid #f4d88e;
+  border-radius: 6px;
+  font-weight: 800;
+  text-decoration: none !important;
+}
+.itch-button.secondary { color: #f6edda !important; background: #382a48; border-color: #8c72a5; }
+.itch-price { color: #b9adbe; }
+.preview-label { position: fixed; z-index: 5; top: 12px; right: 12px; padding: 8px 10px; color: #1a1420; background: #e0b85c; font: 11px/1.4 "Earth Pixel", monospace; }
+
+@media (max-width: 640px) {
+  .game_description { padding: 18px; font-size: 16px; }
+  .earth-feature { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .earth-feature > img:first-child { order: 2; }
+  .earth-page h2 { font-size: 14px; }
+  .itch-shell { width: 100%; margin: 0; border-right: 0; border-left: 0; }
+  .itch-actions { padding: 14px; }
+}

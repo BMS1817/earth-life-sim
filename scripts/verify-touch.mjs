@@ -102,6 +102,14 @@ try {
   report.checks.choiceOutcome = true;
   const shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
   await writeFile(join(out, "touch-after-choice.png"), Buffer.from(String(shot.data), "base64"));
+  await call("Emulation.setTouchEmulationEnabled", { enabled: false });
+  await call("Emulation.setDeviceMetricsOverride", { width: 960, height: 540, deviceScaleFactor: 1, mobile: false });
+  await sleep(200);
+  const compactLayout = await evaluate(`({ overflow: document.documentElement.scrollWidth > innerWidth, overlay: getComputedStyle(document.querySelector(".orientation-lock")).display, tabs: getComputedStyle(document.querySelector(".bottom-tabs")).display })`);
+  if (compactLayout.overflow || compactLayout.overlay !== "none" || compactLayout.tabs !== "grid") throw new Error(`Проблема ширины 960: ${JSON.stringify(compactLayout)}`);
+  report.checks.compact960 = compactLayout;
+  const compactShot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+  await writeFile(join(out, "compact-960.png"), Buffer.from(String(compactShot.data), "base64"));
   if (errors.length > 0) throw new Error(errors.join("\n"));
   report.passed = true;
   console.log(JSON.stringify(report, null, 2));

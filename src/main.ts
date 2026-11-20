@@ -7,7 +7,7 @@ import type { HobbyId } from "./core/state.ts";
 import { conflictForYear, conflictHazard, riskLevel } from "./core/conflicts.ts";
 import type { ConflictData } from "./core/conflicts.ts";
 import { CONFLICT_EVENTS } from "./content/conflict-events.ts";
-import { clearLife, loadLife, saveLife } from "./core/save.ts";
+import { clearLife, loadLife, parseLife, saveLife, serializeLife } from "./core/save.ts";
 import type { LifeState, Scales } from "./core/state.ts";
 import type { Choice, LifeEvent } from "./core/events.ts";
 import { EVENTS } from "./content/events.ts";
@@ -34,6 +34,7 @@ import { attemptUsurpation, holdReferendum, startCampaign, syncPoliticsBaseline 
 import type { PoliticalLevel, PoliticalPlatform, PoliticsData } from "./core/politics.ts";
 import { lineageView } from "./ui/lineage-view.ts";
 import { inheritLife } from "./core/inheritance.ts";
+import { isStandaloneBuild, resourceUrl } from "./ui/resource.ts";
 
 interface IncomeData {
   gdp: Record<string, number[]>;
@@ -56,7 +57,7 @@ document.documentElement.lang = getLanguage();
 document.title = s.title;
 
 async function loadJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  const res = await fetch(resourceUrl(url));
   if (!res.ok) throw new Error(`${url}: ${res.status}`);
   return res.json();
 }
@@ -243,7 +244,17 @@ async function main(): Promise<void> {
     if (node) node.textContent = text;
   }
 
+  function lockPortrait(): void {
+    if (!window.matchMedia("(pointer: coarse)").matches) return;
+    const orientation = window.screen.orientation as (ScreenOrientation & { lock?: (value: "portrait") => Promise<void> }) | undefined;
+    if (orientation?.lock) void orientation.lock("portrait").catch(() => undefined);
+  }
+
   function setupOffline(): void {
+    if (isStandaloneBuild()) {
+      updateOfflineStatus(s.offlineStandalone);
+      return;
+    }
     window.addEventListener("beforeinstallprompt", (event) => {
       event.preventDefault();
       installPrompt = event as InstallPromptEvent;
@@ -290,6 +301,51 @@ async function main(): Promise<void> {
     return wrap;
   }
 
+  function renderTransferControls(currentLife: () => LifeState | null): HTMLElement {
+    const wrap = el("section", "save-transfer");
+    const row = el("div", "time-buttons");
+    const input = el("input", "save-import-input");
+    input.type = "file";
+    input.accept = "application/json,.json";
+    input.hidden = true;
+    row.append(button(s.exportSave, () => {
+      const exported = currentLife();
+      if (!exported) return;
+      const blob = new Blob([serializeLife(exported)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = el("a");
+      const safeName = exported.birth.name.replace(/[^\p{L}\p{N}_-]+/gu, "-");
+      link.href = url;
+      link.download = `earth-${safeName}-g${exported.lineage.generation}-age${exported.age}.json`;
+      document.body.append(link);
+      link.click();
+      link.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 0);
+    }));
+    row.append(button(s.importSave, () => input.click()));
+    input.addEventListener("change", () => {
+      const file = input.files?.[0];
+      input.value = "";
+      if (!file) return;
+      if (file.size > 2_000_000) {
+        window.alert(s.importError);
+        return;
+      }
+      void file.text().then(async (raw) => {
+        const imported = parseLife(raw);
+        if (!imported) {
+          window.alert(s.importError);
+          return;
+        }
+        if (currentLife() && !window.confirm(s.importConfirm)) return;
+        saveLife(imported);
+        await startLife(imported.seed);
+      }).catch(() => window.alert(s.importError));
+    });
+    wrap.append(row, input);
+    return wrap;
+  }
+
   function renderSettingsControls(): HTMLElement {
     const wrap = el("section", "time-controls settings-controls");
     const row = el("div", "time-buttons");
@@ -305,7 +361,7 @@ async function main(): Promise<void> {
       if (prompt) void prompt.prompt();
       render();
     }));
-    wrap.append(row, el("p", "offline-status", offlineStatus));
+    wrap.append(row, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
     return wrap;
   }
 
@@ -527,6 +583,7 @@ async function main(): Promise<void> {
         window.scrollTo(0, scroll);
       },
     });
+    view.append(renderTransferControls(() => state));
     renderSecondary(view, "memorial");
     const details = view.querySelector<HTMLDetailsElement>(".gifted-day");
     if (details) details.open = giftedDayOpen;
@@ -891,6 +948,7 @@ async function main(): Promise<void> {
   }
 
   async function startLife(seed: string, softenHeavy = false): Promise<void> {
+    lockPortrait();
     const saved = loadLife((birth, age) => {
       const table = income.gdp[birth.country.iso3] ?? income.gdp._world;
       return table[Math.min(birth.year + age, 2022) - 1950];
@@ -950,6 +1008,7 @@ async function main(): Promise<void> {
       clearLife();
       void startLife(seed, checkbox.checked);
     }));
+    app.append(renderTransferControls(() => loadLife().state));
   }
 
   function newLife(): void {
@@ -968,6 +1027,7 @@ async function main(): Promise<void> {
     app.append(el("h1", undefined, s.title));
     app.append(button(saved.alive ? s.continueLife : s.memorialContinue, () => void startLife(saved.seed)));
     app.append(button(s.newLife, newLife));
+    app.append(renderTransferControls(() => loadLife().state));
   } else if (seedParam && saved && saved.seed === seedParam) {
     await startLife(seedParam);
   } else {

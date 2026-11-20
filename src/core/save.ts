@@ -112,6 +112,26 @@ function valid(state: LifeState): boolean {
   );
 }
 
+function decodeLife(raw: string): LifeState | null {
+  const parsed = JSON.parse(raw) as LifeState;
+  const version = (parsed as { version: number }).version;
+  if (!Number.isInteger(version) || version < 5 || version > 10) return null;
+  const state = version === 5 ? migrateV5(parsed) : version === 6 ? migrateV6(parsed) : version === 7 ? migrateV7(parsed) : version === 8 ? migrateV8(parsed) : version === 9 ? migrateV9(parsed) : parsed;
+  return valid(state) ? state : null;
+}
+
+export function serializeLife(state: LifeState): string {
+  return JSON.stringify(state);
+}
+
+export function parseLife(raw: string): LifeState | null {
+  try {
+    return decodeLife(raw);
+  } catch {
+    return null;
+  }
+}
+
 export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): LoadLifeResult {
   try {
     let legacyDiscarded = false;
@@ -124,9 +144,8 @@ export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): 
     for (const key of [KEY, V9_KEY, V8_KEY, V7_KEY, V6_KEY, V5_KEY]) {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
-      const parsed = JSON.parse(raw) as LifeState;
-      const state = key === V5_KEY ? migrateV5(parsed) : key === V6_KEY ? migrateV6(parsed) : key === V7_KEY ? migrateV7(parsed) : key === V8_KEY ? migrateV8(parsed) : key === V9_KEY ? migrateV9(parsed) : parsed;
-      if (valid(state)) {
+      const state = decodeLife(raw);
+      if (state) {
         if (key !== KEY) {
           localStorage.removeItem(key);
           saveLife(state);

@@ -1,3 +1,5 @@
+import { resourceUrl } from "./resource.ts";
+
 export function thematicHeader(theme: string): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = 256;
@@ -12,6 +14,6 @@ export function thematicHeader(theme: string): HTMLCanvasElement {
     image.onerror = null;
     ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
   };
-  image.src = `art/kimi/header_${theme}.png`;
+  image.src = resourceUrl(`art/kimi/header_${theme}.png`);
   return canvas;
 }

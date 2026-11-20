@@ -1,15 +1,18 @@
 import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 
 const args = process.argv.slice(2);
 const value = (name, fallback) => {
   const index = args.indexOf(name);
   return index >= 0 ? args[index + 1] : fallback;
 };
-const base = value("--base", "http://127.0.0.1:4175/");
+const standalone = args.includes("--standalone");
+const releaseShots = args.includes("--release-shots");
+const base = value("--base", standalone ? pathToFileURL(resolve("release/earth-one-life-offline.html")).href : "http://127.0.0.1:4175/");
 const out = resolve(value("--out", "shots/i18n-production"));
 
 class Cdp {
@@ -34,6 +37,7 @@ class Cdp {
         const entry = JSON.stringify(message.params);
         if (!entry.includes("ERR_INTERNET_DISCONNECTED")) this.errors.push(entry);
       }
+      if (message.method === "Page.javascriptDialogOpening") void this.call("Page.handleJavaScriptDialog", { accept: true });
     });
   }
   static async open(url) {
@@ -62,7 +66,8 @@ const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms)
 async function waitFor(check, description, timeout = 30_000) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) {
-    if (await check()) return;
+    const value = await check();
+    if (value) return value;
     await sleep(40);
   }
   throw new Error(`Таймаут: ${description}`);
@@ -85,6 +90,7 @@ async function savedState(cdp) {
   return JSON.parse(String(raw));
 }
 async function capture(cdp, name, width = 1280, height = 720, mobile = false, game = false) {
+  if (releaseShots && width === 1280) { width = 1920; height = 1080; }
   await cdp.call("Emulation.setDeviceMetricsOverride", { width, height, deviceScaleFactor: 1, mobile });
   await sleep(150);
   const overflow = await evaluate(cdp, `({ horizontal: document.documentElement.scrollWidth > innerWidth, vertical: document.documentElement.scrollHeight > innerHeight })`);
@@ -147,7 +153,8 @@ try {
   const target = await (await fetch(`http://127.0.0.1:${port}/json/new?about:blank`, { method: "PUT" })).json();
   cdp = await Cdp.open(target.webSocketDebuggerUrl);
   await cdp.call("Network.enable");
-  await cdp.call("Page.addScriptToEvaluateOnNewDocument", { source: `if (location.protocol.startsWith("http") && !localStorage.getItem("earth:language")) localStorage.setItem("earth:language", "en");` });
+  if (standalone) await cdp.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+  await cdp.call("Page.addScriptToEvaluateOnNewDocument", { source: `if (!localStorage.getItem("earth:language")) localStorage.setItem("earth:language", "en");` });
   await navigate(cdp, "i18n-ui");
   if (await evaluate(cdp, `document.querySelector("h1").textContent`) !== "Before you begin") throw new Error("Английский старт не открылся");
   await capture(cdp, "en-welcome-1280");
@@ -165,6 +172,26 @@ try {
   const choiceCount = await evaluate(cdp, `document.querySelectorAll(".event .choice button").length`);
   if (choiceCount !== 4) throw new Error(`Решений в английском событии: ${choiceCount}`);
   report.checks.englishChoices = choiceCount;
+  if (standalone) {
+    const downloadPath = join(out, "downloads");
+    await mkdir(downloadPath, { recursive: true });
+    for (const file of await readdir(downloadPath)) await rm(join(downloadPath, file), { force: true });
+    await cdp.call("Browser.setDownloadBehavior", { behavior: "allow", downloadPath });
+    await clickButton(cdp, "Export save", true);
+    const exportedName = await waitFor(async () => {
+      const files = await readdir(downloadPath);
+      return files.find((file) => file.endsWith(".json")) ?? null;
+    }, "offline save export");
+    const exported = JSON.parse(await readFile(join(downloadPath, exportedName), "utf8"));
+    exported.birth.name = "Alex";
+    const importPath = join(downloadPath, "import.json");
+    await writeFile(importPath, JSON.stringify(exported));
+    const document = await cdp.call("DOM.getDocument", { depth: -1 });
+    const input = await cdp.call("DOM.querySelector", { nodeId: document.root.nodeId, selector: ".save-import-input" });
+    await cdp.call("DOM.setFileInputFiles", { nodeId: input.nodeId, files: [importPath] });
+    await waitFor(async () => await evaluate(cdp, `document.querySelector(".game-hero h1")?.textContent`) === "Alex", "offline save import");
+    report.checks.saveTransfer = true;
+  }
   await capture(cdp, "en-event-1280", 1280, 720, false, true);
   await capture(cdp, "en-event-mobile", 390, 844, true, true);
   await evaluate(cdp, `document.querySelector(".event .choice button").click()`);
@@ -250,17 +277,18 @@ try {
   }
   report.checks.generation = (await savedState(cdp)).lineage.generation;
 
-  await waitFor(async () => Boolean(await evaluate(cdp, `(async () => {
+  if (!standalone) await waitFor(async () => Boolean(await evaluate(cdp, `(async () => {
     const assets = await (await fetch("sw-assets.json")).json();
     const key = (await caches.keys()).find((name) => name.startsWith("earth-v1.0.0-"));
     if (!key) return false;
     const cache = await caches.open(key);
     return (await cache.keys()).length >= assets.length && navigator.serviceWorker.controller !== null;
   })()`, true)), "полный оффлайн-кэш", 600_000);
+  report.checks.standalone = standalone;
   await cdp.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
   await cdp.call("Page.reload", { ignoreCache: true });
   await sleep(500);
-  await waitFor(async () => Boolean(await evaluate(cdp, `location.origin === ${JSON.stringify(new URL(base).origin)} && document.readyState === "complete" && navigator.serviceWorker.controller && document.querySelector(".memorial-view.ended")`)), "оффлайн-перезагрузка мемориала");
+  await waitFor(async () => Boolean(await evaluate(cdp, `(${standalone} || location.origin === ${JSON.stringify(new URL(base).origin)}) && document.readyState === "complete" && (${standalone} || navigator.serviceWorker.controller) && document.querySelector(".memorial-view.ended")`)), "оффлайн-перезагрузка мемориала");
   report.checks.offlineGeneration = (await savedState(cdp)).lineage.generation;
   if (report.checks.offlineGeneration !== 3) throw new Error("Оффлайн-поколение не восстановлено");
   await cdp.call("Network.emulateNetworkConditions", { offline: false, latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
@@ -274,7 +302,10 @@ try {
   await waitSelector(cdp, "#soften-start");
   await clickButton(cdp, "Начать новую жизнь", true);
   await waitSelector(cdp, ".time-controls");
-  await clickButton(cdp, "Прожить год", true);
+  for (let attempt = 0; attempt < 4 && !await evaluate(cdp, `document.querySelector(".event")`); attempt++) {
+    await clickButton(cdp, "Прожить год", true);
+    await sleep(120);
+  }
   await waitSelector(cdp, ".event");
   const russianChoices = await evaluate(cdp, `document.querySelectorAll(".event .choice button").length`);
   if (russianChoices !== 4) throw new Error(`Решений в русском событии: ${russianChoices}`);

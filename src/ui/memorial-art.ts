@@ -2,6 +2,7 @@ import { MEMORIAL_PALETTE as C } from "../content/memorial.ts";
 import type { GiftedDay, RoomItemKind } from "../core/memorial.ts";
 import type { HappinessPoint, LifeState } from "../core/state.ts";
 import { climateForCountry } from "./scene.ts";
+import { resourceUrl } from "./resource.ts";
 
 const IMAGE_CACHE = new Map<string, Promise<HTMLImageElement>>();
 
@@ -25,7 +26,7 @@ function loadImage(name: string): Promise<HTMLImageElement> {
         image.onerror = null;
         reject(new Error(name));
       };
-      image.src = `art/kimi/${name}.png`;
+      image.src = resourceUrl(`art/kimi/${name}.png`);
     });
     IMAGE_CACHE.set(name, cached);
   }
