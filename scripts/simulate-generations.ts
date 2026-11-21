@@ -1,15 +1,14 @@
 import { readFileSync } from "node:fs";
 import { createBirth } from "../src/core/life.ts";
 import { rngFromSeed } from "../src/core/rng.ts";
-import { advanceYear, applyChoice, createLifeState, pickConflictEvent, pickFamilyEvent, pickYearEvents } from "../src/core/turn.ts";
+import { applyChoice, createLifeState } from "../src/core/turn.ts";
+import { completeYear, hasDecision, pendingEvent, scheduleFollowUpAfterChoice } from "../src/core/flow.ts";
 import { eligibleHeirs, inheritLife } from "../src/core/inheritance.ts";
 import { buyRental, startBusiness } from "../src/core/lifestyle.ts";
 import { netWorth } from "../src/core/finance.ts";
 import type { ConflictData } from "../src/core/conflicts.ts";
 import type { PoliticsData } from "../src/core/politics.ts";
 import type { FamilyData, IndexData, MortData, NamesData } from "../src/core/types.ts";
-import { EVENTS } from "../src/content/events.ts";
-import { FAMILY_EVENTS } from "../src/content/family-events.ts";
 
 const N = Number(process.argv[2] ?? 1000);
 const GENERATIONS = Number(process.argv[3] ?? 3);
@@ -67,13 +66,16 @@ for (let i = 0; i < N; i++) {
         if (i % 3 === 0 && state.property.rentals < 3) buyRental(state);
         if (i % 3 === 1 && state.property.business === null) startBusiness(state, "shop");
       }
-      const events = pickYearEvents(state, EVENTS);
-      if (events.length > 0) applyChoice(state, events[0], i % 4, names, conflict);
-      const conflictEvent = pickConflictEvent(state, conflict);
-      if (conflictEvent) applyChoice(state, conflictEvent, i % 4, names, conflict);
-      const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
-      if (familyEvent) applyChoice(state, familyEvent, i % 4, names, conflict);
-      advanceYear(state, mort, family, names, conflict, gdpTable[Math.min(state.birth.year + state.age, 2022) - 1950], politics);
+      completeYear(state, mort, family, names, conflict, gdpTable[Math.min(state.birth.year + state.age, 2022) - 1950], politics);
+      let decisionGuard = 0;
+      while (state.alive && hasDecision(state)) {
+        if (decisionGuard++ > 16) throw new Error(`Очередь решений не завершилась: ${seed}:${state.age}`);
+        const event = pendingEvent(state);
+        if (!event) throw new Error(`Ожидающее событие не найдено: ${seed}:${state.age}`);
+        applyChoice(state, event, i % 4, names, conflict);
+        scheduleFollowUpAfterChoice(state, conflict);
+      }
+      if (hasDecision(state)) throw new Error(`Решение пережило год: ${seed}:${state.age}`);
     }
     if (state.alive || guard >= 150) throw new Error(`Жизнь не завершилась: ${seed}, поколение ${generation}`);
     if (state.lineage.generation !== generation) throw new Error(`Поколение не совпадает: ${seed}`);

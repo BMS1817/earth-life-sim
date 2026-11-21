@@ -1,19 +1,24 @@
 import { afterEach, describe, expect, it } from "vitest";
-import { clearLife, loadLife, parseLife, saveLife, serializeLife } from "../src/core/save.ts";
-import { newState } from "./helpers.ts";
+import { clearLife, loadLife, parseLife, parseLifeDetailed, saveLife, serializeLife } from "../src/core/save.ts";
+import { autoPlay, newState } from "./helpers.ts";
 
 const original = Object.getOwnPropertyDescriptor(globalThis, "localStorage");
 
-function installStorage(): void {
+function installStorage(initialFailKeys: string[] = []): { data: Map<string, string>; failKeys: string[] } {
   const data = new Map<string, string>();
+  const failKeys = [...initialFailKeys];
   Object.defineProperty(globalThis, "localStorage", {
     configurable: true,
     value: {
       getItem: (key: string) => data.get(key) ?? null,
-      setItem: (key: string, value: string) => data.set(key, value),
+      setItem: (key: string, value: string) => {
+        if (failKeys.includes(key)) throw new Error("storage full");
+        data.set(key, value);
+      },
       removeItem: (key: string) => data.delete(key),
     },
   });
+  return { data, failKeys };
 }
 
 afterEach(() => {
@@ -158,11 +163,75 @@ describe("сейв v10", () => {
     expect(localStorage.getItem("earth:life:v10")).not.toBeNull();
   });
 
-  it("повреждённая десятая версия не запускается", () => {
+  it("повреждённая десятая версия не запускается и не удаляется без резервной копии", () => {
     installStorage();
     localStorage.setItem("earth:life:v10", JSON.stringify({ version: 10, seed: "bad" }));
     expect(loadLife().state).toBeNull();
-    expect(localStorage.getItem("earth:life:v10")).toBeNull();
+    expect(localStorage.getItem("earth:life:v10")).not.toBeNull();
+  });
+
+  it("восстанавливает предыдущий валидный сейв из резервной копии", () => {
+    installStorage();
+    const { s: previous } = newState("backup-previous");
+    const { s: current } = newState("backup-current");
+    expect(saveLife(previous)).toBe(true);
+    expect(saveLife(current)).toBe(true);
+    expect(localStorage.getItem("earth:life:v10:backup")).toBe(serializeLife(previous));
+    localStorage.setItem("earth:life:v10", "{truncated");
+    const result = loadLife();
+    expect(result.state).toEqual(previous);
+    expect(result.recoveredBackup).toBe(true);
+    expect(result.writeFailed).toBe(false);
+    expect(localStorage.getItem("earth:life:v10")).toBe(serializeLife(previous));
+  });
+
+  it("сообщает об ошибке записи и сохраняет прежний основной сейв", () => {
+    const storage = installStorage();
+    const { s: previous } = newState("write-previous");
+    expect(saveLife(previous)).toBe(true);
+    const { s: current } = newState("write-current");
+    storage.failKeys.push("earth:life:v10");
+    expect(saveLife(current)).toBe(false);
+    expect(storage.data.get("earth:life:v10")).toBe(serializeLife(previous));
+  });
+
+  it("не заменяет основной сейв, если резервную копию записать нельзя", () => {
+    installStorage(["earth:life:v10:backup"]);
+    const { s: previous } = newState("backup-fail-previous");
+    localStorage.setItem("earth:life:v10", serializeLife(previous));
+    const { s: current } = newState("backup-fail-current");
+    expect(saveLife(current)).toBe(false);
+    expect(localStorage.getItem("earth:life:v10")).toBe(serializeLife(previous));
+  });
+
+  it("отдельно отклоняет сейв более новой версии", () => {
+    const { s } = newState("newer-save");
+    const raw = serializeLife(s).replace('"version":10', '"version":11');
+    expect(parseLifeDetailed(raw)).toEqual({ state: null, error: "newer" });
+    expect(parseLife(raw)).toBeNull();
+  });
+
+  it("отклоняет неверные типы и диапазоны во вложенных данных", () => {
+    const { s } = newState("strict-save");
+    const corrupt = (mutate: (state: Record<string, unknown>) => void) => {
+      const copy = structuredClone(s) as unknown as Record<string, unknown>;
+      mutate(copy);
+      expect(parseLife(JSON.stringify(copy))).toBeNull();
+    };
+    corrupt((copy) => { copy.happiness = 101; });
+    corrupt((copy) => { (copy.people as { memories: unknown[] }[])[0].memories = [{}]; });
+    corrupt((copy) => { (copy.finance as { lastBreakdown: { income: unknown } }).lastBreakdown.income = "0"; });
+    corrupt((copy) => { (copy.politics as { alternative: { pending: unknown[] } }).alternative.pending = [{}]; });
+    corrupt((copy) => { (copy.lineage as { generation: number }).generation = 0; });
+    corrupt((copy) => { (copy.property as { acquired: Record<string, unknown> }).acquired.unknown = 2020; });
+  });
+
+  it("полная завершённая жизнь проходит строгий round-trip без потери полей", () => {
+    const completed = autoPlay("strict-full-life");
+    expect(completed.alive).toBe(false);
+    const restored = parseLife(serializeLife(completed));
+    expect(restored).not.toBeNull();
+    expect(serializeLife(restored!)).toBe(serializeLife(completed));
   });
 
   it("экспорт и импорт сохраняют жизнь и род без изменения данных", () => {

@@ -56,11 +56,18 @@ async function evaluate(expression, awaitPromise = false) {
   return result.result?.value;
 }
 async function click(text, exact = true) {
-  const clicked = await evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((node) => ${exact ? "node.textContent ===" : "node.textContent.includes"}(${JSON.stringify(text)}) && node.getBoundingClientRect().width > 0); if (!button) return false; button.click(); return true; })()`);
-  if (!clicked) throw new Error(`Button not found: ${text}`);
+  const point = await evaluate(`(() => { const button = [...document.querySelectorAll("button")].find((node) => ${exact ? "node.textContent ===" : "node.textContent.includes"}(${JSON.stringify(text)}) && node.getBoundingClientRect().width > 0); if (!button) return null; button.scrollIntoView({ block: "center" }); const rect = button.getBoundingClientRect(); return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }; })()`);
+  if (!point) throw new Error(`Button not found: ${text}`);
+  await call("Input.dispatchMouseEvent", { type: "mousePressed", ...point, button: "left", clickCount: 1 });
+  await call("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
 }
 async function waitText(text) {
   await waitFor(async () => await evaluate(`document.body?.textContent.includes(${JSON.stringify(text)}) ?? false`), text);
+}
+async function importFile(path) {
+  const document = await call("DOM.getDocument", { depth: -1 });
+  const input = await call("DOM.querySelector", { nodeId: document.root.nodeId, selector: ".save-import-input" });
+  await call("DOM.setFileInputFiles", { nodeId: input.nodeId, files: [path] });
 }
 const report = { passed: false, checks: {}, errors };
 await mkdir(out, { recursive: true });
@@ -94,6 +101,7 @@ try {
   await waitFor(async () => await evaluate(`document.querySelectorAll(".event .choice button").length`) === 4, "four choices");
   report.checks.offlineChoices = 4;
   report.checks.seed = JSON.parse(await evaluate(`localStorage.getItem("earth:life:v10")`)).seed;
+  await call("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: downloads });
   await click("Export save");
   const exportedName = await waitFor(async () => {
     const files = await readdir(downloads).catch(() => []);
@@ -104,14 +112,30 @@ try {
   exported.birth.name = "Windows Import";
   const importPath = resolve(".tools/windows-import.json");
   await writeFile(importPath, JSON.stringify(exported));
-  const document = await call("DOM.getDocument", { depth: -1 });
-  const input = await call("DOM.querySelector", { nodeId: document.root.nodeId, selector: ".save-import-input" });
-  await call("DOM.setFileInputFiles", { nodeId: input.nodeId, files: [importPath] });
+  await importFile(importPath);
   await waitFor(async () => await evaluate(`document.querySelector(".game-hero h1")?.textContent`) === "Windows Import", "imported life");
   report.checks.import = true;
   await call("Page.reload", { ignoreCache: true });
   await waitFor(async () => await evaluate(`document.querySelector(".game-hero h1")?.textContent`) === "Windows Import", "save after restart");
   report.checks.restart = true;
+  await evaluate(`(() => { window.__earthTestAlert = null; window.alert = (message) => { window.__earthTestAlert = message; }; })()`);
+  const newer = structuredClone(exported);
+  newer.version = 11;
+  newer.birth.name = "Must Not Replace";
+  const newerPath = resolve(".tools/windows-newer.json");
+  await writeFile(newerPath, JSON.stringify(newer));
+  await importFile(newerPath);
+  await waitFor(async () => await evaluate(`typeof window.__earthTestAlert === "string" && window.__earthTestAlert.includes("newer version")`), "newer save warning");
+  report.checks.newerRejected = await evaluate(`document.querySelector(".game-hero h1")?.textContent === "Windows Import" && JSON.parse(localStorage.getItem("earth:life:v10")).birth.name === "Windows Import"`);
+  if (!report.checks.newerRejected) throw new Error("Newer save replaced the current life");
+  const corruption = await call("Page.addScriptToEvaluateOnNewDocument", { source: `localStorage.setItem("earth:life:v10", "{truncated");` });
+  await call("Page.reload", { ignoreCache: true });
+  await waitFor(async () => await evaluate(`document.querySelector(".game-hero h1")?.textContent === "Windows Import" || [...document.querySelectorAll("button")].some((node) => node.textContent === "Continue")`), "backup recovery screen");
+  await call("Page.removeScriptToEvaluateOnNewDocument", { identifier: corruption.identifier });
+  if (await evaluate(`[...document.querySelectorAll("button")].some((node) => node.textContent === "Continue")`)) await click("Continue");
+  await waitFor(async () => await evaluate(`document.querySelector(".game-hero h1")?.textContent === "Windows Import"`), "backup life after reload");
+  await waitText("The primary save was damaged. The previous backup copy has been restored.");
+  report.checks.backupRecovery = true;
   const shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
   await writeFile(join(out, "windows-offline-import.png"), Buffer.from(String(shot.data), "base64"));
   if (errors.length > 0) throw new Error(errors.join("\n"));

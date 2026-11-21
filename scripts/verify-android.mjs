@@ -28,6 +28,8 @@ async function waitFor(check, description, timeout = 45_000) {
   }
   throw new Error(`Timeout: ${description}`);
 }
+adbCall("shell", "settings", "put", "system", "accelerometer_rotation", "0");
+adbCall("shell", "settings", "put", "system", "user_rotation", "0");
 adbCall("reverse", "tcp:5181", "tcp:5181");
 adbCall("shell", "am", "start", "-a", "android.intent.action.VIEW", "-d", base, "com.android.chrome");
 adbCall("forward", "tcp:9222", "localabstract:chrome_devtools_remote");
@@ -89,7 +91,7 @@ await mkdir(out, { recursive: true });
 try {
   await Promise.all([call("Page.enable"), call("Runtime.enable"), call("Network.enable")]);
   await call("Page.bringToFront");
-  const injection = await call("Page.addScriptToEvaluateOnNewDocument", { source: `localStorage.removeItem("earth:life:v10"); localStorage.setItem("earth:language", "en");` });
+  const injection = await call("Page.addScriptToEvaluateOnNewDocument", { source: `for (const key of Object.keys(localStorage)) if (key.startsWith("earth:life:")) localStorage.removeItem(key); localStorage.setItem("earth:language", "en");` });
   await call("Page.navigate", { url: base });
   await waitFor(async () => await evaluate(`document.querySelector("#soften-start")`), "portrait welcome");
   await call("Page.removeScriptToEvaluateOnNewDocument", { identifier: injection.identifier });
@@ -125,16 +127,13 @@ try {
   await tapText("Назад");
   await waitFor(async () => await evaluate(`document.querySelector(".time-controls")`), "back to game");
 
-  adbCall("shell", "settings", "put", "system", "accelerometer_rotation", "0");
-  adbCall("shell", "settings", "put", "system", "user_rotation", "1");
-  await sleep(800);
+  const portrait = report.checks.viewport;
+  await call("Emulation.setDeviceMetricsOverride", { width: portrait.height, height: portrait.width, deviceScaleFactor: 1, mobile: true, screenOrientation: { type: "landscapePrimary", angle: 90 } });
   await waitFor(async () => await evaluate(`matchMedia("(orientation: landscape)").matches && getComputedStyle(document.querySelector(".orientation-lock")).display === "flex"`), "landscape rotation overlay");
   report.checks.landscapeOverlay = await evaluate(`({ text: document.querySelector(".orientation-lock").textContent, width: innerWidth, height: innerHeight })`);
   await capture("04-rotate-overlay.png");
-  adbCall("shell", "settings", "put", "system", "user_rotation", "0");
-  await sleep(800);
+  await call("Emulation.clearDeviceMetricsOverride");
   await waitFor(async () => await evaluate(`matchMedia("(orientation: portrait)").matches && getComputedStyle(document.querySelector(".orientation-lock")).display === "none"`), "portrait restored");
-  adbCall("shell", "settings", "put", "system", "accelerometer_rotation", "1");
   report.checks.portraitRestored = true;
 
   if (offlineFile) {

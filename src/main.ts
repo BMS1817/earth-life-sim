@@ -1,17 +1,15 @@
 import { randomSeed, rngFromSeed } from "./core/rng.ts";
 import { createBirth } from "./core/life.ts";
-import { advanceYear, applyChoice, createLifeState, eventText, pickConflictEvent, pickFamilyEvent, pickYearEvents, riskChance } from "./core/turn.ts";
+import { applyChoice, createLifeState, eventText, riskChance } from "./core/turn.ts";
+import { completeYear, hasDecision, pendingEvent, scheduleFollowUpAfterChoice } from "./core/flow.ts";
 import { addHobby, focusOptions, setActiveHobby, setFocus } from "./core/focus.ts";
 import { HOBBY_IDS } from "./content/focus.ts";
 import type { HobbyId } from "./core/state.ts";
 import { conflictForYear, conflictHazard, riskLevel } from "./core/conflicts.ts";
 import type { ConflictData } from "./core/conflicts.ts";
-import { CONFLICT_EVENTS } from "./content/conflict-events.ts";
-import { clearLife, loadLife, parseLife, saveLife, serializeLife } from "./core/save.ts";
+import { clearLife, loadLife, parseLifeDetailed, saveLife, serializeLife } from "./core/save.ts";
 import type { LifeState, Scales } from "./core/state.ts";
 import type { Choice, LifeEvent } from "./core/events.ts";
-import { EVENTS } from "./content/events.ts";
-import { FAMILY_EVENTS } from "./content/family-events.ts";
 import { eraName } from "./content/eras.ts";
 import { COUNTRIES_EN } from "./content/en/countries.ts";
 import type { FamilyData, IndexData, MortData, NamesData } from "./core/types.ts";
@@ -230,12 +228,14 @@ async function main(): Promise<void> {
   let lineageOpen = false;
   let selectedPersonId: string | null = null;
   let legacyNotice = false;
+  let recoveryNotice = false;
+  let saveWriteFailed = false;
   let installPrompt: InstallPromptEvent | null = null;
   let mobileTab: "event" | "hero" | "focus" | "menu" = "event";
   let offlineStatus: string = s.offlineWaiting;
 
   function save(): void {
-    saveLife(state);
+    saveWriteFailed = !saveLife(state);
   }
 
   function updateOfflineStatus(text: string): void {
@@ -332,13 +332,18 @@ async function main(): Promise<void> {
         return;
       }
       void file.text().then(async (raw) => {
-        const imported = parseLife(raw);
-        if (!imported) {
-          window.alert(s.importError);
+        const result = parseLifeDetailed(raw);
+        if (!result.state) {
+          window.alert(result.error === "newer" ? s.importNewer : s.importError);
           return;
         }
+        const imported = result.state;
         if (currentLife() && !window.confirm(s.importConfirm)) return;
-        saveLife(imported);
+        if (!saveLife(imported)) {
+          saveWriteFailed = true;
+          window.alert(s.importWriteError);
+          return;
+        }
         await startLife(imported.seed);
       }).catch(() => window.alert(s.importError));
     });
@@ -455,8 +460,8 @@ async function main(): Promise<void> {
   function renderChoice(event: LifeEvent, choice: Choice, idx: number): HTMLElement {
     const b = button(`${s.sectors[choice.sector]} ${t(choice.label)}`, () => {
       applyChoice(state, event, idx, names, conflict);
-      scheduleFollowUpAfterChoice();
-      if (state.alive && !hasDecision()) {
+      scheduleFollowUpAfterChoice(state, conflict);
+      if (state.alive && !hasDecision(state)) {
         completeCurrentYear();
         return;
       }
@@ -594,52 +599,10 @@ async function main(): Promise<void> {
     renderMemorial(null);
   }
 
-  function schedulePendingEvents(): void {
-    if (!state.alive || hasDecision()) return;
-    const events = pickYearEvents(state, EVENTS);
-    if (events.length > 0) {
-      state.pendingEventIds = events.map((e) => e.id);
-      return;
-    }
-    const conflictEvent = pickConflictEvent(state, conflict);
-    if (conflictEvent) {
-      state.war.pendingEventId = conflictEvent.id;
-      return;
-    }
-    const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
-    if (familyEvent) state.pendingFamilyEventId = familyEvent.id;
-  }
-
-  function hasDecision(): boolean {
-    return state.pendingEventIds.length > 0 || state.pendingFamilyEventId !== null || state.war.pendingEventId !== null;
-  }
-
   function completeCurrentYear(): void {
-    const lastOutcome = state.lastOutcome;
-    const lastOutcomeKind = state.lastOutcomeKind;
-    const lastArrows = state.lastArrows;
-    state.focus.fractions = {};
-    state.time.tick = 0;
-    advanceYear(state, mort, family, names, conflict, gdpForYear(state.birth.year + state.age), politics);
-    if (state.alive) {
-      state.lastOutcome = lastOutcome;
-      state.lastOutcomeKind = lastOutcomeKind;
-      state.lastArrows = lastArrows;
-      schedulePendingEvents();
-    }
+    completeYear(state, mort, family, names, conflict, gdpForYear(state.birth.year + state.age), politics);
     save();
     render();
-  }
-
-  function scheduleFollowUpAfterChoice(): void {
-    if (state.lastOutcomeKind !== "life") return;
-    const conflictEvent = pickConflictEvent(state, conflict);
-    if (conflictEvent) {
-      state.war.pendingEventId = conflictEvent.id;
-      return;
-    }
-    const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
-    if (familyEvent) state.pendingFamilyEventId = familyEvent.id;
   }
 
   function renderEvent(event: LifeEvent): HTMLElement {
@@ -706,21 +669,35 @@ async function main(): Promise<void> {
 
   function renderMobileTabs(mainView: boolean): HTMLElement {
     const tabs = el("nav", "mobile-tabs bottom-tabs");
+    const ids = ["event", "hero", "focus", "menu"] as const;
     tabs.setAttribute("aria-label", "Earth");
     tabs.setAttribute("role", "tablist");
-    tabs.addEventListener("click", (event) => {
-      const target = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-tab]");
-      if (!target) return;
-      mobileTab = target.dataset.tab as "event" | "hero" | "focus" | "menu";
+    const activate = (id: typeof ids[number]) => {
+      mobileTab = id;
       if (mainView) render();
       else closeSecondary();
+      requestAnimationFrame(() => document.getElementById(`tab-${id}`)?.focus());
+    };
+    tabs.addEventListener("click", (event) => {
+      const target = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-tab]");
+      if (target) activate(target.dataset.tab as typeof ids[number]);
     });
-    for (const id of ["event", "hero", "focus", "menu"] as const) {
+    tabs.addEventListener("keydown", (event) => {
+      const target = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-tab]");
+      if (!target || !["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const current = ids.indexOf(target.dataset.tab as typeof ids[number]);
+      const next = event.key === "Home" ? 0 : event.key === "End" ? ids.length - 1 :
+        (current + (event.key === "ArrowRight" ? 1 : -1) + ids.length) % ids.length;
+      activate(ids[next]);
+    });
+    for (const id of ids) {
       const tab = button(s.tabs[id], () => {});
       tab.dataset.tab = id;
       tab.id = `tab-${id}`;
+      tab.tabIndex = mobileTab === id ? 0 : -1;
       tab.setAttribute("role", "tab");
-      tab.setAttribute("aria-selected", String(mainView && mobileTab === id));
+      tab.setAttribute("aria-selected", String(mobileTab === id));
       tab.setAttribute("aria-controls", `panel-${id}`);
       tabs.append(tab);
     }
@@ -886,11 +863,26 @@ async function main(): Promise<void> {
     const country = `${flagEmoji(state.birth.country.iso2)} ${t(eraName(state.birth.country.iso3, year, (getLanguage() === "en" ? COUNTRIES_EN[state.birth.country.iso3] : ruNames[state.birth.country.iso3]) ?? state.birth.country.name))}`;
 
     app.append(renderMobileTabs(true));
+    if (recoveryNotice || saveWriteFailed) {
+      const alerts = el("section", "save-alerts");
+      if (recoveryNotice) {
+        const notice = el("p", "notice", s.saveRecovered);
+        notice.setAttribute("role", "status");
+        alerts.append(notice);
+      }
+      if (saveWriteFailed) {
+        const notice = el("p", "notice", s.saveWriteError);
+        notice.setAttribute("role", "alert");
+        alerts.append(notice, renderTransferControls(() => state));
+      }
+      app.append(alerts);
+    }
 
     const topbar = el("section", "game-topbar");
     topbar.dataset.tab = "menu";
     topbar.id = "panel-menu";
     topbar.setAttribute("role", "tabpanel");
+    topbar.setAttribute("aria-labelledby", "tab-menu");
     topbar.append(renderSettingsControls(), renderGameNav());
     app.append(topbar);
 
@@ -898,6 +890,7 @@ async function main(): Promise<void> {
     hero.dataset.tab = "hero";
     hero.id = "panel-hero";
     hero.setAttribute("role", "tabpanel");
+    hero.setAttribute("aria-labelledby", "tab-hero");
     hero.append(scene.element);
     hero.append(el("h1", undefined, state.birth.name));
     hero.append(el("p", "meta", `${country} · ${s.ageYear(state.age, year)}`));
@@ -911,6 +904,7 @@ async function main(): Promise<void> {
     eventPanel.dataset.tab = "event";
     eventPanel.id = "panel-event";
     eventPanel.setAttribute("role", "tabpanel");
+    eventPanel.setAttribute("aria-labelledby", "tab-event");
     if (legacyNotice) {
       eventPanel.append(el("p", "notice", s.legacyReset));
       legacyNotice = false;
@@ -922,18 +916,9 @@ async function main(): Promise<void> {
       if (changes) outcome.append(el("span", "arrows", changes));
       eventPanel.append(outcome);
     }
-    if (state.war.pendingEventId) {
-      const event = CONFLICT_EVENTS.find((e) => e.id === state.war.pendingEventId);
-      if (event) eventPanel.append(renderEvent(event));
-    } else if (state.pendingFamilyEventId) {
-      const event = FAMILY_EVENTS.find((e) => e.id === state.pendingFamilyEventId);
-      if (event) eventPanel.append(renderEvent(event));
-    } else if (state.pendingEventIds.length > 0) {
-      const event = EVENTS.find((e) => e.id === state.pendingEventIds[0]);
-      if (event) eventPanel.append(renderEvent(event));
-    } else {
-      eventPanel.append(renderDashboard());
-    }
+    const currentEvent = pendingEvent(state);
+    if (currentEvent) eventPanel.append(renderEvent(currentEvent));
+    else eventPanel.append(renderDashboard());
     const seed = el("p", "seed", `${s.seedLabel} ${location.href}`);
     seed.title = location.href;
     eventPanel.append(seed);
@@ -943,16 +928,20 @@ async function main(): Promise<void> {
     side.dataset.tab = "focus";
     side.id = "panel-focus";
     side.setAttribute("role", "tabpanel");
+    side.setAttribute("aria-labelledby", "tab-focus");
     side.append(renderFocus(), renderHobbies());
     app.append(side);
   }
 
   async function startLife(seed: string, softenHeavy = false): Promise<void> {
     lockPortrait();
-    const saved = loadLife((birth, age) => {
+    const loaded = loadLife((birth, age) => {
       const table = income.gdp[birth.country.iso3] ?? income.gdp._world;
       return table[Math.min(birth.year + age, 2022) - 1950];
-    }).state;
+    });
+    recoveryNotice ||= loaded.recoveredBackup;
+    saveWriteFailed ||= loaded.writeFailed;
+    const saved = loaded.state;
     peopleOpen = false;
     financeOpen = false;
     lifestyleOpen = false;
@@ -972,7 +961,7 @@ async function main(): Promise<void> {
       state = createLifeState(seed, birth, gdp, family, names, worldFamily, politics);
       state.softenHeavy = softenHeavy;
     }
-    scheduleFollowUpAfterChoice();
+    scheduleFollowUpAfterChoice(state, conflict);
     setSeed(seed);
     window.scrollTo(0, 0);
     render();
@@ -1015,12 +1004,15 @@ async function main(): Promise<void> {
     renderWelcome(randomSeed());
   }
 
+  lockPortrait();
   const seedParam = new URL(location.href).searchParams.get("seed");
   const initialLoad = loadLife((birth, age) => {
     const table = income.gdp[birth.country.iso3] ?? income.gdp._world;
     return table[Math.min(birth.year + age, 2022) - 1950];
   });
   legacyNotice = initialLoad.legacyDiscarded;
+  recoveryNotice = initialLoad.recoveredBackup;
+  saveWriteFailed = initialLoad.writeFailed;
   const saved = initialLoad.state;
   if (!seedParam && saved) {
     app.replaceChildren();

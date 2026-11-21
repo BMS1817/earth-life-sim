@@ -52,6 +52,10 @@ async function tapText(text, exact = true) {
   await call("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: point.x, y: point.y }] });
   await call("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
 }
+async function key(key, code, windowsVirtualKeyCode) {
+  await call("Input.dispatchKeyEvent", { type: "rawKeyDown", key, code, windowsVirtualKeyCode });
+  await call("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode });
+}
 await mkdir(out, { recursive: true });
 const report = { base, passed: false, checks: {}, errors };
 try {
@@ -83,12 +87,45 @@ try {
   await call("Emulation.setTouchEmulationEnabled", { enabled: true, maxTouchPoints: 2 });
   await call("Page.navigate", { url: base });
   await waitText("Начать новую жизнь");
+  const contrast = await evaluate(`(() => {
+    const rgb = (value) => value.match(/[\\d.]+/g).slice(0, 3).map(Number);
+    const luminance = (value) => rgb(value).map((channel) => channel / 255).map((channel) => channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4).reduce((sum, channel, index) => sum + channel * [0.2126, 0.7152, 0.0722][index], 0);
+    const background = (node) => {
+      for (let current = node; current; current = current.parentElement) {
+        const color = getComputedStyle(current).backgroundColor;
+        if (color && !color.endsWith(", 0)") && color !== "transparent") return color;
+      }
+      return "rgb(255, 255, 255)";
+    };
+    const ratio = (node) => {
+      const values = [luminance(getComputedStyle(node).color), luminance(background(node))].sort((a, b) => b - a);
+      return (values[0] + 0.05) / (values[1] + 0.05);
+    };
+    return { h1: ratio(document.querySelector("h1")), h2: ratio(document.querySelector("h2")), link: ratio(document.querySelector("a")) };
+  })()`);
+  if (Object.values(contrast).some((value) => value < 4.5)) throw new Error(`Контраст ниже 4.5: ${JSON.stringify(contrast)}`);
+  report.checks.contrast = contrast;
   await tapText("Начать новую жизнь");
   await waitText("Прожить год");
   report.checks.start = true;
   await tapText("Прожить год");
   await waitFor(async () => await evaluate(`document.querySelectorAll(".event .choice button").length`) === 4, "4 решения");
   report.checks.eventChoices = 4;
+  await evaluate(`document.getElementById("tab-event").focus()`);
+  await key("ArrowRight", "ArrowRight", 39);
+  await waitFor(async () => await evaluate(`document.querySelector(".game-shell")?.dataset.active === "hero" && document.activeElement?.id === "tab-hero" && document.getElementById("tab-hero").getAttribute("aria-selected") === "true" && document.getElementById("tab-hero").tabIndex === 0`), "ArrowRight и фокус героя");
+  await key("End", "End", 35);
+  await waitFor(async () => await evaluate(`document.querySelector(".game-shell")?.dataset.active === "menu" && document.activeElement?.id === "tab-menu"`), "End и вкладка меню");
+  await key("Enter", "Enter", 13);
+  await waitFor(async () => await evaluate(`document.activeElement?.id === "tab-menu" && document.querySelector(".game-shell")?.dataset.active === "menu"`), "Enter сохраняет вкладку и фокус");
+  await key("Home", "Home", 36);
+  await waitFor(async () => await evaluate(`document.querySelector(".game-shell")?.dataset.active === "event" && document.activeElement?.id === "tab-event"`), "Home и вкладка события");
+  await key("ArrowLeft", "ArrowLeft", 37);
+  await waitFor(async () => await evaluate(`document.querySelector(".game-shell")?.dataset.active === "menu" && document.activeElement?.id === "tab-menu"`), "ArrowLeft с циклическим переходом");
+  await key(" ", "Space", 32);
+  await waitFor(async () => await evaluate(`document.activeElement?.id === "tab-menu" && document.querySelector(".game-shell")?.dataset.active === "menu"`), "Space сохраняет вкладку и фокус");
+  await key("Home", "Home", 36);
+  report.checks.keyboardTabs = true;
   await tapText("Герой");
   await waitFor(async () => await evaluate(`document.querySelector(".game-shell")?.dataset.active === "hero"`), "вкладка героя");
   const heroOverflow = await evaluate(`(() => { const rect=document.querySelector("canvas.scene").getBoundingClientRect(); return rect.left < 0 || rect.right > innerWidth; })()`);
@@ -100,6 +137,12 @@ try {
   await tapText(firstChoice);
   await waitText("Итог решения");
   report.checks.choiceOutcome = true;
+  await evaluate(`(() => { window.__earthOriginalSetItem = Storage.prototype.setItem; Storage.prototype.setItem = function(key, value) { if (key === "earth:life:v10") throw new Error("storage full"); return window.__earthOriginalSetItem.call(this, key, value); }; })()`);
+  await tapText("Герой");
+  await waitFor(async () => await evaluate(`(() => { const alert=document.querySelector(".save-alerts [role=alert]"); const exportButton=[...document.querySelectorAll(".save-alerts button")].find((node) => node.textContent === "Экспорт сейва"); return alert?.getBoundingClientRect().height > 0 && exportButton?.getBoundingClientRect().height > 0; })()`), "видимая ошибка записи и экспорт на вкладке героя");
+  report.checks.saveWriteError = true;
+  await evaluate(`(() => { Storage.prototype.setItem = window.__earthOriginalSetItem; delete window.__earthOriginalSetItem; })()`);
+  await tapText("Событие");
   const shot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
   await writeFile(join(out, "touch-after-choice.png"), Buffer.from(String(shot.data), "base64"));
   await call("Emulation.setTouchEmulationEnabled", { enabled: false });

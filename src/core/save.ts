@@ -3,8 +3,10 @@ import { createLineageState, initialHeroTraits } from "./inheritance.ts";
 import { createPoliticsState } from "./politics.ts";
 import type { LifeState } from "./state.ts";
 import type { Birth } from "./types.ts";
+import { validLifeState } from "./save-validation.ts";
 
 const KEY = "earth:life:v10";
+const BACKUP_KEY = "earth:life:v10:backup";
 const V9_KEY = "earth:life:v9";
 const V8_KEY = "earth:life:v8";
 const V7_KEY = "earth:life:v7";
@@ -15,13 +17,20 @@ const OLD_KEYS = ["earth:life:v4", "earth:life:v3", "earth:life:v2", "earth:life
 export interface LoadLifeResult {
   state: LifeState | null;
   legacyDiscarded: boolean;
+  recoveredBackup: boolean;
+  writeFailed: boolean;
 }
 
-export function saveLife(s: LifeState): void {
+export type ParseLifeError = "invalid" | "newer" | null;
+
+export function saveLife(s: LifeState): boolean {
   try {
+    const previous = localStorage.getItem(KEY);
+    if (previous && parseLife(previous)) localStorage.setItem(BACKUP_KEY, previous);
     localStorage.setItem(KEY, JSON.stringify(s));
+    return true;
   } catch {
-    // переполненное хранилище не должно ронять игру
+    return false;
   }
 }
 
@@ -81,58 +90,34 @@ function migrateV5(state: LifeState): LifeState {
   return migrateV6(state);
 }
 
-function valid(state: LifeState): boolean {
-  return Boolean(
-    state.version === 10 &&
-    Array.isArray(state.people) &&
-    state.war &&
-    state.finance &&
-    state.time &&
-    state.focus &&
-    state.focusTotals &&
-    Array.isArray(state.hobbies) &&
-    Array.isArray(state.pets) &&
-    state.lifestyle &&
-    state.property &&
-    state.politics &&
-    state.politics.career &&
-    state.politics.constitution &&
-    state.politics.alternative &&
-    Array.isArray(state.politics.alternative.pending) &&
-    Array.isArray(state.politics.alternative.changes) &&
-    state.lineage &&
-    state.lineage.generation >= 1 &&
-    Array.isArray(state.lineage.ancestors) &&
-    Array.isArray(state.lineage.heroTraits) &&
-    Array.isArray(state.chronicle) &&
-    Array.isArray(state.favoriteMomentIndexes) &&
-    Array.isArray(state.happinessHistory) &&
-    state.happinessHistory.length > 0 &&
-    Number.isFinite(state.happiness)
-  );
-}
-
-function decodeLife(raw: string): LifeState | null {
+function decodeLife(raw: string): { state: LifeState | null; error: ParseLifeError } {
   const parsed = JSON.parse(raw) as LifeState;
   const version = (parsed as { version: number }).version;
-  if (!Number.isInteger(version) || version < 5 || version > 10) return null;
+  if (Number.isInteger(version) && version > 10) return { state: null, error: "newer" };
+  if (!Number.isInteger(version) || version < 5) return { state: null, error: "invalid" };
   const state = version === 5 ? migrateV5(parsed) : version === 6 ? migrateV6(parsed) : version === 7 ? migrateV7(parsed) : version === 8 ? migrateV8(parsed) : version === 9 ? migrateV9(parsed) : parsed;
-  return valid(state) ? state : null;
+  const isValid = validLifeState(state);
+  return { state: isValid ? state : null, error: isValid ? null : "invalid" };
 }
 
 export function serializeLife(state: LifeState): string {
   return JSON.stringify(state);
 }
 
-export function parseLife(raw: string): LifeState | null {
+export function parseLifeDetailed(raw: string): { state: LifeState | null; error: ParseLifeError } {
   try {
     return decodeLife(raw);
   } catch {
-    return null;
+    return { state: null, error: "invalid" };
   }
 }
 
+export function parseLife(raw: string): LifeState | null {
+  return parseLifeDetailed(raw).state;
+}
+
 export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): LoadLifeResult {
+  let writeFailed = false;
   try {
     let legacyDiscarded = false;
     for (const key of OLD_KEYS) {
@@ -141,29 +126,32 @@ export function loadLife(_gdpForBirth?: (birth: Birth, age: number) => number): 
         legacyDiscarded = true;
       }
     }
-    for (const key of [KEY, V9_KEY, V8_KEY, V7_KEY, V6_KEY, V5_KEY]) {
+    for (const key of [KEY, BACKUP_KEY, V9_KEY, V8_KEY, V7_KEY, V6_KEY, V5_KEY]) {
       const raw = localStorage.getItem(key);
       if (!raw) continue;
-      const state = decodeLife(raw);
-      if (state) {
-        if (key !== KEY) {
-          localStorage.removeItem(key);
-          saveLife(state);
-        }
-        return { state, legacyDiscarded };
+      const state = parseLifeDetailed(raw).state;
+      if (!state) {
+        if (key !== KEY && key !== BACKUP_KEY) localStorage.removeItem(key);
+        if (key === KEY || key === BACKUP_KEY) continue;
+        return { state: null, legacyDiscarded: true, recoveredBackup: false, writeFailed };
       }
-      localStorage.removeItem(key);
-      return { state: null, legacyDiscarded: true };
+      const recoveredBackup = key === BACKUP_KEY;
+      if (key !== KEY) {
+        writeFailed = !saveLife(state);
+        if (!writeFailed && key !== BACKUP_KEY) localStorage.removeItem(key);
+      }
+      return { state, legacyDiscarded, recoveredBackup, writeFailed };
     }
-    return { state: null, legacyDiscarded };
+    return { state: null, legacyDiscarded, recoveredBackup: false, writeFailed };
   } catch {
-    return { state: null, legacyDiscarded: false };
+    return { state: null, legacyDiscarded: false, recoveredBackup: false, writeFailed: true };
   }
 }
 
 export function clearLife(): void {
   try {
     localStorage.removeItem(KEY);
+    localStorage.removeItem(BACKUP_KEY);
     localStorage.removeItem(V9_KEY);
     localStorage.removeItem(V8_KEY);
     localStorage.removeItem(V7_KEY);

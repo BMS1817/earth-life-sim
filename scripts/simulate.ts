@@ -1,7 +1,8 @@
 import { readFileSync } from "node:fs";
 import { createBirth } from "../src/core/life.ts";
 import { rngFromSeed } from "../src/core/rng.ts";
-import { advanceYear, applyChoice, createLifeState, pickConflictEvent, pickFamilyEvent, pickYearEvents } from "../src/core/turn.ts";
+import { applyChoice, createLifeState } from "../src/core/turn.ts";
+import { completeYear, hasDecision, pendingEvent, scheduleFollowUpAfterChoice } from "../src/core/flow.ts";
 import { bondsSummary } from "../src/core/people.ts";
 import { conflictForYear } from "../src/core/conflicts.ts";
 import { netWorth } from "../src/core/finance.ts";
@@ -10,8 +11,6 @@ import type { FamilyData, IndexData, MortData, NamesData } from "../src/core/typ
 import type { PoliticsData } from "../src/core/politics.ts";
 import { attemptUsurpation, canRunForOffice, holdReferendum, startCampaign } from "../src/core/politics.ts";
 import { startPlan } from "../src/core/plans.ts";
-import { EVENTS } from "../src/content/events.ts";
-import { FAMILY_EVENTS } from "../src/content/family-events.ts";
 
 const N = Number(process.argv[2] ?? 1000);
 const WITH_POLITICS = process.argv.includes("--politics");
@@ -85,32 +84,6 @@ for (let i = 0; i < N; i++) {
   let lastFamilyAge: number | null = null;
   const uses = new Map<string, number>();
   while (state.alive && guard++ < 150) {
-    const events = pickYearEvents(state, EVENTS);
-    if (events.length) {
-      const event = events[0];
-      const choice = Math.floor(rngFromSeed(`${seed}:${state.age}:${event.id}:choice`)() * 4);
-      applyChoice(state, event, choice, names, conflict);
-      uses.set(event.id, (uses.get(event.id) ?? 0) + 1);
-    }
-    const conflictEvent = pickConflictEvent(state, conflict);
-    if (conflictEvent) {
-      warScenes++;
-      const choice = Math.floor(rngFromSeed(`${seed}:${state.age}:${conflictEvent.id}:choice`)() * 4);
-      applyChoice(state, conflictEvent, choice, names, conflict);
-      uses.set(conflictEvent.id, (uses.get(conflictEvent.id) ?? 0) + 1);
-      if (state.war.heroCombat) totals.combatChoices++;
-      if (state.war.displacedUntil !== null) totals.displacements++;
-    }
-    const familyEvent = pickFamilyEvent(state, FAMILY_EVENTS);
-    if (familyEvent) {
-      if (lastFamilyAge !== null && state.age - lastFamilyAge < 3) throw new Error(`family interval: ${seed}`);
-      lastFamilyAge = state.age;
-      familyScenes++;
-      familyUse.set(familyEvent.id, (familyUse.get(familyEvent.id) ?? 0) + 1);
-      const choice = Math.floor(rngFromSeed(`${seed}:${state.age}:${familyEvent.id}:choice`)() * 4);
-      applyChoice(state, familyEvent, choice, names, conflict);
-      uses.set(familyEvent.id, (uses.get(familyEvent.id) ?? 0) + 1);
-    }
     if (WITH_POLITICS && state.age >= 18) {
       if (!state.politics.trainingComplete && state.plan === null) startPlan(state, "localPolitics");
       const career = state.politics.career;
@@ -128,8 +101,30 @@ for (let i = 0; i < N; i++) {
       }
     }
     const termsBefore = state.politics.career.termsServed;
-    advanceYear(state, mort, family, names, conflict, gdpTable[Math.min(state.birth.year + state.age, 2022) - 1950], politics);
+    completeYear(state, mort, family, names, conflict, gdpTable[Math.min(state.birth.year + state.age, 2022) - 1950], politics);
     totals.politicalTerms += Math.max(0, state.politics.career.termsServed - termsBefore);
+    let decisionGuard = 0;
+    while (state.alive && hasDecision(state)) {
+      if (decisionGuard++ > 16) throw new Error(`decision queue did not drain: ${seed}:${state.age}`);
+      const event = pendingEvent(state);
+      if (!event) throw new Error(`pending event missing: ${seed}:${state.age}`);
+      const choice = Math.floor(rngFromSeed(`${seed}:${state.age}:${event.id}:choice`)() * 4);
+      applyChoice(state, event, choice, names, conflict);
+      uses.set(event.id, (uses.get(event.id) ?? 0) + 1);
+      if (event.conflict) {
+        warScenes++;
+        if (state.war.heroCombat) totals.combatChoices++;
+        if (state.war.displacedUntil !== null) totals.displacements++;
+      }
+      if (event.family) {
+        if (lastFamilyAge !== null && state.age - lastFamilyAge < 3) throw new Error(`family interval: ${seed}`);
+        lastFamilyAge = state.age;
+        familyScenes++;
+        familyUse.set(event.id, (familyUse.get(event.id) ?? 0) + 1);
+      }
+      scheduleFollowUpAfterChoice(state, conflict);
+    }
+    if (hasDecision(state)) throw new Error(`decision survived year: ${seed}:${state.age}`);
   }
   if (state.alive || guard >= 150) throw new Error(`life did not end: ${seed}`);
   if (new Set(state.people.map((p) => p.id)).size !== state.people.length) throw new Error(`duplicate people: ${seed}`);

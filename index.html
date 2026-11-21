@@ -30,6 +30,7 @@
         --gold-dark: #9a7654;
         --gold: #b78b52;
         --gold-light: #8a653c;
+        --gold-text: #76552f;
         --parchment: #5d4a36;
         --paper: #f4e6bf;
         --ink: #2f3440;
@@ -90,7 +91,7 @@
       }
       h1 {
         margin: 18px 0 14px;
-        color: var(--gold-light);
+        color: var(--gold-text);
         font-size: 21px;
         line-height: 1.65;
         text-align: center;
@@ -106,7 +107,7 @@
       }
       h2 {
         margin: 26px 0 12px;
-        color: var(--gold);
+        color: var(--gold-text);
         font-size: 13px;
         line-height: 1.7;
       }
@@ -141,7 +142,7 @@
       .soften-start { display: flex; align-items: center; gap: 8px; min-height: 48px; margin: 16px 0; padding: 12px; color: var(--parchment); background: var(--night-soft); border: 2px solid var(--violet); }
       .soften-start input { width: 24px; height: 24px; accent-color: var(--gold); }
       .offline-status { margin: 10px 0; color: var(--muted); font-size: 12px; }
-      a { color: var(--gold-light); text-decoration-thickness: 2px; text-underline-offset: 3px; }
+      a { color: var(--gold-text); text-decoration-thickness: 2px; text-underline-offset: 3px; }
       a:focus-visible { outline: 3px solid var(--gold-light); outline-offset: 3px; }
       .scene {
         display: block;
@@ -381,7 +382,7 @@
       .life-pattern { border-color: var(--life-color); }
       .pattern-header { display: flex; align-items: center; gap: 16px; margin-bottom: 8px; }
       .pattern-swatch { width: 48px; height: 48px; flex: 0 0 auto; background: var(--life-color); border: 4px solid var(--gold-light); box-shadow: 4px 4px 0 var(--night); }
-      .pattern-name { color: var(--life-color); font: 16px/1.6 var(--pixel-font); overflow-wrap: anywhere; }
+      .pattern-name { color: var(--ink); font: 16px/1.6 var(--pixel-font); overflow-wrap: anywhere; }
       .biography-turns { margin: 18px 0 0; padding-left: 25px; }
       .biography-turns li { margin-bottom: 14px; padding-left: 4px; }
       .biography-turns li::marker, .final-moments li::marker { color: var(--gold); }
@@ -807,6 +808,10 @@
       .save-transfer { grid-column: 1 / -1; min-width: 0; }
       .save-transfer .time-buttons { display: flex; flex-wrap: wrap; gap: 8px; }
       .save-transfer button { margin: 0; }
+      .save-alerts { position: fixed; z-index: 80; left: 50%; bottom: 20px; width: min(600px, calc(100% - 24px)); padding: 12px; transform: translateX(-50%); background: var(--panel); border: 3px solid var(--gold-dark); box-shadow: 5px 5px 0 var(--shadow); }
+      .save-alerts .notice { margin: 0 0 10px; }
+      .save-alerts .notice:last-child { margin-bottom: 0; }
+      @media (max-width: 1100px) { .save-alerts { bottom: calc(76px + env(safe-area-inset-bottom)); } }
       .orientation-lock { display: none; }
       .orientation-device { width: 32px; height: 52px; margin: 0 auto 18px; border: 3px solid var(--gold); border-radius: 6px; }
       @media (orientation: landscape) and (max-height: 600px) and (pointer: coarse) {
