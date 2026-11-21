@@ -675,8 +675,10 @@
   сейв, дневник, landscape overlay и возврат портрета, errors 0. Offline HTML и Windows release ZIP
   прошли RU/EN, transfer, v11, backup recovery и остальные текущие E2E. Отчёты: `shots/p3-ui`,
   `shots/p3-android`, `shots/p3-offline`.
-- **Публикация P3 частично завершена.** Commit `1704867`, Pages workflow #22 `success`;
-  публичный touch QA и production cache 945 файлов/offline reload зелёные. Все три GitHub Release
-  файла скачаны и совпали по SHA-256. На itch P3 ещё не загружен: редактор несколько раз не
-  открылся из-за `ERR_CONNECTION_RESET`/page load timeout, поэтому текущий itch остаётся на P2.
-  Следующий шаг — повторить только itch upload при доступной сети, затем P4, opt-in SFX.
+- **P3 полностью опубликован.** Commit `1704867`, Pages workflows #22/#23 `success`; публичный
+  touch QA и production cache 945 файлов/offline reload зелёные. Все три GitHub Release файла
+  скачаны и совпали по SHA-256. После повторной попытки itch принял HTML5 `20718808`, offline
+  `20718809` и Windows `20718810`. Новый embed запускается с существующим сейвом; offline и Windows
+  повторно скачаны и совпали с локальными оригиналами (offline — после удаления локальной вставки
+  Kaspersky), Windows ZIP прошёл integrity check. Статус публикации — commit `fd8b249`.
+  Следующий этап — P4, opt-in SFX.
