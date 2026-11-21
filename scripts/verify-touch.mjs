@@ -108,8 +108,12 @@ try {
   await tapText("Начать новую жизнь");
   await waitText("Прожить год");
   report.checks.start = true;
-  await tapText("Прожить год");
-  await waitFor(async () => await evaluate(`document.querySelectorAll(".event .choice button").length`) === 4, "4 решения");
+  let choiceCount = 0;
+  for (let attempt = 0; attempt < 8 && choiceCount !== 4; attempt++) {
+    await tapText("Прожить год");
+    choiceCount = await evaluate(`document.querySelectorAll(".event .choice button").length`);
+  }
+  if (choiceCount !== 4) throw new Error("4 решения не появились после 8 лет");
   report.checks.eventChoices = 4;
   await evaluate(`document.getElementById("tab-event").focus()`);
   await key("ArrowRight", "ArrowRight", 39);

@@ -608,5 +608,11 @@
   32 момента и 3 поколения. Windows release ZIP — offline, реальные export/import, отказ v11,
   backup recovery, reload и реальный quit/relaunch. PWA production cache: 945 файлов и offline
   reload; единственная запись network error относится к внешнему Kaspersky URL при offline.
-  `test:scene` и `test:politics-flag` также зелёные. Внешняя публикация P1 ещё не выполнялась.
+  `test:scene` и `test:politics-flag` также зелёные.
+- **P1 опубликован.** Commit `b60521e`, Pages workflow #18 `success`. Itch embed `20713006`
+  запускается с существующим сейвом; offline `20713008` и Windows `20713007` повторно скачаны и
+  совпали с локальными оригиналами (offline — после удаления локальной вставки Kaspersky). Все три
+  файла GitHub Release `v1.0.1` также совпали по SHA-256 после скачивания. Публичный Pages touch QA
+  прошёл клавиатуру, контраст и save-write alert; production cache 945 файлов и offline reload зелёные.
+  Дополнительно touch-скрипт научился проходить тихие годы вместо ложного ожидания события сразу.
   Следующий этап — P2, измеренная A/B-оптимизация.
