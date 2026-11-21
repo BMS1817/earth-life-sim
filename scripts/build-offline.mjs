@@ -45,6 +45,7 @@ if (!bundleScript) throw new Error("Production JS bundle not found");
 
 let html = await readFile(join(root, "index.html"), "utf8");
 html = html.replace(/\s*<link rel="manifest"[^>]*>/, "");
+html = html.replace(/\s*<link rel="preload"[^>]*as="fetch"[^>]*>/g, "");
 html = html.replace(/(href|src)="\.\/([^"]+)"/g, (match, attribute, path) => assets[path] ? `${attribute}="${assets[path]}"` : match);
 html = html.replace(/url\(["']?(\.\/)?([^"')]+)["']?\)/g, (match, prefix, path) => assets[path] ? `url("${assets[path]}")` : match);
 html = html.replace(/\s*<script type="module"[^>]*><\/script>/, () => {

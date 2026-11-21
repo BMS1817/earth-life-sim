@@ -616,3 +616,29 @@
   прошёл клавиатуру, контраст и save-write alert; production cache 945 файлов и offline reload зелёные.
   Дополнительно touch-скрипт научился проходить тихие годы вместо ложного ожидания события сразу.
   Следующий этап — P2, измеренная A/B-оптимизация.
+
+
+- **P2 завершён измерениями 2026-11-21.** Контролируемый startup A/B выполнен на одном окружении,
+  3 прогона для каждого режима, desktop/mobile, cold/warm/offline. Baseline mobile cold:
+  welcome 2415 мс, interactive 2841 мс; warm 599/630 мс; offline 122/160 мс. Desktop cold:
+  1066/1242 мс. Service worker control без него не показал стабильной регрессии/пользы: два mobile
+  прогона совпали с baseline, третий был быстрым выбросом; SW не стал целью оптимизации.
+- Профилирование показало позднее начало data fetch после JS. В `index.html` добавлены preload
+  для `data/index.json`, `names.json`, `income.json`, `countries_ru.json`, `family/_world.json` и
+  `bundles/index.json`. `scripts/build-offline.mjs` удаляет эти подсказки из single-file HTML.
+  После preload mobile cold: **welcome 2274 мс (−141 мс / −5,8%), interactive 2703 мс
+  (−138 мс / −4,9%)**; desktop cold 1085/1236 мс. Mobile warm 618/651 мс, offline 151/189 мс;
+  фоновая полная подготовка кэша 9,62 с вместо 7,77 с, по-прежнему намного ниже порога 180 с и
+  не блокирует запуск. Размер offline HTML не вырос (68,62 МиБ), JS не изменился.
+- Отдельный A/B только с тремя крупными preload отклонён: mobile cold 2430/2844 мс, то есть
+  улучшения нет, хотя warm/offline и cache были быстрее. Принят полный набор шести ресурсов.
+- **Single-file gzip отклонён по реальному прототипу.** Размер уменьшился 68,62 → 39,14 МиБ,
+  но welcome вырос mobile 1170 → 6714 мс, desktop 1124 → 6598 мс из-за распаковки и повторного
+  разбора всего пакета. Прототип и вспомогательный код удалены; рабочий offline HTML не меняет
+  формат. Runtime без оптимизации по предположению: desktop/mobile около 60 fps, ordinary p95
+  25,0/16,9 мс, heavy p95 24,6/16,7 мс, retained screens 0, listeners/timers без роста; heap на
+  последних стабильных циклах +9,44%/+9,22% при пороге 10%. Десять циклов пройдены.
+- Регрессии P2: 173 теста, build, touch/keyboard/contrast/save-error, RU/EN UI, 32 момента,
+  3 поколения и standalone offline reload прошли без console errors. Отчёты сохранены в
+  `shots/p2-startup-*`, `shots/p2-runtime-*`, `shots/p2-offline-*`. P2 ещё не опубликован;
+  следующий этап — P3, контент и UX на новом baseline.
