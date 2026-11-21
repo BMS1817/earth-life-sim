@@ -271,7 +271,10 @@ async function main(): Promise<void> {
     if (!(await savedState(page)).softenHeavy) throw new Error("Смягчение на старте не применилось");
     await clickButton(page, "Смягчить тяжёлые темы");
     if ((await savedState(page)).softenHeavy) throw new Error("Переключатель смягчения не выключился");
-    await clickButton(page, "Прожить год");
+    for (let attempt = 0; attempt < 4 && !(await evaluate(page, `document.querySelector(".event")`)); attempt++) {
+      await clickButton(page, "Прожить год");
+      await new Promise((resolveSleep) => setTimeout(resolveSleep, 120));
+    }
     await waitForSelector(page, ".event");
     await captureGame(page, out, "main-1920", 1920, 1080);
     await captureGame(page, out, "main-1440", 1440, 1080);

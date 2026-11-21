@@ -104,6 +104,7 @@ try {
   await evaluate(cdp, `(async () => { await navigator.serviceWorker.ready; return true; })()`);
   await cdp.call("Page.navigate", { url: base });
   await waitFor(async () => evaluate(cdp, `Boolean(document.querySelector(".time-controls"))`), "controlled screen");
+  await waitFor(async () => evaluate(cdp, `navigator.serviceWorker.controller !== null`), "service worker controller");
   const controlled = await evaluate(cdp, `(async () => ({ controller: navigator.serviceWorker.controller !== null, registrations: (await navigator.serviceWorker.getRegistrations()).map((item) => ({ scope: item.scope, active: Boolean(item.active) })), location: location.href }))()`);
   if (!controlled.controller) throw new Error(`Нет управляющего service worker: ${JSON.stringify(controlled)}`);
   await cdp.call("Network.enable");
@@ -117,6 +118,9 @@ try {
   await writeFile(join(out, "report.json"), JSON.stringify(report, null, 2));
   console.log(JSON.stringify({ ...report, backgroundImage: report.backgroundImage === "none" ? "none" : "local SVG loaded" }, null, 2));
   if (report.iso2 && (!report.exists || report.position !== "absolute" || !report.withinScene || report.rect?.width !== report.expectedWidth || !report.backgroundImage || report.backgroundImage === "none" || report.fetch?.status !== 200 || !report.offline.localSvg || !report.offline.controller || report.offline.online)) process.exitCode = 1;
+} catch (error) {
+  console.error(await evaluate(cdp, `({ url: location.href, controller: navigator.serviceWorker?.controller !== null, text: document.querySelector("#app")?.textContent?.slice(0, 1200) })`).catch(() => "diagnostic failed"));
+  throw error;
 } finally {
   cdp?.socket.close();
   if (browser.exitCode === null) await new Promise((resolveExit) => { browser.once("exit", resolveExit); browser.kill(); });
