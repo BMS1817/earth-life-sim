@@ -640,5 +640,10 @@
   последних стабильных циклах +9,44%/+9,22% при пороге 10%. Десять циклов пройдены.
 - Регрессии P2: 173 теста, build, touch/keyboard/contrast/save-error, RU/EN UI, 32 момента,
   3 поколения и standalone offline reload прошли без console errors. Отчёты сохранены в
-  `shots/p2-startup-*`, `shots/p2-runtime-*`, `shots/p2-offline-*`. P2 ещё не опубликован;
-  следующий этап — P3, контент и UX на новом baseline.
+  `shots/p2-startup-*`, `shots/p2-runtime-*`, `shots/p2-offline-*`.
+- **P2 опубликован.** Commit `80ff1cb`, Pages workflow #20 `success`. Itch embed `20715701`
+  запускается с существующим сейвом; Windows upload `20715700` скачан и совпал по SHA-256.
+  GitHub HTML5 ZIP также совпал после скачивания. Публичный Pages touch QA и production cache 945
+  файлов/offline reload зелёные. Финальный Windows release ZIP повторно прошёл offline,
+  export/import, v11 и backup recovery. Offline HTML не перезаписывался, так как preload из него
+  удаляется и содержимое не изменилось. Следующий этап — P3, контент и UX на новом baseline.
