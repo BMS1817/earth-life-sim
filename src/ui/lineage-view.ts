@@ -1,4 +1,5 @@
 import { lifePattern } from "../core/memorial.ts";
+import { eligibleHeirs } from "../core/inheritance.ts";
 import type { LifeState } from "../core/state.ts";
 import { s, t } from "./strings.ts";
 import { thematicHeader } from "./thematic-header.ts";
@@ -41,6 +42,8 @@ export function lineageView(state: LifeState, options: LineageViewOptions): HTML
   current.append(row(s.lineageCountry, options.countryName));
   current.append(row(s.traitsTitle, state.lineage.heroTraits.map((trait) => s.traits[trait]).join(", ")));
   current.append(row(s.memorialPattern, `${s.patternNames[pattern.name]} · ${pattern.color.toUpperCase()}`));
+  const heirs = eligibleHeirs(state);
+  current.append(el("p", undefined, s.lineageHeirs(heirs.length)), el("p", "muted", s.lineageHeirsHint(heirs.length > 0)));
   root.append(current);
 
   const ancestors = el("section", "lineage-ancestors");

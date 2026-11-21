@@ -63,6 +63,10 @@ const totals = {
 };
 const familyUse = new Map<string, number>();
 const careerUse = new Map<string, number>();
+const careerChoices = new Map<string, number>();
+const careerOffers = new Map<string, number>();
+const repeatUse = new Map<string, number>();
+const educationAt18: number[] = [];
 const samples: object[] = [];
 let maxSave = 0;
 let maxPeople = 0;
@@ -109,8 +113,18 @@ for (let i = 0; i < N; i++) {
       const event = pendingEvent(state);
       if (!event) throw new Error(`pending event missing: ${seed}:${state.age}`);
       const choice = Math.floor(rngFromSeed(`${seed}:${state.age}:${event.id}:choice`)() * 4);
+      if (event.id === "after-school") {
+        educationAt18.push(state.scales.education);
+        for (const option of event.choices) {
+          if (option.career) careerOffers.set(option.career, (careerOffers.get(option.career) ?? 0) + 1);
+        }
+      }
       applyChoice(state, event, choice, names, conflict);
-      uses.set(event.id, (uses.get(event.id) ?? 0) + 1);
+      const chosenCareer = event.choices[choice].career;
+      if (chosenCareer) careerChoices.set(chosenCareer, (careerChoices.get(chosenCareer) ?? 0) + 1);
+      const eventUses = (uses.get(event.id) ?? 0) + 1;
+      uses.set(event.id, eventUses);
+      if (eventUses > 1) repeatUse.set(event.id, (repeatUse.get(event.id) ?? 0) + 1);
       if (event.conflict) {
         warScenes++;
         if (state.war.heroCombat) totals.combatChoices++;
@@ -192,6 +206,14 @@ console.log(JSON.stringify({
   debtShare: +(totals.debtLives / N).toFixed(3),
   povertyShortfallShare: +(totals.povertyShortfalls / N).toFixed(3),
   careerUse: Object.fromEntries(careerUse),
+  careerChoices: Object.fromEntries(careerChoices),
+  careerOffers: Object.fromEntries(careerOffers),
+  educationAt18: {
+    samples: educationAt18.length,
+    mean: +(educationAt18.reduce((sum, value) => sum + value, 0) / Math.max(1, educationAt18.length)).toFixed(2),
+    medicineEligibleShare: +(educationAt18.filter((value) => value >= 55).length / Math.max(1, educationAt18.length)).toFixed(3),
+  },
+  mostRepeatedEvents: Object.fromEntries([...repeatUse.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10)),
   meanPeople: +(totals.people / N).toFixed(2),
   maxPeople,
   meanMemories: +(totals.memories / N).toFixed(2),

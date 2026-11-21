@@ -367,6 +367,9 @@ async function main(): Promise<void> {
       render();
     }));
     wrap.append(row, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
+    const guide = el("details", "menu-guide");
+    guide.append(el("summary", undefined, s.guideTitle), el("p", "muted", s.guideText));
+    wrap.append(guide);
     return wrap;
   }
 

@@ -29,6 +29,31 @@ describe("карьерные события", () => {
     expect(s.finance.employment).toBe("employed");
   });
 
+  it("показывает путь к медицине через работу мечты", () => {
+    const { s } = newState("career-dream-hint");
+    s.age = 18;
+    const event = pickYearEvents(s, EVENTS).find((e) => e.id === "after-school")!;
+    expect(event.text).toContain("работу мечты");
+    expect(event.text).toContain("Образ жизни");
+  });
+
+  it("не предлагает повышение после пятого уровня", () => {
+    const { s } = newState("career-promotion-cap");
+    const event = EVENTS.find((e) => e.id === "adult-promotion")!;
+    s.finance.careerLevel = 4;
+    expect(event.condition?.(s)).toBe(true);
+    s.finance.careerLevel = 5;
+    expect(event.condition?.(s)).toBe(false);
+  });
+
+  it("кризис работы происходит один раз за жизнь", () => {
+    const { s } = newState("career-crisis-once");
+    const event = EVENTS.find((e) => e.id === "job-crisis")!;
+    expect(event.once).toBe(true);
+    applyChoice(s, event, 1, names);
+    expect(s.usedEventIds).toContain("job-crisis");
+  });
+
   it("ипотека выбирается через событие", () => {
     const { s } = newState("mortgage-choice");
     s.age = 35;

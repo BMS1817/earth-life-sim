@@ -56,6 +56,7 @@ export function lifestyleView(state: LifeState, options: LifestyleViewOptions): 
       b.disabled = state.age < 18 || state.finance.cash < cost || (kind === "flightSchool" && state.scales.education < 40);
       plan.append(b);
     }
+    plan.append(el("p", "muted", s.flightSchoolHint(state.scales.education)));
     const dream = el("div", "hobby-add");
     const select = el("select", "hobby-select");
     select.setAttribute("aria-label", s.planDreamCareer);

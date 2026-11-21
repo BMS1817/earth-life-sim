@@ -12,7 +12,7 @@ export function careerEvent(seed: string, education: number): LifeEvent {
     milestone: true,
     once: true,
     weight: 10,
-    text: "Школа позади. Выбери профессиональное направление.",
+    text: "Школа позади. Выбери профессиональное направление. Медицина и другие профессии также доступны позже через работу мечты в разделе «Образ жизни».",
     choices: [
       tradition === "education"
         ? { sector: "tradition", label: "Образование и преподавание", outcome: "Ты выбрал работу с людьми и знаниями. Доход скромнее, зато путь понятен.", effects: { health: 3, money: -2 }, career: "education" }

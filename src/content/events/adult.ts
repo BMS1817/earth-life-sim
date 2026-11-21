@@ -6,6 +6,7 @@ export const ADULT: LifeEvent[] = [
     minAge: 25,
     maxAge: 60,
     crisis: true,
+    once: true,
     weight: 1.5,
     condition: (s) => s.finance.employment === "employed",
     text: "Сокращения: твоё место под вопросом.",
@@ -76,6 +77,7 @@ export const ADULT: LifeEvent[] = [
     minAge: 30,
     maxAge: 50,
     weight: 2,
+    condition: (s) => s.finance.careerLevel < 5,
     text: "Намечается повышение. Нагрузка вырастет.",
     choices: [
       {

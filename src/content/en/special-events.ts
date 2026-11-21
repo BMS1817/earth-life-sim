@@ -119,7 +119,7 @@ export const SPECIAL_EVENTS_EN: Record<string, string> = {
   "Семья пережила перемены вместе. Это главное. Сил и денег ушло много.": "The family survives the changes together. That is what matters. It takes effort and money.",
   "Пережить в одиночку": "Survive alone",
   "Ты закрылся и справился сам. Близкие остались за дверью.": "You shut down and manage alone. Your loved ones are left outside.",
-  "Школа позади. Выбери профессиональное направление.": "School is behind you. Choose a professional direction.",
+  "Школа позади. Выбери профессиональное направление. Медицина и другие профессии также доступны позже через работу мечты в разделе «Образ жизни».": "School is behind you. Choose a professional direction. Medicine and other careers are also available later through dream career preparation in Lifestyle.",
   "Образование и преподавание": "Education and teaching",
   "Ты выбрал работу с людьми и знаниями. Доход скромнее, зато путь понятен.": "You choose work with people and knowledge. More modest income, but a clear path.",
   "Промышленность и ремесло": "Industry and crafts",
