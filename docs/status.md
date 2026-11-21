@@ -674,4 +674,9 @@
   32 момента, 3 поколения, политика и offline reload. Android Compact 360×696 — портрет, 4 решения,
   сейв, дневник, landscape overlay и возврат портрета, errors 0. Offline HTML и Windows release ZIP
   прошли RU/EN, transfer, v11, backup recovery и остальные текущие E2E. Отчёты: `shots/p3-ui`,
-  `shots/p3-android`, `shots/p3-offline`. P3 ещё не опубликован. Следующий этап — P4, opt-in SFX.
+  `shots/p3-android`, `shots/p3-offline`.
+- **Публикация P3 частично завершена.** Commit `1704867`, Pages workflow #22 `success`;
+  публичный touch QA и production cache 945 файлов/offline reload зелёные. Все три GitHub Release
+  файла скачаны и совпали по SHA-256. На itch P3 ещё не загружен: редактор несколько раз не
+  открылся из-за `ERR_CONNECTION_RESET`/page load timeout, поэтому текущий itch остаётся на P2.
+  Следующий шаг — повторить только itch upload при доступной сети, затем P4, opt-in SFX.
