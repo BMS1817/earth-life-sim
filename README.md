@@ -107,6 +107,7 @@ npm run flags
 
 Опубликованная игра: **https://bms1817.github.io/earth-life-sim/**.
 Страница itch.io: **https://bms1817.itch.io/earth-one-life**.
+Загрузки: **https://github.com/BMS1817/earth-life-sim/releases/latest**.
 Исходный код: **https://github.com/BMS1817/earth-life-sim**.
 
 Workflow `.github/workflows/pages.yml` устанавливает зависимости, запускает тесты, собирает `dist` и
