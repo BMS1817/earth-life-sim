@@ -701,5 +701,13 @@
 - Проверки: 180 тестов (после свободного от E2E повторного прогона все зелёные), build, перевод
   без пропусков; touch Chrome — opt-in, 2 реальных вызова play, 35% и persisted reload/disable;
   offline HTML — те же проверки через data URI; Windows WebView2 — audio, audioRestart, export/import,
-  v11, backup recovery. Снимок `shots/p4-touch/audio-menu.png` осмотрен. P4 не опубликован до
-  одобрения звука пользователем.
+  v11, backup recovery. Снимок `shots/p4-touch/audio-menu.png` осмотрен. Пользователь одобрил
+  SFX после живого Preview; дополнительная проверка подтвердила полное воспроизведение
+  (`ended=true`, error=null).
+- **SFX P4 опубликованы.** Commit `4c3c36c`; itch HTML5 `20735519`, offline `20735520`, Windows
+  `20735521`. Обе загрузки itch и все три файла GitHub Release скачаны и совпали с оригиналами.
+  Публичный Pages audio/touch QA и cache 948 файлов/offline reload зелёные. Workflow #25 сначала
+  упал из-за artifact metadata/дубликата после rerun; workflow получил `actions: write` и удаление
+  прежних временных Pages-артефактов перед upload. Workflow #26 с этим исправлением — `success`.
+  Музыка в P4 не добавлена: по гриллу она переходит в отдельный этап с ambient-chiptune лупом
+  60–90 секунд и собственными настройками, выключенными по умолчанию.
