@@ -6,6 +6,7 @@ class FakeAudio {
   volume = 1;
   currentTime = 0;
   paused = true;
+  loop = false;
   playCalls = 0;
   ended: (() => void) | null = null;
   readonly src: string;
@@ -99,6 +100,40 @@ describe("опциональные SFX", () => {
     player.setVolume(0);
     expect(player.play("choice")).toBe(false);
     expect(FakeAudio.instances).toHaveLength(1);
+  });
+
+  it("музыка выключена по умолчанию, имеет отдельный луп и не останавливается SFX", () => {
+    const storage = install();
+    const player = new AudioPlayer();
+    expect(player.ensureMusic()).toBe(false);
+    expect(FakeAudio.instances).toHaveLength(0);
+    player.setMusicEnabled(true);
+    const music = FakeAudio.instances[0];
+    expect(music.src).toBe("audio/music.ogg");
+    expect(music.loop).toBe(true);
+    expect(music.volume).toBeCloseTo(0.09);
+    expect(player.ensureMusic()).toBe(true);
+    expect(FakeAudio.instances).toHaveLength(1);
+    player.play("choice");
+    expect(music.paused).toBe(false);
+    player.setMusicVolume(0.5);
+    expect(music.volume).toBe(0.25);
+    expect(JSON.parse(storage.get("earth:music:v1")!)).toEqual({ enabled: true, volume: 0.5 });
+    player.setMusicEnabled(false);
+    expect(music.paused).toBe(true);
+    expect(player.ensureMusic()).toBe(false);
+  });
+
+  it("сохранённый opt-in музыки не создаёт Audio и не играет до пользовательского действия", () => {
+    const storage = install();
+    storage.set("earth:music:v1", JSON.stringify({ enabled: true, volume: 0.5 }));
+    const restored = new AudioPlayer();
+    expect(restored.musicIsEnabled).toBe(true);
+    expect(restored.musicVolumePercent).toBe(50);
+    expect(FakeAudio.instances).toHaveLength(0);
+    restored.ensureMusic();
+    expect(FakeAudio.instances).toHaveLength(1);
+    expect(FakeAudio.instances[0].volume).toBe(0.25);
   });
 
   it("повреждённые настройки безопасно возвращаются к выключенному звуку", () => {

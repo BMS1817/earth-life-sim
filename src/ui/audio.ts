@@ -1,6 +1,7 @@
 import { resourceUrl } from "./resource.ts";
 
 const STORAGE_KEY = "earth:audio:v1";
+const MUSIC_KEY = "earth:music:v1";
 const SIGNALS = ["choice", "year", "inherit"] as const;
 
 export type SignalName = typeof SIGNALS[number];
@@ -9,6 +10,9 @@ export class AudioPlayer {
   private enabled = false;
   private volume = 0.5;
   private current: HTMLAudioElement | null = null;
+  private musicEnabled = false;
+  private musicVolume = 0.3;
+  private music: HTMLAudioElement | null = null;
 
   constructor() {
     try {
@@ -16,6 +20,14 @@ export class AudioPlayer {
       if (saved) {
         this.enabled = saved.enabled === true;
         if (typeof saved.volume === "number" && Number.isFinite(saved.volume)) this.volume = Math.min(1, Math.max(0, saved.volume));
+      }
+    } catch {
+    }
+    try {
+      const music = JSON.parse(localStorage.getItem(MUSIC_KEY) ?? "null") as { enabled?: unknown; volume?: unknown } | null;
+      if (music) {
+        this.musicEnabled = music.enabled === true;
+        if (typeof music.volume === "number" && Number.isFinite(music.volume)) this.musicVolume = Math.min(1, Math.max(0, music.volume));
       }
     } catch {
     }
@@ -65,6 +77,58 @@ export class AudioPlayer {
     this.current.pause();
     this.current.currentTime = 0;
     this.current = null;
+  }
+
+  get musicIsEnabled(): boolean {
+    return this.musicEnabled;
+  }
+
+  get musicVolumePercent(): number {
+    return Math.round(this.musicVolume * 100);
+  }
+
+  setMusicEnabled(value: boolean): void {
+    this.musicEnabled = value;
+    this.persistMusic();
+    if (value) this.ensureMusic();
+    else this.stopMusic();
+  }
+
+  setMusicVolume(value: number): void {
+    this.musicVolume = Math.min(1, Math.max(0, value));
+    this.persistMusic();
+    if (this.music) this.music.volume = this.musicVolume ** 2;
+    if (this.musicVolume === 0) this.music?.pause();
+    else if (this.musicEnabled) this.ensureMusic();
+  }
+
+  ensureMusic(): boolean {
+    if (!this.musicEnabled || this.musicVolume === 0) return false;
+    try {
+      if (!this.music) {
+        this.music = new Audio(resourceUrl("audio/music.ogg"));
+        this.music.loop = true;
+      }
+      this.music.volume = this.musicVolume ** 2;
+      if (this.music.paused) void this.music.play().catch(() => undefined);
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  private stopMusic(): void {
+    if (!this.music) return;
+    this.music.pause();
+    this.music.currentTime = 0;
+    this.music = null;
+  }
+
+  private persistMusic(): void {
+    try {
+      localStorage.setItem(MUSIC_KEY, JSON.stringify({ enabled: this.musicEnabled, volume: this.musicVolume }));
+    } catch {
+    }
   }
 
   private persist(): void {

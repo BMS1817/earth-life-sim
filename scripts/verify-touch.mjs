@@ -52,6 +52,17 @@ async function tapText(text, exact = true) {
   await call("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: point.x, y: point.y }] });
   await call("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] });
 }
+async function clickText(text, exact = true) {
+  const point = await evaluate(`(() => {
+    const node = [...document.querySelectorAll("button")].find((item) => ${exact ? "item.textContent ===" : "item.textContent.includes"}(${JSON.stringify(text)}) && item.getBoundingClientRect().width > 0);
+    if (!node) return null;
+    const rect = node.getBoundingClientRect();
+    return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 };
+  })()`);
+  if (!point) throw new Error(`Нет видимой кнопки: ${text}`);
+  await call("Input.dispatchMouseEvent", { type: "mousePressed", ...point, button: "left", clickCount: 1 });
+  await call("Input.dispatchMouseEvent", { type: "mouseReleased", ...point, button: "left", clickCount: 1 });
+}
 async function key(key, code, windowsVirtualKeyCode) {
   await call("Input.dispatchKeyEvent", { type: "rawKeyDown", key, code, windowsVirtualKeyCode });
   await call("Input.dispatchKeyEvent", { type: "keyUp", key, code, windowsVirtualKeyCode });
@@ -109,7 +120,7 @@ try {
   await waitText("Прожить год");
   report.checks.start = true;
   await tapText("Меню");
-  await evaluate(`(() => { window.__audioPlayCalls = 0; window.__audioVolume = null; const original = HTMLMediaElement.prototype.play; window.__audioOriginalPlay = original; HTMLMediaElement.prototype.play = function() { window.__audioPlayCalls++; window.__audioVolume = this.volume; return original.call(this); }; })()`);
+  await evaluate(`(() => { window.__audioPlayCalls = 0; window.__audioVolume = null; window.__audioPlayError = null; const original = HTMLMediaElement.prototype.play; window.__audioOriginalPlay = original; HTMLMediaElement.prototype.play = function() { window.__audioPlayCalls++; window.__audioVolume = this.volume; const result = original.call(this); if (result?.catch) result.catch((error) => { window.__audioPlayError = String(error); }); return result; }; })()`);
   if (await evaluate(`document.querySelector(".audio-volume input").disabled !== true`)) throw new Error("Громкость доступна при выключенном звуке");
   await tapText("Звук: выкл.");
   await waitText("Звук: вкл.");
@@ -128,6 +139,31 @@ try {
   const audioDisabled = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:audio:v1")), disabled: document.querySelector(".audio-volume input").disabled, previewDisabled: [...document.querySelectorAll("button")].find((node) => node.textContent === "Проверить звук").disabled })`);
   if (audioDisabled.settings?.enabled !== false || !audioDisabled.disabled || !audioDisabled.previewDisabled) throw new Error(`Audio disable: ${JSON.stringify(audioDisabled)}`);
   report.checks.audio = { optIn: true, playCalls: audioEnabled.calls, volume: 0.35, restored: true, disabled: true };
+  await tapText("Музыка: выкл.");
+  await evaluate(`(() => { const input=document.querySelector(".music-controls input"); input.value="20"; input.dispatchEvent(new Event("input", { bubbles: true })); })()`);
+  const musicEnabled = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:music:v1")), percent: document.querySelector(".music-controls output").textContent, volume: window.__audioVolume })`);
+  if (musicEnabled.settings?.enabled !== true || musicEnabled.settings?.volume !== 0.2 || musicEnabled.percent !== "20%" || Math.abs(musicEnabled.volume - 0.04) > 0.0001) throw new Error(`Music opt-in/volume: ${JSON.stringify(musicEnabled)}`);
+  const musicShot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+  await writeFile(join(out, "music-menu.png"), Buffer.from(String(musicShot.data), "base64"));
+  const musicInjection = await call("Page.addScriptToEvaluateOnNewDocument", { source: `window.__musicElements=[]; window.__musicPlayError=null; const NativeAudio=window.Audio; window.Audio=function(...args){const audio=new NativeAudio(...args); window.__musicElements.push(audio); return audio;}; const originalPlay=HTMLMediaElement.prototype.play; HTMLMediaElement.prototype.play=function(){const result=originalPlay.call(this); if(result?.catch) result.catch((error)=>{window.__musicPlayError=String(error);}); return result;};` });
+  await call("Page.reload", { ignoreCache: true });
+  await waitFor(async () => await evaluate(`Boolean(document.querySelector(".time-controls"))`), "music reload");
+  if (await evaluate(`window.__musicElements.length !== 0`)) throw new Error("Музыка начала играть без пользовательского действия после reload");
+  await clickText("Меню");
+  await waitFor(async () => {
+    const state = await evaluate(`({ paused: window.__musicElements[0]?.paused, error: window.__musicPlayError, readyState: window.__musicElements[0]?.readyState, currentTime: window.__musicElements[0]?.currentTime })`);
+    if (state.error) throw new Error(`Music play rejected: ${JSON.stringify(state)}`);
+    return state.paused === false;
+  }, "music playing after user gesture").catch(async (error) => {
+    const state = await evaluate(`({ paused: window.__musicElements[0]?.paused, error: window.__musicPlayError, mediaError: window.__musicElements[0]?.error?.message, readyState: window.__musicElements[0]?.readyState, currentTime: window.__musicElements[0]?.currentTime, srcLength: window.__musicElements[0]?.src?.length })`);
+    throw new Error(`${error}; music state: ${JSON.stringify(state)}`);
+  });
+  const musicRestored = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:music:v1")), count: window.__musicElements.length, loop: window.__musicElements[0]?.loop, paused: window.__musicElements[0]?.paused, volume: window.__musicElements[0]?.volume })`);
+  if (musicRestored.settings?.enabled !== true || musicRestored.settings?.volume !== 0.2 || musicRestored.count !== 1 || !musicRestored.loop || musicRestored.paused || Math.abs(musicRestored.volume - 0.04) > 0.0001) throw new Error(`Music restart/gesture: ${JSON.stringify(musicRestored)}`);
+  await call("Page.removeScriptToEvaluateOnNewDocument", { identifier: musicInjection.identifier });
+  await tapText("Музыка: вкл.");
+  if (await evaluate(`JSON.parse(localStorage.getItem("earth:music:v1")).enabled !== false`)) throw new Error("Музыка не выключилась");
+  report.checks.music = { optIn: true, loop: true, volume: 0.2, noAutoplay: true, gestureStart: true, disabled: true };
   await evaluate(`(() => { HTMLMediaElement.prototype.play = window.__audioOriginalPlay; delete window.__audioOriginalPlay; })()`);
   await tapText("Событие");
   let choiceCount = 0;

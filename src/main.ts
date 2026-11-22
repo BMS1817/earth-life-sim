@@ -217,6 +217,8 @@ async function main(): Promise<void> {
   }
 
   const audio = new AudioPlayer();
+  document.addEventListener("pointerdown", () => audio.ensureMusic());
+  document.addEventListener("keydown", () => audio.ensureMusic());
   let state: LifeState;
   let mort: MortData;
   let family: FamilyData;
@@ -394,7 +396,29 @@ async function main(): Promise<void> {
     });
     volumeLabel.append(volume, volumeValue);
     audioRow.append(volumeLabel);
-    wrap.append(row, audioRow, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
+    const musicRow = el("div", "time-buttons audio-controls music-controls");
+    musicRow.append(button(s.musicToggle(audio.musicIsEnabled), () => {
+      audio.setMusicEnabled(!audio.musicIsEnabled);
+      render();
+    }));
+    const musicLabel = el("label", "audio-volume");
+    musicLabel.append(el("span", undefined, s.musicVolume));
+    const musicVolume = el("input");
+    musicVolume.type = "range";
+    musicVolume.min = "0";
+    musicVolume.max = "100";
+    musicVolume.step = "5";
+    musicVolume.value = String(audio.musicVolumePercent);
+    musicVolume.disabled = !audio.musicIsEnabled;
+    musicVolume.setAttribute("aria-label", s.musicVolume);
+    const musicValue = el("output", undefined, `${audio.musicVolumePercent}%`);
+    musicVolume.addEventListener("input", () => {
+      audio.setMusicVolume(Number(musicVolume.value) / 100);
+      musicValue.value = `${audio.musicVolumePercent}%`;
+    });
+    musicLabel.append(musicVolume, musicValue);
+    musicRow.append(musicLabel);
+    wrap.append(row, audioRow, musicRow, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
     const guide = el("details", "menu-guide");
     guide.append(el("summary", undefined, s.guideTitle), el("p", "muted", s.guideText));
     wrap.append(guide);

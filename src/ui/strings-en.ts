@@ -414,6 +414,8 @@ export const en = {
   soundToggle: (enabled: boolean) => `Sound: ${enabled ? "on" : "off"}`,
   soundPreview: "Preview sound",
   soundVolume: "Volume",
+  musicToggle: (enabled: boolean) => `Music: ${enabled ? "on" : "off"}`,
+  musicVolume: "Music volume",
   language: "Русский",
   welcomeTitle: "Before you begin",
   welcomeText: "Earth is a game about life, death, war and family inheritance. Age rating: 15+.",

@@ -415,6 +415,8 @@ export const ru = {
   soundToggle: (enabled: boolean) => `Звук: ${enabled ? "вкл." : "выкл."}`,
   soundPreview: "Проверить звук",
   soundVolume: "Громкость",
+  musicToggle: (enabled: boolean) => `Музыка: ${enabled ? "вкл." : "выкл."}`,
+  musicVolume: "Громкость музыки",
   language: "English",
   welcomeTitle: "Прежде чем начать",
   welcomeText: "Earth — игра о жизни, смерти, войне и семейном наследии. Возрастная маркировка: 15+.",
