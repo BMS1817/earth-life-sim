@@ -108,6 +108,28 @@ try {
   await tapText("Начать новую жизнь");
   await waitText("Прожить год");
   report.checks.start = true;
+  await tapText("Меню");
+  await evaluate(`(() => { window.__audioPlayCalls = 0; window.__audioVolume = null; const original = HTMLMediaElement.prototype.play; window.__audioOriginalPlay = original; HTMLMediaElement.prototype.play = function() { window.__audioPlayCalls++; window.__audioVolume = this.volume; return original.call(this); }; })()`);
+  if (await evaluate(`document.querySelector(".audio-volume input").disabled !== true`)) throw new Error("Громкость доступна при выключенном звуке");
+  await tapText("Звук: выкл.");
+  await waitText("Звук: вкл.");
+  await evaluate(`(() => { const input=document.querySelector(".audio-volume input"); input.value="35"; input.dispatchEvent(new Event("input", { bubbles: true })); })()`);
+  await tapText("Проверить звук");
+  const audioEnabled = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:audio:v1")), calls: window.__audioPlayCalls, volume: window.__audioVolume, percent: document.querySelector(".audio-volume output").textContent })`);
+  if (audioEnabled.settings?.enabled !== true || audioEnabled.settings?.volume !== 0.35 || audioEnabled.calls < 1 || Math.abs(audioEnabled.volume - 0.1225) > 0.0001 || audioEnabled.percent !== "35%") throw new Error(`Audio opt-in/volume: ${JSON.stringify(audioEnabled)}`);
+  const audioShot = await call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false });
+  await writeFile(join(out, "audio-menu.png"), Buffer.from(String(audioShot.data), "base64"));
+  await call("Page.reload", { ignoreCache: true });
+  await waitFor(async () => await evaluate(`Boolean(document.querySelector(".time-controls"))`), "audio reload");
+  await tapText("Меню");
+  const audioRestored = await evaluate(`({ enabled: !document.querySelector(".audio-volume input").disabled, value: document.querySelector(".audio-volume input").value, settings: JSON.parse(localStorage.getItem("earth:audio:v1")) })`);
+  if (!audioRestored.enabled || audioRestored.value !== "35" || audioRestored.settings?.enabled !== true) throw new Error(`Audio persistence: ${JSON.stringify(audioRestored)}`);
+  await tapText("Звук: вкл.");
+  const audioDisabled = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:audio:v1")), disabled: document.querySelector(".audio-volume input").disabled, previewDisabled: [...document.querySelectorAll("button")].find((node) => node.textContent === "Проверить звук").disabled })`);
+  if (audioDisabled.settings?.enabled !== false || !audioDisabled.disabled || !audioDisabled.previewDisabled) throw new Error(`Audio disable: ${JSON.stringify(audioDisabled)}`);
+  report.checks.audio = { optIn: true, playCalls: audioEnabled.calls, volume: 0.35, restored: true, disabled: true };
+  await evaluate(`(() => { HTMLMediaElement.prototype.play = window.__audioOriginalPlay; delete window.__audioOriginalPlay; })()`);
+  await tapText("Событие");
   let choiceCount = 0;
   for (let attempt = 0; attempt < 8 && choiceCount !== 4; attempt++) {
     await tapText("Прожить год");

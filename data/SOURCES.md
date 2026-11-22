@@ -130,3 +130,11 @@
 - **International IDEA Voter Turnout:** https://www.idea.int/data-tools/data/voter-turnout и
   https://www.idea.int/terms-and-conditions . Экспорт не встраивается из-за некоммерческих и
   дополнительных лицензионных ограничений; местные выборы этот набор также не покрывает.
+
+
+## Оригинальные звуковые сигналы (P4)
+- `public/audio/choice.wav`, `year.wav`, `inherit.wav` синтезированы специально для Earth кодом
+  `scripts/build_audio.py` по запросу владельца проекта: чистые тона, короткие огибающие и
+  детерминированный шум; внешние записи, библиотеки сэмплов и платные пакеты не используются.
+- PCM WAV, mono, 22050 Hz, 16 bit. Повторная генерация: `npm run audio`. Измерение уровней —
+  FFmpeg `ebur128=peak=true`; источники и результат проверки записаны в `docs/status.md`.

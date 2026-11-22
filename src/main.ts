@@ -33,6 +33,7 @@ import type { PoliticalLevel, PoliticalPlatform, PoliticsData } from "./core/pol
 import { lineageView } from "./ui/lineage-view.ts";
 import { inheritLife } from "./core/inheritance.ts";
 import { isStandaloneBuild, resourceUrl } from "./ui/resource.ts";
+import { AudioPlayer } from "./ui/audio.ts";
 
 interface IncomeData {
   gdp: Record<string, number[]>;
@@ -215,6 +216,7 @@ async function main(): Promise<void> {
     return table[Math.min(year, 2022) - 1950];
   }
 
+  const audio = new AudioPlayer();
   let state: LifeState;
   let mort: MortData;
   let family: FamilyData;
@@ -366,7 +368,33 @@ async function main(): Promise<void> {
       if (prompt) void prompt.prompt();
       render();
     }));
-    wrap.append(row, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
+    const audioRow = el("div", "time-buttons audio-controls");
+    audioRow.append(button(s.soundToggle(audio.isEnabled), () => {
+      audio.setEnabled(!audio.isEnabled);
+      if (audio.isEnabled) audio.play("choice");
+      render();
+    }));
+    const preview = button(s.soundPreview, () => audio.play("choice"));
+    preview.disabled = !audio.isEnabled;
+    audioRow.append(preview);
+    const volumeLabel = el("label", "audio-volume");
+    volumeLabel.append(el("span", undefined, s.soundVolume));
+    const volume = el("input");
+    volume.type = "range";
+    volume.min = "0";
+    volume.max = "100";
+    volume.step = "5";
+    volume.value = String(audio.volumePercent);
+    volume.disabled = !audio.isEnabled;
+    volume.setAttribute("aria-label", s.soundVolume);
+    const volumeValue = el("output", undefined, `${audio.volumePercent}%`);
+    volume.addEventListener("input", () => {
+      audio.setVolume(Number(volume.value) / 100);
+      volumeValue.value = `${audio.volumePercent}%`;
+    });
+    volumeLabel.append(volume, volumeValue);
+    audioRow.append(volumeLabel);
+    wrap.append(row, audioRow, renderTransferControls(() => state), el("p", "offline-status", offlineStatus));
     const guide = el("details", "menu-guide");
     guide.append(el("summary", undefined, s.guideTitle), el("p", "muted", s.guideText));
     wrap.append(guide);
@@ -468,6 +496,7 @@ async function main(): Promise<void> {
         completeCurrentYear();
         return;
       }
+      audio.play("choice");
       save();
       render();
     });
@@ -555,6 +584,7 @@ async function main(): Promise<void> {
   function inherit(heirId: string): void {
     const result = inheritLife(state, heirId, family, names, worldFamily, politics);
     if (!result) return;
+    audio.play("inherit");
     state = result.state;
     peopleOpen = false;
     financeOpen = false;
@@ -603,6 +633,7 @@ async function main(): Promise<void> {
   }
 
   function completeCurrentYear(): void {
+    audio.play("year");
     completeYear(state, mort, family, names, conflict, gdpForYear(state.birth.year + state.age), politics);
     save();
     render();

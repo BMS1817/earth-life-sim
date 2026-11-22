@@ -101,6 +101,13 @@ try {
   await waitFor(async () => await evaluate(`document.querySelectorAll(".event .choice button").length`) === 4, "four choices");
   report.checks.offlineChoices = 4;
   report.checks.seed = JSON.parse(await evaluate(`localStorage.getItem("earth:life:v10")`)).seed;
+  await evaluate(`(() => { window.__audioPlayCalls = 0; window.__audioVolume = null; const original = HTMLMediaElement.prototype.play; window.__audioOriginalPlay = original; HTMLMediaElement.prototype.play = function() { window.__audioPlayCalls++; window.__audioVolume = this.volume; return original.call(this); }; })()`);
+  await click("Sound: off");
+  await evaluate(`(() => { const input=document.querySelector(".audio-volume input"); input.value="35"; input.dispatchEvent(new Event("input", { bubbles: true })); })()`);
+  await click("Preview sound");
+  const audio = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:audio:v1")), calls: window.__audioPlayCalls, volume: window.__audioVolume })`);
+  if (audio.settings?.enabled !== true || audio.settings?.volume !== 0.35 || audio.calls < 1 || Math.abs(audio.volume - 0.1225) > 0.0001) throw new Error(`Windows audio: ${JSON.stringify(audio)}`);
+  report.checks.audio = true;
   await call("Browser.setDownloadBehavior", { behavior: "allow", downloadPath: downloads });
   await click("Export save");
   const exportedName = await waitFor(async () => {
@@ -118,6 +125,12 @@ try {
   await call("Page.reload", { ignoreCache: true });
   await waitFor(async () => await evaluate(`document.querySelector(".game-hero h1")?.textContent`) === "Windows Import", "save after restart");
   report.checks.restart = true;
+  const restoredAudio = await evaluate(`({ settings: JSON.parse(localStorage.getItem("earth:audio:v1")), volume: document.querySelector(".audio-volume input")?.value })`);
+  if (restoredAudio.settings?.enabled !== true || restoredAudio.settings?.volume !== 0.35 || restoredAudio.volume !== "35") throw new Error(`Windows audio restart: ${JSON.stringify(restoredAudio)}`);
+  report.checks.audioRestart = true;
+  await click("Sound: on");
+  if (await evaluate(`JSON.parse(localStorage.getItem("earth:audio:v1")).enabled !== false`)) throw new Error("Windows audio did not turn off");
+  await evaluate(`(() => { HTMLMediaElement.prototype.play = window.__audioOriginalPlay; delete window.__audioOriginalPlay; })()`);
   await evaluate(`(() => { window.__earthTestAlert = null; window.alert = (message) => { window.__earthTestAlert = message; }; })()`);
   const newer = structuredClone(exported);
   newer.version = 11;

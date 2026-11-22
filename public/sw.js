@@ -1,4 +1,4 @@
-const CACHE = "earth-v1.0.0-e12e0f51a646";
+const CACHE = "earth-v1.0.0-30294e47ae7b";
 
 async function notify(message) {
   const clients = await self.clients.matchAll({ type: "window" });
