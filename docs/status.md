@@ -726,5 +726,10 @@
 - Проверки музыки: 182 теста, build, полный перевод; mobile Chrome и standalone offline — луп, 20%,
   noAutoplay, gestureStart и disable; Windows WebView2 — music, musicRestart, независимое отключение,
   плюс прежние offline/save/backup E2E. Снимок `shots/p4-music-touch/music-menu.png` осмотрен.
-  Музыка ещё не опубликована; требуется одобрение пользователя после прослушивания на наушниках и
-  динамиках. Preview использует текущий `4175`.
+  Пользователь одобрил музыку после прослушивания.
+- **Музыкальный этап опубликован.** Commit `acdd5c5`; Pages #28 после повторной попытки `success`.
+  Itch HTML5 `20737695`, offline `20737696`, Windows `20737697`; embed запускается, обе загрузки
+  скачаны и совпали с оригиналами. Все три GitHub Release файла также совпали по SHA-256.
+  Публичный Pages music/touch QA зелёный: opt-in, луп, 20%, noAutoplay, gestureStart, disable;
+  повторный cache-тест собрал 949 файлов и прошёл offline reload. Рабочие пакеты включают и
+  одобренные SFX, и независимо отключённую музыку.
