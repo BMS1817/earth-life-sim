@@ -1093,5 +1093,28 @@
 - В `scripts/shots.ts` offline-этап использует same-URL navigation: headless Chrome трижды показал
   собственный `ERR_INTERNET_DISCONNECTED` именно на `Page.reload`, не передав запрос service worker.
   Настоящий reload отдельно проверен `verify-i18n`; добавлены failure screenshot/DOM diagnostics.
-- itch.io ещё не обновлён: встроенный браузер ожидает Cloudflare и вход пользователя. Не считать
-  публикацию itch.io выполненной до загрузки файлов и внешней проверки.
+- Для itch.io использована авторизованная сессия пользователя в Chrome через WebBridge.
+
+
+## Публикация itch.io завершена (2026-11-24)
+- Публичная страница: https://bms1817.itch.io/earth-one-life
+- Обновлены RU/EN-описание и rebrand notes, cover ID `32771899`, пять screenshots ID
+  `32772029`–`32772033`. Цена: полная игра `$0 or more`, suggested donation `$2`, без преимуществ.
+- Uploads: HTML5 `20795018` (`is_embed`), offline HTML `20797202`, Windows `20797224` (`p_windows`).
+  Порядок и настройки проверены повторным открытием редактора после сохранения.
+- Offline HTML скачан с itch: 67,631,352 байта, SHA-256
+  `1216f5bc60de1453a90106f14e030807d1ae90f05f14af868f7f24e25dd972bb`, точное совпадение.
+- Windows ZIP скачан с itch: 89,597,301 байт, SHA-256
+  `9ba72c2fd88991dc4d6afb293f6be11b690ebcc52aa10d0a3c09fe8869bc4a9f`, точное совпадение.
+- HTML5 playable-only не выдаётся публичной download-страницей. Его опубликованный manifest совпадает
+  с `earth-one-life-html.zip`: 809 записей. Проверены 69 центральных файлов: 68 совпадают байтно,
+  `index.html` отличается только штатным добавлением itch `https://static.itch.io/htmlgame.js`.
+- Chrome smoke QA `Run game`: iframe загружает upload `20795018`; новая жизнь, год, 4 choices и outcome
+  работают. Бесплатный переход к скачиванию не требует оплаты.
+- Мобильный fixed embed itch остаётся 1280×720 даже при `Portrait`; пользователь выбрал отдельную
+  адаптивную версию на Pages. В начало описания добавлен двуязычный `blockquote` со ссылкой на неё.
+  На публичной странице сохранены border-left 4 px, отступы и рабочая ссылка. Desktop embed не изменён.
+- `release/itch-description.html` синхронизирован с MD-заметками и корректной атрибуцией. Local preview
+  прошёл 1920/1440/1280/390: overflow, broken images и console errors отсутствуют.
+- Снимок обложки: `shots/itch-public-final.png`. Мобильный блок проверен по DOM/computed-style;
+  пустые кадры фоновой вкладки Chrome удалены и не используются как доказательство.
