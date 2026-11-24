@@ -4,6 +4,8 @@
 
 Earth is a free pixel-art life simulator about the choices that shape a person — and the memories they leave behind.
 
+**NEW: a complete visual and audio rebrand.** Nine life stages, 18 homes, climates, pets, hobbies, conflict scenes and memorial rooms now share one coherent Cabbit/Kyrise style, with pastoral music and eight carefully selected UI sounds.
+
 ## LIVE YOUR LIFE
 
 Start as a child in one of **236 countries and territories**. Every event offers four meaningful choices, and every choice has a benefit and a cost.
@@ -45,7 +47,7 @@ The complete game, including generations, is available for **$0 or more**. If yo
 
 **Age rating: 15+.** Includes death, war and difficult life events. A setting to soften difficult themes is available before each new life and in the menu.
 
-Original pixel art. Population and household data: UN WPP / UN DESA. Income model: Maddison Project. Conflict data: UCDP. Political profiles: V-Dem. Full source and licence notices are included in the game package.
+Cabbit and compatible CC0/CC BY pixel assets. Population and household data: UN WPP / UN DESA. Income model: Maddison Project. Conflict data: UCDP. Political profiles: V-Dem. Full source, author and licence notices are included in the game package.
 
 ---
 
@@ -54,6 +56,8 @@ Original pixel art. Population and household data: UN WPP / UN DESA. Income mode
 **Одна жизнь. Четыре выбора. Тысяча способов оставить память.**
 
 Earth — бесплатный pixel-art симулятор жизни о решениях, которые формируют человека, и воспоминаниях, остающихся после него.
+
+**НОВОЕ: полный визуальный и аудиоребрендинг.** Девять стадий жизни, 18 домов, климаты, питомцы, хобби, конфликтные сцены и комнаты памяти теперь объединены единой стилистикой Cabbit/Kyrise, спокойной музыкой и восемью тщательно подобранными UI-звуками.
 
 ## Проживите жизнь
 
@@ -85,4 +89,4 @@ Earth — бесплатный pixel-art симулятор жизни о реш
 
 **Возрастная маркировка: 15+.** В игре есть смерть, война и тяжёлые жизненные события. Смягчение тяжёлых тем включается перед каждой новой жизнью и в меню.
 
-Оригинальный pixel-art. Данные населения и семей: UN WPP / UN DESA. Модель доходов: Maddison Project. Конфликты: UCDP. Политические профили: V-Dem. Полные сведения об источниках и лицензиях включены в игровой пакет.
+Cabbit и совместимые pixel-ассеты CC0/CC BY. Данные населения и семей: UN WPP / UN DESA. Модель доходов: Maddison Project. Конфликты: UCDP. Политические профили: V-Dem. Полные сведения об авторах, источниках и лицензиях включены в игровой пакет.

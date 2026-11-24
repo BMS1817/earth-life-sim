@@ -11,6 +11,7 @@ const name = value("--name", "android");
 const serial = value("--serial", "emulator-5554");
 const base = value("--base", "http://127.0.0.1:5181/?seed=i18n-ui");
 const offlineFile = value("--offline-file", "");
+const offlineUrl = value("--offline-url", "");
 const adb = "C:\\Users\\Maxim\\AppData\\Local\\Android\\Sdk\\platform-tools\\adb.exe";
 const out = resolve(value("--out", `shots/${name}`));
 const sleep = (ms) => new Promise((resolveSleep) => setTimeout(resolveSleep, ms));
@@ -136,12 +137,18 @@ try {
   await waitFor(async () => await evaluate(`matchMedia("(orientation: portrait)").matches && getComputedStyle(document.querySelector(".orientation-lock")).display === "none"`), "portrait restored");
   report.checks.portraitRestored = true;
 
-  if (offlineFile) {
-    adbCall("push", offlineFile, "/sdcard/Download/earth-one-life-offline.html");
-    adbCall("shell", "chmod", "0644", "/sdcard/Download/earth-one-life-offline.html");
-    await call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
-    await call("Page.navigate", { url: "file:///sdcard/Download/earth-one-life-offline.html?seed=android-offline" });
-    await waitFor(async () => await evaluate(`document.querySelector("#soften-start")`), "offline HTML welcome", 60_000);
+  if (offlineFile || offlineUrl) {
+    if (offlineUrl) {
+      await call("Page.navigate", { url: offlineUrl });
+      await waitFor(async () => await evaluate(`document.querySelector("#soften-start")`), "offline HTML welcome", 120_000);
+      await call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+    } else {
+      adbCall("push", offlineFile, "/sdcard/Download/earth-one-life-offline.html");
+      adbCall("shell", "chmod", "0644", "/sdcard/Download/earth-one-life-offline.html");
+      await call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
+      await call("Page.navigate", { url: "file:///sdcard/Download/earth-one-life-offline.html?seed=android-offline" });
+      await waitFor(async () => await evaluate(`document.querySelector("#soften-start")`), "offline HTML welcome", 120_000);
+    }
     await tapText("Начать новую жизнь");
     await waitFor(async () => await evaluate(`document.querySelector(".time-controls")`), "offline HTML start");
     await tapText("Прожить год");

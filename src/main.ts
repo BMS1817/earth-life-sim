@@ -15,7 +15,8 @@ import { COUNTRIES_EN } from "./content/en/countries.ts";
 import type { FamilyData, IndexData, MortData, NamesData } from "./core/types.ts";
 import { s, t } from "./ui/strings.ts";
 import { getLanguage, setLanguage } from "./i18n.ts";
-import { Scene } from "./ui/scene.ts";
+import { RebrandScene } from "./ui/rebrand-scene.ts";
+import { replaceRebrandArt } from "./ui/rebrand-art.ts";
 import { peopleView } from "./ui/people-view.ts";
 import { financeView } from "./ui/finance-view.ts";
 import { lifestyleView } from "./ui/lifestyle-view.ts";
@@ -33,7 +34,7 @@ import type { PoliticalLevel, PoliticalPlatform, PoliticsData } from "./core/pol
 import { lineageView } from "./ui/lineage-view.ts";
 import { inheritLife } from "./core/inheritance.ts";
 import { isStandaloneBuild, resourceUrl } from "./ui/resource.ts";
-import { AudioPlayer } from "./ui/audio.ts";
+import { RebrandAudio } from "./ui/rebrand-audio.ts";
 
 interface IncomeData {
   gdp: Record<string, number[]>;
@@ -152,7 +153,7 @@ async function main(): Promise<void> {
   const conflictCache = new Map<string, ConflictData>();
   const politicsCache = new Map<string, PoliticsData>();
   const bundleCache = new Map<string, Record<string, unknown>>();
-  const scene = new Scene();
+  const scene = new RebrandScene();
   scene.element.setAttribute("role", "img");
   scene.element.setAttribute("aria-label", s.sceneAlt);
   requestAnimationFrame(function loop(t) {
@@ -216,7 +217,8 @@ async function main(): Promise<void> {
     return table[Math.min(year, 2022) - 1950];
   }
 
-  const audio = new AudioPlayer();
+  const audio = new RebrandAudio();
+  let deathAudioYear: number | null = null;
   document.addEventListener("pointerdown", () => audio.ensureMusic());
   document.addEventListener("keydown", () => audio.ensureMusic());
   let state: LifeState;
@@ -234,12 +236,15 @@ async function main(): Promise<void> {
   let legacyNotice = false;
   let recoveryNotice = false;
   let saveWriteFailed = false;
+  let saveErrorAudioPlayed = false;
   let installPrompt: InstallPromptEvent | null = null;
   let mobileTab: "event" | "hero" | "focus" | "menu" = "event";
   let offlineStatus: string = s.offlineWaiting;
 
   function save(): void {
     saveWriteFailed = !saveLife(state);
+    if (saveWriteFailed && !saveErrorAudioPlayed) audio.play("error");
+    saveErrorAudioPlayed = saveWriteFailed;
   }
 
   function updateOfflineStatus(text: string): void {
@@ -363,7 +368,10 @@ async function main(): Promise<void> {
       save();
       render();
     }));
-    row.append(button(s.language, switchLanguage));
+    row.append(button(s.language, () => {
+      audio.play("button");
+      switchLanguage();
+    }));
     if (installPrompt) row.append(button(s.installApp, () => {
       const prompt = installPrompt;
       installPrompt = null;
@@ -534,6 +542,7 @@ async function main(): Promise<void> {
   }
 
   function openPeople(): void {
+    audio.play("menu");
     peopleOpen = true;
     financeOpen = false;
     lifestyleOpen = false;
@@ -546,6 +555,7 @@ async function main(): Promise<void> {
   }
 
   function openFinance(): void {
+    audio.play("menu");
     financeOpen = true;
     peopleOpen = false;
     lifestyleOpen = false;
@@ -558,6 +568,7 @@ async function main(): Promise<void> {
   }
 
   function openLifestyle(): void {
+    audio.play("menu");
     lifestyleOpen = true;
     peopleOpen = false;
     financeOpen = false;
@@ -570,6 +581,7 @@ async function main(): Promise<void> {
   }
 
   function openMemorial(): void {
+    audio.play("menu");
     memorialOpen = true;
     peopleOpen = false;
     financeOpen = false;
@@ -582,6 +594,7 @@ async function main(): Promise<void> {
   }
 
   function openPolitics(): void {
+    audio.play("menu");
     politicsOpen = true;
     peopleOpen = false;
     financeOpen = false;
@@ -594,6 +607,7 @@ async function main(): Promise<void> {
   }
 
   function openLineage(): void {
+    audio.play("menu");
     lineageOpen = true;
     peopleOpen = false;
     financeOpen = false;
@@ -640,6 +654,7 @@ async function main(): Promise<void> {
       onNewLife: state.alive ? null : newLife,
       onToggle: (index) => {
         const scroll = window.scrollY;
+        audio.play("favorite");
         if (toggleFavoriteMoment(state, index)) save();
         render();
         window.scrollTo(0, scroll);
@@ -652,6 +667,10 @@ async function main(): Promise<void> {
   }
 
   function renderEnd(): void {
+    if (deathAudioYear !== state.deathYear) {
+      audio.play("death");
+      deathAudioYear = state.deathYear;
+    }
     memorialOpen = false;
     renderMemorial(null);
   }
@@ -695,6 +714,7 @@ async function main(): Promise<void> {
   type SecondarySection = "people" | "finance" | "lifestyle" | "politics" | "lineage" | "memorial";
 
   function closeSecondary(): void {
+    audio.play("menu");
     peopleOpen = false;
     financeOpen = false;
     lifestyleOpen = false;
@@ -763,6 +783,7 @@ async function main(): Promise<void> {
   }
 
   function renderSecondary(content: HTMLElement, section: SecondarySection): void {
+    replaceRebrandArt(content, state, scene);
     const header = el("header", "secondary-topbar");
     header.append(button(s.back, closeSecondary), renderGameNav(section));
     app.replaceChildren(header, content, renderMobileTabs(false));

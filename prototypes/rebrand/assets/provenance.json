@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "updated": "2026-11-23",
+  "brief": "art-direction-brief.md",
+  "style": "cabbit-kyrise-storybook-16bit",
+  "scope": "isolated-preview",
+  "production_approved": false,
+  "rules": {
+    "pixel_grid": 16,
+    "alpha": [0, 255],
+    "projection": "2d-front-side",
+    "outline_px": 1,
+    "material_ramp_colors": [4, 6],
+    "integer_scales": [1, 4, 8]
+  },
+  "reference": {
+    "object": "civilian-car",
+    "scene_size": [64, 40],
+    "memorial_icon_size": [32, 32],
+    "status": "approved",
+    "source_id": "opengameart-small-city-cars",
+    "license": "CC BY 4.0",
+    "approved": true
+  },
+  "assets": [
+    {
+      "path": ".tools/asset-downloads/small-city-cars/car-scene-64.png",
+      "source": "Small city cars by PixelShack, CC BY 4.0",
+      "sha256_source": "5ffb58eb095e30f355415155952231c9958a65ee0aff0d2f744aac3e92e70b15",
+      "modifications": "crop, largest connected component, exact RGB remap, native placement without scaling",
+      "colors": 13,
+      "status": "rejected-style"
+    },
+    {
+      "path": ".tools/asset-downloads/small-city-cars/car-scene-from-icon-64.png",
+      "source": "Approved hand-simplified icon derived from Small city cars by PixelShack, CC BY 4.0",
+      "sha256_source": "5ffb58eb095e30f355415155952231c9958a65ee0aff0d2f744aac3e92e70b15",
+      "modifications": "native 32x32 approved icon placed in 64x40, no resizing",
+      "colors": 11,
+      "status": "preview-v2-ready"
+    },
+    {
+      "path": ".tools/asset-downloads/small-city-cars/car-scene-large-64.png",
+      "source": "Hand-authored larger derivative from Small city cars by PixelShack, CC BY 4.0",
+      "sha256_source": "5ffb58eb095e30f355415155952231c9958a65ee0aff0d2f744aac3e92e70b15",
+      "modifications": "hand-authored native 48x32 scene in 64x40, no resizing; Village integer 2x",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/asset-downloads/small-city-cars/car-memorial-32.png",
+      "source": "Hand-simplified from Small city cars by PixelShack, CC BY 4.0",
+      "sha256_source": "5ffb58eb095e30f355415155952231c9958a65ee0aff0d2f744aac3e92e70b15",
+      "modifications": "hand-simplified native 32x32 side-view icon, no source resizing",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/war-truck-64.png",
+      "source": "Project-authored derivative using the approved object style and PixelShack CC BY 4.0 attribution",
+      "sha256_source": null,
+      "modifications": "native hand-authored 64x40 covered evacuation truck, no external package",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/asset-downloads/ph64-electronics/computer-32.png",
+      "source": "pH64 Electronics by Stacy Kendra Love / Narcissist Interactive, CC BY 4.0",
+      "sha256_source": "aa0bdab547120bb1c36b82ae0c9da6d5e5762a385cc80ef8d150b09d37e4fa92",
+      "modifications": "native monitor and tower crops, hand-drawn keyboard, exact RGB remap, calm screen, no scaling",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/bicycle-scene-48.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 48x32 strict-side bicycle",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/bicycle-icon-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 memorial icon, not a resized scene",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/war-soldier-24.png",
+      "source": "Fighter-M-01 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, uniform recolor, hand-drawn helmet, no weapon",
+      "colors": 34,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/asset-downloads/smoke-fire-particle/war-smoke-48.png",
+      "source": "Smoke & Fire Animated Particle by KnoblePersona, CC BY 3.0",
+      "sha256_source": "b8c57a8774149004696efbdbd079d00c1b4afaeefaa3a4d55347ec4d5b7824f2",
+      "modifications": "upper gray native 16x16 parts only, exact cool-gray remap, no fire, no scaling",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/war-debris-48.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 48x16 nonviolent rubble",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-games-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 game controller",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-sports-32.png",
+      "source": "pH64 Electronics by Stacy Kendra Love / Narcissist Interactive, CC BY 4.0",
+      "sha256_source": "aa0bdab547120bb1c36b82ae0c9da6d5e5762a385cc80ef8d150b09d37e4fa92",
+      "modifications": "native exercise machine crop, exact RGB remap, no scaling",
+      "colors": 7,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-reading-32.png",
+      "source": "Kyrise book_04g, CC BY 4.0",
+      "sha256_source": "d3ec6e7b990c94e8658b6a3358667bd06fcf031edcb6fe06ccf8efa518839bab",
+      "modifications": "native 16x16 open book in 32x32, no scaling",
+      "colors": 14,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-music-32.png",
+      "source": "pH64 Electronics by Stacy Kendra Love / Narcissist Interactive, CC BY 4.0",
+      "sha256_source": "aa0bdab547120bb1c36b82ae0c9da6d5e5762a385cc80ef8d150b09d37e4fa92",
+      "modifications": "native speaker crop, exact RGB remap, no scaling",
+      "colors": 6,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-crafts-32.png",
+      "source": "pH64 Electronics by Stacy Kendra Love / Narcissist Interactive, CC BY 4.0",
+      "sha256_source": "aa0bdab547120bb1c36b82ae0c9da6d5e5762a385cc80ef8d150b09d37e4fa92",
+      "modifications": "native sewing machine crop, exact RGB remap, no scaling",
+      "colors": 5,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/hobby-nature-32.png",
+      "source": "Kyrise fish_01a, CC BY 4.0",
+      "sha256_source": "d3ec6e7b990c94e8658b6a3358667bd06fcf031edcb6fe06ccf8efa518839bab",
+      "modifications": "native 16x16 fish in 32x32, no scaling",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-home-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 house icon",
+      "colors": 7,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-rental-32.png",
+      "source": "Project home plus Kyrise key_01a, CC BY 4.0",
+      "sha256_source": "d3ec6e7b990c94e8658b6a3358667bd06fcf031edcb6fe06ccf8efa518839bab",
+      "modifications": "project house with native 16x16 key, no scaling",
+      "colors": 11,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-business-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 storefront icon",
+      "colors": 7,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-career-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 briefcase icon",
+      "colors": 5,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-partner-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 partner hearts",
+      "colors": 3,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-child-32.png",
+      "source": "Townfolk-Child-M-001 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "native front crop, exact color-key, no scaling",
+      "colors": 30,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-small-32.png",
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 32x32 small pet",
+      "colors": 4,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-dog-32.png",
+      "source": "German Shepherd by Shepardskin, CC0",
+      "sha256_source": "f1d0e3badad9332c73e5b616266aa153c5c78041c1f9cecb55c99206c90cd0ae",
+      "modifications": "native 29x18 walk frame, exact RGB recolor including eyes, no scaling",
+      "colors": 8,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/object-cat-32.png",
+      "source": "Cat sprites by Shepardskin, CC0",
+      "sha256_source": "370fcc5c7c6f6a4388fdde08892b30b126de83518a1a4f94f9282b00b1e28376",
+      "modifications": "native 18x15 static pose, exact color-key and recolor, no scaling",
+      "colors": 5,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-00-infant.png",
+      "source": "Project-authored in the Cabbit/Earth style",
+      "sha256_source": null,
+      "modifications": "hand-authored native 24x32 swaddled infant, pivot 31",
+      "colors": 5,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-01-early.png",
+      "source": "Townfolk-Child-M-001 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, native leg-row deletion, no scaling, pivot 31",
+      "colors": 26,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-02-child.png",
+      "source": "Townfolk-Child-M-002 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, native leg-row deletion, no scaling, pivot 31",
+      "colors": 24,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-03-teen.png",
+      "source": "Townfolk-Adult-M-001 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, native leg-row deletion, no scaling, pivot 31",
+      "colors": 26,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-04-young.png",
+      "source": "Townfolk-Adult-M-009 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, pivot 31",
+      "colors": 24,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-05-adult.png",
+      "source": "Townfolk-Adult-M-001 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, pivot 31",
+      "colors": 26,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-06-mature.png",
+      "source": "Townfolk-Adult-M-009 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, two gray pixels, pivot 31",
+      "colors": 25,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-07-senior.png",
+      "source": "Townfolk-Old-M-001 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, pivot 31",
+      "colors": 21,
+      "status": "approved"
+    },
+    {
+      "path": ".tools/style-review/age-08-elder.png",
+      "source": "Townfolk-Old-M-002 from Cabbit Extended, CC BY 3.0 / OGA-BY 3.0",
+      "sha256_source": "2bcbe8d7418268ef2cb0a0fa4d12bd45908724797e68d25a2f7aa0b790ea94d9",
+      "modifications": "side crop, exact color-key, hand-drawn cane, pivot 31",
+      "colors": 28,
+      "status": "approved"
+    },
+    {
+      "paths": [
+        ".tools/style-review/house-north-poor.png",
+        ".tools/style-review/house-north-poor-damaged.png",
+        ".tools/style-review/house-north-mid.png",
+        ".tools/style-review/house-north-mid-damaged.png",
+        ".tools/style-review/house-north-rich.png",
+        ".tools/style-review/house-north-rich-damaged.png",
+        ".tools/style-review/house-temperate-poor.png",
+        ".tools/style-review/house-temperate-poor-damaged.png",
+        ".tools/style-review/house-temperate-mid.png",
+        ".tools/style-review/house-temperate-mid-damaged.png",
+        ".tools/style-review/house-temperate-rich.png",
+        ".tools/style-review/house-temperate-rich-damaged.png",
+        ".tools/style-review/house-tropics-poor.png",
+        ".tools/style-review/house-tropics-poor-damaged.png",
+        ".tools/style-review/house-tropics-mid.png",
+        ".tools/style-review/house-tropics-mid-damaged.png",
+        ".tools/style-review/house-tropics-rich.png",
+        ".tools/style-review/house-tropics-rich-damaged.png"
+      ],
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "native 96x80 climate palettes, wealth geometry and nonviolent damaged states",
+      "colors": [10, 11],
+      "status": "approved"
+    },
+    {
+      "paths": [
+        ".tools/style-review/interior-north-128.png",
+        ".tools/style-review/interior-temperate-128.png",
+        ".tools/style-review/interior-tropics-128.png"
+      ],
+      "source": "Project-authored in the approved object style",
+      "sha256_source": null,
+      "modifications": "native opaque 128x96 climate interiors, integer 2x memorial preview",
+      "colors": [8, 9],
+      "status": "approved"
+    }
+  ]
+}

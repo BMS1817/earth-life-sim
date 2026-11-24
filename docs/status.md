@@ -733,3 +733,343 @@
   Публичный Pages music/touch QA зелёный: opt-in, луп, 20%, noAutoplay, gestureStart, disable;
   повторный cache-тест собрал 949 файлов и прошёл offline reload. Рабочие пакеты включают и
   одобренные SFX, и независимо отключённую музыку.
+
+
+## Изолированный UI-kit preview (2026-11-22)
+- По гриллу выбран **Kenney UI Pack - Pixel Adventure**, CC0, 500 файлов по странице источника.
+  Для официального Kenney flow добавлены отдельная запись и resolver в глобальный
+  `game-asset-catalog`; поиск, unknown id, отказ без `--yes` и разрешённое тестовое скачивание прошли.
+- ZIP размером 317032 байта проверен и распакован только в
+  `.tools/asset-downloads/kenney-ui-pack-pixel-adventure/`. CRC и внутренняя CC0-лицензия зелёные,
+  SHA-256 и источник сохранены в `.license.json`. Игровой код и ресурсы не изменялись.
+- В архиве 514 PNG: модульные 16×16 и 32×32 элементы, листы и превью; полупрозрачности нет,
+  36 пустых PNG являются местами сетки. Осмотрены официальные Preview/Sample и созданный
+  nearest-neighbor `contact-sheet-small-thick.png`. Пакет пригоден для отдельного UI-прототипа,
+  но требует сборки панелей и адаптации палитры; интеграция ещё не согласована.
+
+
+## Изолированный UI-прототип реализован (2026-11-23)
+- Добавлены `ui-prototype.html`, `src/ui-prototype/` и `prototypes/pixel-adventure/`. Команды:
+  `npm run prototype:ui` и `npm run test:ui-prototype`. Девять 32×32 компонентов получены точной
+  RGB-перекраской Kenney CC0 без изменения геометрии/alpha; brief, manifest и license сохранены.
+- Реальные детерминированные состояния: adult decision и его копия, проигранная до мемориала.
+  Основной экран — 2 desktop-колонки и 4 mobile-вкладки; Люди — master-detail; Мемориал — досье.
+  Выборы, фокус, хобби, настройки, выбор человека, избранное, наследие и Escape работают.
+- `npm run test:ui-prototype`: **36 снимков** (3 экрана × 6 размеров × RU/EN) и **13 сценариев**.
+  Нет горизонтального/внешнего main overflow, out-of-bounds, дробных canvas-масштабов, контрастных
+  (<4,5:1), touch-target или console errors. Снимки осмотрены на `contact.png` и before/after-листах.
+- Стандартные проверки: **182 теста**, TypeScript и `npm run build` зелёные. Production build не
+  содержит prototype-файлы; игровой UI, сейвы, баланс и публикации не изменялись. Ждёт визуального
+  решения пользователя; полная интеграция и 62-экранная production-матрица не начаты.
+
+
+## Поиск нового арта и Cabbit preview (2026-11-23)
+- Production-интеграция UI не подтверждена и приостановлена. Новый грилл выбрал полный 2D front/side
+  ребрендинг без изометрии, один пилот и поиск совместимых пакетов для всех категорий. Shortlist и
+  отклонённые варианты записаны в `docs/decisions.md`; Modern/Fantasy/Rural сохранены как альтернативы.
+- Основой выбран **Edited and Extended 24x32 Character Pack**. Добавлена отдельная direct_zip запись
+  в `game-asset-catalog`; поиск, unknown id, отказ без `--yes` и разрешённое скачивание прошли.
+- ZIP 2342155 байт, 115 записей, CRC и внутренняя CC BY/OGA-BY атрибуция зелёные. 110 PNG содержат
+  24×32 кадры и портреты; дети/взрослые/старики и тона кожи подтверждены визуально. Alpha отсутствует,
+  для будущего пилота нужен точный color-key фона. Исходники не изменены, production не затронут.
+- Preview: `.tools/asset-downloads/cabbit-24x32-extended/contact-people.png` и `walk-preview.gif`.
+  Следующий предлагаемый пакет — Village Landscape (отдельные слои дома/природы), затем icons/UI;
+  каждый требует собственного согласия. Полная пилотная сцена ещё не собрана.
+- Village Landscape (494537 байт, OGA-BY 3.0) скачан после отдельной карточки. Четыре слоя 576×324
+  проверены; собраны `pilot-scene.png` и `pilot-scene-ui.png` с Cabbit и Kenney UI. Первая компоновка
+  с персонажами на фасаде отклонена при визуальном осмотре; итог ставит их на дорожку и переносит UI
+  вверх. Атрибуция сохранена. Это по-прежнему только `.tools` preview, не production.
+- Kyrise Icons V1.2 (724218 байт, CC BY 4.0) скачан и проверен: 904 PNG, 20 подходящих предметов
+  осмотрены в `contact-selected.png`, alpha бинарная. Следующий кандидат — Cabbit Lying Down PNG
+  для мемориала; нужен отдельно согласованный `direct_file`, поскольку catalog пока принимает ZIP.
+- `direct_file` уже существовал в актуальном catalog. Lying Down PNG скачан и проверен Pillow:
+  192×192, 48 статичных поз, фон без alpha; осмотрен `preview.png`. Для production пригодны только
+  отобранные одетые позы. Следующий кандидат — Black Character Pack для разнообразия людей.
+- Создан и утверждён `docs/plan-asset-rebrand.md` (15 этапов, включая аудио); он обновляется после
+  каждого этапа. Black Pack завершён: 18 листов, кредиты и preview зелёные. Следующий фронт —
+  CC0 bases и совместимые профессии; полный 100% ещё не достигнут, production не меняется.
+- Handymen завершён: 5 профессий, корректные кредиты и previews. Отдельных портретов нет;
+  medicine/education/services/pilot не закрыты. План отмечает эти ограничения. Следующий фронт —
+  интерьеры/дома и модульные профессиональные props/outfits.
+- Human Bases скачан: 81 PNG, CC0, 8 типов тел и модульные варианты. `contact-bodies.png` и
+  `recolor-preview.png` подтверждают типы и все 6 тонов. Bases завершены; profession outfits и
+  отдельные портреты Handymen остаются открытыми.
+- Confectioner скачан для services: 3044 байта, CC BY 3.0/4.0. `Starship Pilot` и `Scientist`
+  отклонены по лицензиям, Teacher по отсутствию явной лицензии. Собрана `career-matrix.png`:
+  все 7 профессий в Cabbit-стиле с совместимыми props. Остались 9 возрастов и интеграция.
+
+
+## Дома, мебель и климатический этап (2026-11-23)
+- Old Frogatto Houses скачан: 30746 байт, 2 PNG, CC0. Осмотрены `house.png` (857×370) и
+  `frogatto-house.png` (296×192): front-view дома и старейшина. Фон RGB требует color-key;
+  климатов/damaged нет, поэтому 18 домов не закрываются.
+- Home Objects Revised скачан: 6103 байт, SHA-256
+  `e1ba391f0dfac8b5ebd085a901826ee3da570373f7da9150aa5f0e77003b5272`. Pillow: 192×192 RGBA,
+  alpha 0/255; мебель осмотрена в `preview.png`. Стены/интерьер остаются отдельной задачей.
+- Следующий фронт — климатические фоны той же серии 576×324: зима, природа и город.
+- Winter скачан: 497527 байт, SHA-256 `be2389ca7581c0fc68680dc3b0a4bd27780db0c663afae3141d0c7e0eb72408d`.
+  Порядок слоёв Plan 1–5 → background 1 совпал с Preview 1 с MAE 0,0. Зимняя сцена и UI осмотрены.
+  City (1147930 байт, OGA-BY 3.0) — следующая карточка.
+- City скачан: SHA-256 `78ad2e6a45f3f70410bfae63cce3082f02f41af7b702e459ced8edb7468f7779`.
+  Порядок BG/1 → BG/6 совпал с BG/7 при MAE 0,0. Городская сцена/UI готовы. Следующий фон —
+  Desert Clean от Cethiel, CC0, для сухого климата.
+- Desert Clean скачан: 656303 байт, SHA-256 `acc2a398484b2f040813824fb918ca3518bbdcdd22150416f56c68d221dd371d`.
+  Левый/правый края совпадают с MAE 0,0. Центральный фрагмент 576×324 без масштабирования осмотрен
+  в `pilot-desert.png` и `pilot-desert-ui.png`. Теперь есть 3 климата; следующий фронт — 18 домов,
+  интерьеры и повреждённые состояния.
+- Wooden House скачан: 32175 байт, SHA-256 `7e07653350645765486d41b026c3af35a5d3f68548832678414bc6722d74c4f4`.
+  Дом 214×182 и 6 кадров двери проверены, осмотрен `door-animation.gif`. Полный набор 18 домов и
+  damaged-состояния ещё не закрыт. Дальше отдельная аудиоветка с новым поиском музыки и 3 SFX.
+- Выбран пасторальный стиль и расширенный UI-звук ровно на 8 событий, включая общий menu transition.
+  Peaceful Village скачан: исходник 185,55 с, −15,3 LUFS/peak −0,3. Подготовлен preview 72 с:
+  −20,3 LUFS/true peak −5,5. Для прослушивания доступен файл OGG, production не изменён.
+- Kenney Interface Sounds скачан: 100 OGG, CC0. Подготовлены основной и альтернативный кандидат на
+  каждое из 8 событий, все после −2,5 дБ имеют true peak ≤−1,7. Страница `listen.html` готова;
+  следующий gate — выбор пользователя после живого прослушивания.
+- Пользователь продолжил с рекомендованными вариантами; они будут использоваться в интеграционном
+  preview. Окончательное подтверждение качества прослушивания не заявляется. Следующий этап — типы тел,
+  оставшиеся профессии и одежда.
+
+
+## German Shepherd — изолированный preview (2026-11-23)
+- Скачан ZIP 70748 байт, CC0, Shepardskin. SHA-256 `f1d0e3badad9332c73e5b616266aa153c5c78041c1f9cecb55c99206c90cd0ae`.
+- 61 запись, CRC зелёный, небезопасных путей и symlinks нет. Подтверждены x1/x2/x3 и отдельные кадры
+  walk/run/bark. Осмотрены `.tools/asset-downloads/german-shepherd/contact-animations.png`,
+  `walk-preview.gif` и `run-preview.gif` после nearest-увеличения исходников 29×18.
+- Side-view и анимации подходят пилоту; красные глаза, палитра и масштаб требуют адаптации к Cabbit.
+  Production не менялся. Следующая отдельная карточка — Pixel cat, затем транспорт/war.
+
+
+## Cat sprites — изолированный preview (2026-11-23)
+- Вместо отклонённого статичного Pixel cat скачан одобренный `Cat sprites` Shepardskin: CC0,
+  19170 байт, 8 ZIP-записей. SHA-256 `370fcc5c7c6f6a4388fdde08892b30b126de83518a1a4f94f9282b00b1e28376`.
+- Catalog search, unknown id, отказ без `--yes` и разрешённое скачивание прошли; CRC, пути и symlinks зелёные.
+- Проверены 6 кадров walk, 6 run и 16 статичных поз. Осмотрены `contact-sprites.png`,
+  `contact-animations.png`, `walk-preview.gif`, `run-preview.gif` в `.tools/asset-downloads/cat-sprites-shepardskin/`.
+  Розовый фон удалён только в копиях точным RGB color-key. Питомцы dog+cat закрыты на уровне пилота;
+  следующий фронт — транспорт и конфликт-арт.
+
+
+## Object style grill — в работе (2026-11-23)
+- Предложенный 2D Side scrolling tank отклонён по стилю и не скачан. Поиск транспорта/war приостановлен
+  до согласования единой объектной стилистики. Собран `.tools/style-review/current-objects.png`.
+- Следующие решения: визуальное направление, охват семейства, размеры/ракурс, палитра, conflict tone,
+  эталонный объект и приёмка на реальном фоне. Production и загрузки новых пакетов не выполняются.
+
+- Object style grill: три раунда отвечены. Выбраны Cabbit+Kyrise для всех объектов, модуль 16 px,
+  Earth+локальные рампы, эвакуация/последствия, гражданская машина как эталон и умеренная адаптация.
+  Ждём финальное «Согласен? Делаю?» на спецификацию; затем фиксируем brief и ищем car-кандидатов.
+  Новые ассеты не скачиваются без отдельной карточки.
+
+
+## Object style утверждён, поиск эталонной машины (2026-11-23)
+- Созданы `assets/art-direction-brief.md` и `assets/asset-manifest.json`; production-флаги выключены.
+  Единый стиль: Cabbit+Kyrise, модуль 16 px, Earth+локальные рампы, умеренная адаптация.
+- Проверены car-кандидаты. cyanowl и Chasersgaming не проходят по контуру/свету; Gop go go содержит
+  подходящие гражданские side-view силуэты. Предложен `russiancars_pack1_side.png` (madmedicsoft,
+  CC0, 128086 байт). Масштабированные decor-варианты 75% исключены. Ждём согласия на скачивание.
+
+- Gop cars side скачан и проверен: 1024×1024, binary alpha, SHA-256
+  `c09dced939771f8548f0994ba43282a5a48c6e403682f844f5d0dd986e42608f`. Седаны визуально подходят,
+  но их native ширина 95–119 px вместо согласованного ориентира 64 px. Нужен отдельный scale-выбор;
+  ресайз и production-интеграция не выполняются.
+
+- Поиск car 64 px продолжен. Найден `Small city cars` PixelShack: CC BY 4.0, 5990 байт,
+  native side 48×18, помещается в кадр 64×40 без ресайза. Предварительный визуальный отбор пройден;
+  предложен blue car. Ожидается разрешение на скачивание и изолированный scene/icon preview.
+
+
+## Эталон car preview готов к согласованию (2026-11-23)
+- Small city cars: SHA-256 `5ffb58eb095e30f355415155952231c9958a65ee0aff0d2f744aac3e92e70b15`.
+  Собраны `car-scene-64.png` (13 цветов) и `car-memorial-32.png` (11 цветов), оба binary-alpha reports
+  зелёные. Native 47×20 не масштабировался; memorial icon сделан отдельной ручной версией.
+- `car-village-preview.png` и `car-memorial-preview.png` проверены native/×4/×8. Опора исправлена после
+  визуального монтажа. Атрибуция CC BY 4.0 и manifest обновлены. Следующий gate — одобрение пользователя;
+  затем по этой спецификации ищутся остальные lifestyle/war объекты.
+
+- Car gate: memorial icon принята, первая scene-машина отклонена по проекции/стилю. Делаем scene v2
+  из одобренной icon-формы в кадре 64×40, native pixels. Прежний preview сохранён только для before/after;
+  production не изменён.
+
+- Собрана `car-village-preview-v2.png`: используется только одобренная strict-side icon-форма,
+  native 32×32 в scene 64×40 и целый ×2 на фоне. Report: 11 цветов, binary alpha, ошибок нет.
+  Ждём визуального одобрения v2; прежняя source-scene отклонена.
+
+- Car v3 увеличена ручной native 48×32 версией, не дробным resize. `car-village-preview-v3.png`
+  сохраняет общий ×2 с Cabbit и одинаковый экранный пиксель; 11 цветов, binary alpha, report зелёный.
+  Сравнение: `car-scene-v3-comparison.png`. Ждём подтверждение размера перед переходом к war truck.
+
+- Car v3 и icon официально приняты как object-эталон; manifest отмечен approved. Production не меняется.
+  Текущий поиск: крытый грузовик эвакуации в strict-side, native около 48–64 px, затем остальные
+  lifestyle/war объекты по той же спецификации.
+
+
+## War truck preview готов (2026-11-23)
+- Подходящего готового strict-side 64px пакета не найдено; несовместимые источники не скачивались.
+  Создан `.tools/style-review/war-truck-64.png` по утверждённому эталону: 11 цветов, binary alpha,
+  крытый кузов, никакого оружия. `war-truck-village-preview.png` и `war-truck-comparison.png` осмотрены.
+  Ждём одобрения; затем компьютер/велосипед и остальные conflict props.
+
+- Эвакуационный грузовик одобрен пользователем и отмечен approved в manifest. Production не меняется.
+  Начат поиск компьютера в pH64 sideview electronics; перед скачиванием будет отдельная карточка.
+
+- Найден и визуально проверен pH64 electronics: 18538 байт, CC BY 4.0, модульные monitor/tower/parts.
+  Предложен для isolated computer preview после отдельного согласия. Военный грузовик уже approved;
+  production не меняется.
+
+
+## Computer preview готов (2026-11-23)
+- pH64 electronics скачан и проверен, SHA-256 `aa0bdab547120bb1c36b82ae0c9da6d5e5762a385cc80ef8d150b09d37e4fa92`.
+  `computer-32.png` использует native monitor/tower и ручную keyboard без ресайза, 11 цветов, binary alpha.
+  `computer-memorial-preview.png` осмотрен native/×4/×8, report зелёный. Ждём визуального одобрения;
+  следующий объект — велосипед или conflict soldier.
+
+- Компьютер одобрен и отмечен approved. Начат поиск велосипеда в strict-side, native 32–48 px;
+  production не меняется, отдельная карточка будет показана до скачивания.
+
+
+## Bicycle preview готов (2026-11-23)
+- Созданы `.tools/style-review/bicycle-scene-48.png` и `bicycle-icon-32.png` по approved object style,
+  6 цветов, binary alpha, reports зелёные. Подходящего внешнего пакета не найдено.
+  `bicycle-village-preview.png`, `bicycle-memorial-preview.png` и `bicycle-reference-sheet.png` осмотрены.
+  Ждём одобрения; затем conflict soldier/smoke/debris и hobby props.
+
+- Велосипед scene/icon одобрен и отмечен approved. Начат поиск Cabbit-совместимого солдата;
+  при отсутствии подходящего пакета будет изолированный вариант на уже скачанной Cabbit-базе.
+
+
+## Soldier + truck preview готов (2026-11-23)
+- Создан `war-soldier-24.png` из Cabbit Fighter-M-01: strict-side, helmet/uniform, без оружия.
+  34 цвета, binary alpha, report зелёный. Есть `war-soldier-walk.gif` (3 кадра ×6),
+  `war-soldier-truck-preview.png` и `war-soldier-reference-sheet.png`. Ждём одобрения;
+  следующие conflict-объекты — smoke/debris, затем hobby props.
+
+- Солдат одобрен и отмечен approved. Начат поиск pixel smoke/debris; сглаженные частицы,
+  огонь и взрывы исключены. Production не меняется.
+
+- Найден smoke-кандидат KnoblePersona: CC BY 3.0, 1450 байт, серые клубы 16×16. Fire-кадры
+  исключены. Предложена native 48×48 композиция после отдельного разрешения на скачивание.
+
+
+## War aftermath preview готов (2026-11-23)
+- `war-smoke-48.png` и `war-debris-48.png` готовы: по 6 цветов, binary alpha, reports зелёные.
+  Источник smoke SHA-256 `b8c57a8774149004696efbdbd079d00c1b4afaeefaa3a4d55347ec4d5b7824f2`,
+  fire-кадры исключены. `war-aftermath-preview.png` содержит обломки, дым, грузовик и солдата;
+  связь дыма с землёй исправлена после визуального монтажа. Ждём одобрения.
+
+- Дым и обломки одобрены, conflict-набор отмечен approved. Начат отбор games/sports/reading/music/
+  crafts/nature из уже скачанного Kyrise; production не меняется.
+
+
+## Hobby matrix готова (2026-11-23)
+- Все 6 hobby icons 32×32 и `hobby-memorial-preview.png` собраны, reports зелёные.
+  `hobby-reference-matrix.png` показывает games/sports/reading/music/crafts/nature единой системой.
+- Computer provenance исправлен: keyboard project-drawn, не arcade; актуальный вид сохранён,
+  11 цветов. Crafts исправлен на подтверждённую sewing machine. Ждём одобрения набора.
+
+- Набор хобби одобрен, расстановка исправлена в `hobby-memorial-preview-v2.png`: sports на полу,
+  games на столе, остальные четыре на полках. Иконки approved и не менялись. Ждём решения по v2;
+  дальше остаются полный object matrix и незакрытые состояния домов/интерьеров/production pipeline.
+
+- Создана `hobby-memorial-preview-v3.png` по уточнению: games на полке, music на полу рядом со
+  столом. Остальная компоновка сохранена, перекрытий нет. Ждём подтверждения v3.
+
+- `hobby-memorial-preview-v4.png`: controller поднят на верхнюю поверхность полки y=100,
+  а не оставлен под доской. Остальные предметы не двигались. Ждём подтверждения.
+
+
+## Hobby v5, следующий object-блок (2026-11-24)
+- `hobby-memorial-preview-v5.png`: controller поднят на 3 px по запросу. Hobby/conflict previews
+  закрыты. Начат последний lifestyle-блок: home, rental, business, career, partner, child, small pet.
+  Production по-прежнему не меняется.
+
+
+## Все 18 object names покрыты preview (2026-11-24)
+- `remaining-objects-reference.png` содержит home/rental/business/career/partner/child/small;
+  все 32×32, reports зелёные. `remaining-objects-memorial-preview.png` проверен в комнате.
+  Следующий gate — визуальное одобрение, затем полная object matrix и оставшиеся этапы ребрендинга.
+
+- `remaining-objects-memorial-preview-v2.png`: объекты на правых полках сдвинуты на 4 px влево
+  к центру. Ждём подтверждения расстановки; сами иконки не менялись.
+
+
+## Полная 18-object matrix (2026-11-24)
+- Собрана `.tools/style-review/full-object-matrix.png`: computer, bicycle, car, home, rental,
+  business, career, partner, child, dog, cat, small и 6 hobbies. Все native 32×32, alpha зелёная.
+  Новые dog/cat memorial icons имеют 8/5 цветов. Ждём одобрения полной матрицы.
+
+- Полная 18-object matrix одобрена. Этап объектов закрыт на уровне preview, production не изменён.
+  Начата проверка 9 возрастных стадий и доступных Cabbit-вариантов для полной возрастной матрицы.
+
+
+## Девять возрастов — preview готов (2026-11-24)
+- `age-matrix.png` собран и проверен двумя визуальными проходами. Все 9 кадров 24×32,
+  binary alpha, reports зелёные, pivot стабилен. Infant/early/child/teen различаются геометрией,
+  не масштабированием. Ждём одобрения; дальше 18 домов/damaged и интерьеры.
+
+- Девять возрастов одобрено. Начат этап 18 домов и повреждённых состояний, затем интерьеры.
+  Production не меняется.
+
+
+## Все 18 домов — preview готов (2026-11-24)
+- `house-matrix.png` содержит все климат/достаток/damaged состояния, reports зелёные.
+  `house-temperate-scene-preview.png` проверен с Cabbit и Village layers. Следующий gate —
+  одобрение домов, затем три интерьера и производственная проверка полного preview.
+
+- Восемнадцать домов одобрено. Начаты интерьеры north/temperate/tropics 128×96 и проверка
+  предметов в новой комнате. Production не меняется.
+
+
+## Три интерьера — preview готов (2026-11-24)
+- `interior-matrix.png` содержит все климаты 128×96; `interior-temperate-objects-preview.png`
+  проверен с хобби в 256×192. Reports зелёные. Ждём одобрения, затем полный игровой preview/pipeline.
+
+- Три интерьера одобрены. Начат полный изолированный игровой preview и проверка точек подключения
+  новых assets в UI-прототипе. Production не меняется.
+
+
+## Полный rebrand preview готов к показу (2026-11-24)
+- Локальный адрес: `http://127.0.0.1:4179/ui-prototype.html`. Семь views, RU/EN, PC/mobile.
+  84 снимка, 13 interactions, 33 art-сценария, 3 поколения, 32 favorites, 8 SFX + music.
+- `npm run test:rebrand`, `npm run test:ui-prototype`, 182 теста, TypeScript и `npm run build` зелёные.
+  Production не изменён, dist не содержит rebrand/prototype. Следующий шаг только после визуального
+  одобрения пользователя: production migration и отдельные offline/Windows/Android проверки.
+
+
+## Production-миграция начата (2026-11-24)
+- Получен gate пользователя. Переносим утверждённый rebrand в основную игру, затем production QA,
+  offline HTML, Windows и Android/PWA. Публикация не выполняется без отдельного разрешения.
+
+
+## Production rebrand перенесён (2026-11-24)
+- Production использует новые scene/audio; 62-экранный аудит зелёный, 184 теста, build зелёный.
+  Удалены 206 старых art-файлов, ZIP 809 файлов. Rebrand assets: 55 PNG + 9 аудио.
+- Начаты отдельные проверки offline HTML, Windows и Android/PWA. Публикация не разрешена.
+
+
+## Offline/Windows/Android QA (2026-11-24)
+- Offline HTML зелёный. Windows WebView2 и process restart зелёные; исправлено размещение `app`
+  в `.tools/windows-publish/app` стандартной сборкой.
+- Android Medium Phone PWA и offline HTML зелёные. `verify-android.mjs` поддерживает `--offline-url`;
+  welcome timeout увеличен до 120 с из-за размера standalone файла. Compact Phone проверяется.
+
+
+## Rebrand и platform QA завершены (2026-11-24)
+- Production: 62 экрана, 3 поколения, 32 favorites, 184 теста, build зелёные.
+- Offline HTML: зелёный. Windows WebView2 и process restart: зелёные.
+- Android Medium и Compact: PWA и offline HTML зелёные, portrait lock работает, overflow нет.
+- HTML5 ZIP preview зелёный. Production ZIP 809 файлов. Публикация не выполнялась.
+
+
+## Страница живого прослушивания (2026-11-24)
+- Добавлена `public/rebrand-listen.html`: production music и все 8 SFX без autoplay, RU labels,
+  кредиты и loudness. Ссылка: `http://127.0.0.1:4179/rebrand-listen.html`. Ждём прослушивания
+  пользователя, затем страница релиза/донатов и отдельное разрешение на публикацию.
+
+
+## Релизные материалы и донат готовы (2026-11-24)
+- Прослушивание подтверждено. Описание itch.io, обложки и GIF обновлены, донат $2 без преимуществ.
+- `earth-one-life-html.zip`: 51,339,554 байт, SHA-256 `952541f9a0e85d938fcd3e7c837854e5cc182b84d8fc428e5b8bcb3d2641939f`.
+- `earth-one-life-offline.html`: 67,631,352 байта, SHA-256 `1216f5bc60de1453a90106f14e030807d1ae90f05f14af868f7f24e25dd972bb`.
+- `earth-one-life-windows.zip`: 89,597,301 байт, SHA-256 `9ba72c2fd88991dc4d6afb293f6be11b690ebcc52aa10d0a3c09fe8869bc4a9f`.
+- Оба ZIP: CRC None (ошибок нет). Публикация ждёт отдельного разрешения.

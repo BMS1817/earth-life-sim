@@ -1,0 +1,286 @@
+{
+  "scope": "isolated-rebrand-preview",
+  "production": false,
+  "files": [
+    "age-00-infant.png",
+    "age-01-early.png",
+    "age-02-child.png",
+    "age-03-teen.png",
+    "age-04-young.png",
+    "age-05-adult.png",
+    "age-06-mature.png",
+    "age-07-senior.png",
+    "age-08-elder.png",
+    "audio/button.ogg",
+    "audio/choice.ogg",
+    "audio/death.ogg",
+    "audio/error.ogg",
+    "audio/favorite.ogg",
+    "audio/inherit.ogg",
+    "audio/menu.ogg",
+    "audio/music.ogg",
+    "audio/year.ogg",
+    "bg-north.png",
+    "bg-temperate.png",
+    "bg-tropics.png",
+    "bicycle-icon-32.png",
+    "car-memorial-32.png",
+    "computer-32.png",
+    "hobby-crafts-32.png",
+    "hobby-games-32.png",
+    "hobby-music-32.png",
+    "hobby-nature-32.png",
+    "hobby-reading-32.png",
+    "hobby-sports-32.png",
+    "house-north-mid-damaged.png",
+    "house-north-mid.png",
+    "house-north-poor-damaged.png",
+    "house-north-poor.png",
+    "house-north-rich-damaged.png",
+    "house-north-rich.png",
+    "house-temperate-mid-damaged.png",
+    "house-temperate-mid.png",
+    "house-temperate-poor-damaged.png",
+    "house-temperate-poor.png",
+    "house-temperate-rich-damaged.png",
+    "house-temperate-rich.png",
+    "house-tropics-mid-damaged.png",
+    "house-tropics-mid.png",
+    "house-tropics-poor-damaged.png",
+    "house-tropics-poor.png",
+    "house-tropics-rich-damaged.png",
+    "house-tropics-rich.png",
+    "interior-north-128.png",
+    "interior-temperate-128.png",
+    "interior-tropics-128.png",
+    "object-business-32.png",
+    "object-career-32.png",
+    "object-cat-32.png",
+    "object-child-32.png",
+    "object-dog-32.png",
+    "object-home-32.png",
+    "object-partner-32.png",
+    "object-rental-32.png",
+    "object-small-32.png",
+    "war-debris-48.png",
+    "war-smoke-48.png",
+    "war-soldier-24.png",
+    "war-truck-64.png"
+  ],
+  "backgrounds": {
+    "north": "bg-north.png",
+    "temperate": "bg-temperate.png",
+    "tropics": "bg-tropics.png"
+  },
+  "rooms": {
+    "north": "interior-north-128.png",
+    "temperate": "interior-temperate-128.png",
+    "tropics": "interior-tropics-128.png"
+  },
+  "ages": [
+    "age-00-infant.png",
+    "age-01-early.png",
+    "age-02-child.png",
+    "age-03-teen.png",
+    "age-04-young.png",
+    "age-05-adult.png",
+    "age-06-mature.png",
+    "age-07-senior.png",
+    "age-08-elder.png"
+  ],
+  "houses": {
+    "house-north-poor": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-north-poor-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-north-mid": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-north-mid-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-north-rich": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-north-rich-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-poor": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-poor-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-mid": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-mid-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-rich": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-temperate-rich-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-poor": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-poor-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-mid": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-mid-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-rich": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    },
+    "house-tropics-rich-damaged": {
+      "size": [
+        96,
+        80
+      ],
+      "anchor": [
+        192,
+        160
+      ]
+    }
+  },
+  "audio": {
+    "music": "audio/music.ogg",
+    "signals": {
+      "choice": "audio/choice.ogg",
+      "year": "audio/year.ogg",
+      "inherit": "audio/inherit.ogg",
+      "button": "audio/button.ogg",
+      "menu": "audio/menu.ogg",
+      "favorite": "audio/favorite.ogg",
+      "error": "audio/error.ogg",
+      "death": "audio/death.ogg"
+    }
+  }
+}

@@ -22,13 +22,6 @@ function politicsScene(country: CountryEntry): HTMLElement {
   canvas.setAttribute("aria-hidden", "true");
   const ctx = canvas.getContext("2d")!;
   ctx.imageSmoothingEnabled = false;
-  const image = new Image();
-  image.onload = () => {
-    image.onload = null;
-    image.onerror = null;
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-  };
-  image.src = resourceUrl("art/kimi/politics_city.png");
   root.append(canvas);
   if (country.iso2) {
     const flag = el("span", "politics-flag fi");

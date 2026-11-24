@@ -33,6 +33,9 @@
     "test:android": "node scripts/verify-android.mjs",
     "test:pwa:cache": "node scripts/verify-pwa-cache.mjs",
     "test:touch": "node scripts/verify-touch.mjs",
+    "prototype:ui": "vite --open /ui-prototype.html",
+    "test:ui-prototype": "node prototypes/pixel-adventure/verify.mjs",
+    "test:rebrand": "node prototypes/rebrand/verify.mjs",
     "audit:art": "node scripts/audit-kimi-art.mjs",
     "audit:art:static": "python -P scripts/audit_static_art.py",
     "audit:war": "node scripts/audit-war-layers.mjs"

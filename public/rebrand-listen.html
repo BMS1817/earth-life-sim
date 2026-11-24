@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Earth — прослушивание музыки и SFX</title>
+  <style>
+    :root{color-scheme:light;font-family:Inter,system-ui,sans-serif;color:#343a45;background:#e9dfce}
+    body{max-width:960px;margin:30px auto;padding:0 18px;line-height:1.55}
+    h1{font-size:28px}h2{margin-top:28px;font-size:20px}p{color:#5f6470}
+    section{margin:16px 0;padding:16px;border:2px solid #b08a45;background:#fff4d6;box-shadow:4px 4px 0 #b8a58b}
+    audio{width:100%;height:40px}small{display:block;margin-top:6px;color:#5f6470}
+    a{color:#533b6d;font-weight:700} .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+    @media(max-width:640px){.grid{grid-template-columns:1fr}body{margin:18px auto}}
+  </style>
+</head>
+<body>
+  <h1>Earth — музыка и 8 UI-событий</h1>
+  <p>Автозапуск отсутствует. Нажмите Play самостоятельно. Это production-файлы, используемые в игре.</p>
+  <section>
+    <h2>Фоновая музыка · Peaceful Village</h2>
+    <audio controls preload="none" src="art/rebrand/audio/music.ogg"></audio>
+    <small>Jon K. Fite · CC BY 3.0 · 72 с · −20,2 LUFS · true peak −5,5 dBFS</small>
+  </section>
+  <div class="grid">
+    <section><h2>1. Выбор</h2><audio controls preload="none" src="art/rebrand/audio/choice.ogg"></audio></section>
+    <section><h2>2. Год</h2><audio controls preload="none" src="art/rebrand/audio/year.ogg"></audio></section>
+    <section><h2>3. Наследник</h2><audio controls preload="none" src="art/rebrand/audio/inherit.ogg"></audio></section>
+    <section><h2>4. Кнопка</h2><audio controls preload="none" src="art/rebrand/audio/button.ogg"></audio></section>
+    <section><h2>5. Открытие/закрытие меню</h2><audio controls preload="none" src="art/rebrand/audio/menu.ogg"></audio></section>
+    <section><h2>6. Избранное</h2><audio controls preload="none" src="art/rebrand/audio/favorite.ogg"></audio></section>
+    <section><h2>7. Ошибка</h2><audio controls preload="none" src="art/rebrand/audio/error.ogg"></audio></section>
+    <section><h2>8. Смерть / мемориал</h2><audio controls preload="none" src="art/rebrand/audio/death.ogg"></audio></section>
+  </div>
+  <p>SFX: Kenney Interface Sounds · CC0. Усиление не применяется после выбора кандидатов; source previews были ослаблены на 2,5 дБ.</p>
+  <p><a href="/">Вернуться к игре</a></p>
+</body>
+</html>

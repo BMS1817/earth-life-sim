@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "source": {
+    "name": "UI Pack - Pixel Adventure",
+    "author": "Kenney",
+    "license": "CC0 1.0",
+    "url": "https://kenney.nl/assets/ui-pack-pixel-adventure",
+    "zip_sha256": "0b0ed4802ebcfff5e44e370f394baa1d751862a5a4a7612ac4ce84e85faa0627"
+  },
+  "frame": [32, 32],
+  "alpha": "binary",
+  "resampling": "nearest",
+  "components": [
+    { "file": "panel.png", "source_tile": "tile_0006.png", "slice": 12, "role": "large parchment panel" },
+    { "file": "card.png", "source_tile": "tile_0018.png", "slice": 12, "role": "repeated card" },
+    { "file": "button.png", "source_tile": "tile_0000.png", "slice": 10, "role": "neutral control" },
+    { "file": "button-active.png", "source_tile": "tile_0019.png", "slice": 10, "role": "selected control" },
+    { "file": "choice-tradition.png", "source_tile": "tile_0033.png", "slice": 12, "role": "tradition choice" },
+    { "file": "choice-change.png", "source_tile": "tile_0035.png", "slice": 12, "role": "change choice" },
+    { "file": "choice-bonds.png", "source_tile": "tile_0034.png", "slice": 12, "role": "bonds choice" },
+    { "file": "choice-self.png", "source_tile": "tile_0033.png", "slice": 12, "role": "self choice" },
+    { "file": "banner.png", "source_tile": "tile_0069.png", "slice": 12, "role": "optional banner" }
+  ],
+  "modification": "Exact RGB palette substitution; geometry and binary alpha retained",
+  "verification": "component-preview.png and shots/ui-prototype/report.json"
+}

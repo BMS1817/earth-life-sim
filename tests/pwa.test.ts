@@ -21,7 +21,7 @@ describe("PWA и оффлайн-кэш", () => {
     expect(assets).toContain("data/politics/X412.json");
     expect(assets).toContain("data/family/_world.json");
     expect(assets).toContain("art/person_senior_idle.png");
-    expect(assets).toContain("art/kimi/politics_city.png");
+    expect(assets).toContain("art/rebrand/bg-tropics.png");
     expect(assets).toContain("licenses/flag-icons.txt");
     expect(assets).toContain("flags/4x3/ru.svg");
     expect(assets).toContain("flags/4x3/us.svg");

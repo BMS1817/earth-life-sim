@@ -100,6 +100,17 @@
   начертаний в `PressStart2P-Regular.woff2` командой `npm run fonts`. Лицензия SIL OFL 1.1
   сохранена в `public/fonts/OFL.txt`. Основной текст остаётся системным шрифтом.
 
+
+## Изолированный UI-прототип
+- `prototypes/pixel-adventure/assets/` содержит производные UI-компоненты из **Kenney UI Pack -
+  Pixel Adventure**, CC0 1.0: https://kenney.nl/assets/ui-pack-pixel-adventure . Исходный ZIP
+  проверен по CRC и внутреннему `License.txt`; SHA-256 —
+  `0b0ed4802ebcfff5e44e370f394baa1d751862a5a4a7612ac4ce84e85faa0627`.
+- `prototypes/pixel-adventure/build_assets.py` выполняет только точную RGB-перекраску выбранных
+  32×32 PNG в parchment/фиолетово-золотую палитру Earth и цвета четырёх секторов. Геометрия,
+  бинарная alpha и пиксельная сетка сохраняются. Атрибуция необязательна, источник и изменения
+  записаны в `kenney-license.json` и `asset-manifest.json`. Эти ресурсы не входят в production build.
+
 ## Доходы
 - **Что:** ВВП на душу населения (межд. доллары 2011 г.) по странам, 1950–2022
   (`public/data/income.json`).

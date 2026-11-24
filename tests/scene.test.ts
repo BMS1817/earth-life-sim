@@ -23,13 +23,12 @@ describe("пиксельная сцена: выбор спрайтов", () => {
   });
 
   it("18 домов имеют свои размеры и помещаются от общего нижнего центра", () => {
-    const manifest = JSON.parse(readFileSync("public/art/kimi/manifest.json", "utf-8")) as { houses: Record<string, { size: [number, number]; anchor: [number, number] }> };
+    const manifest = JSON.parse(readFileSync("public/art/rebrand/manifest.json", "utf-8")) as { houses: Record<string, { size: [number, number]; anchor: [number, number] }> };
     const houses = Object.entries(manifest.houses);
     expect(houses).toHaveLength(18);
-    for (const [name, { size, anchor }] of houses) {
-      const level = name.split("_")[2] as "poor" | "mid" | "rich";
-      expect(size).toEqual({ poor: [80, 64], mid: [96, 80], rich: [112, 96] }[level]);
-      expect(anchor).toEqual([56, 176]);
+    for (const [, { size, anchor }] of houses) {
+      expect(size).toEqual([96, 80]);
+      expect(anchor).toEqual([192, 160]);
       expect(anchor[0] - size[0] / 2).toBeGreaterThanOrEqual(0);
       expect(anchor[0] + size[0] / 2).toBeLessThanOrEqual(256);
       expect(anchor[1] - size[1]).toBeGreaterThanOrEqual(0);

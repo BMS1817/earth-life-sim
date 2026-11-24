@@ -28,9 +28,11 @@ const result = spawnSync(dotnet, [
 if (result.status !== 0) throw new Error(`dotnet publish failed: ${result.status}`);
 await mkdir(stage, { recursive: true });
 await cp(publish, stage, { recursive: true });
+await cp(resolve("dist"), resolve(publish, "app"), { recursive: true });
 await cp(resolve("dist"), resolve(stage, "app"), { recursive: true });
 const packed = spawnSync("powershell", [
   "-NoProfile", "-Command", `Compress-Archive -Path '${stage}\\*' -DestinationPath '${archive}' -CompressionLevel Optimal`,
 ], { stdio: "inherit" });
 if (packed.status !== 0) throw new Error(`Windows ZIP failed: ${packed.status}`);
+await rm(stage, { recursive: true, force: true });
 console.log(`Windows ZIP: ${archive}`);

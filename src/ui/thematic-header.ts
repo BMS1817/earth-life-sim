@@ -1,6 +1,4 @@
-import { resourceUrl } from "./resource.ts";
-
-export function thematicHeader(theme: string): HTMLCanvasElement {
+export function thematicHeader(_theme: string): HTMLCanvasElement {
   const canvas = document.createElement("canvas");
   canvas.width = 256;
   canvas.height = 64;
@@ -8,12 +6,5 @@ export function thematicHeader(theme: string): HTMLCanvasElement {
   canvas.setAttribute("aria-hidden", "true");
   const ctx = canvas.getContext("2d")!;
   ctx.imageSmoothingEnabled = false;
-  const image = new Image();
-  image.onload = () => {
-    image.onload = null;
-    image.onerror = null;
-    ctx.drawImage(image, 0, 0, image.width, image.height, 0, 0, canvas.width, canvas.height);
-  };
-  image.src = resourceUrl(`art/kimi/header_${theme}.png`);
   return canvas;
 }
