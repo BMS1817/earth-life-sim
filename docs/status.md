@@ -1080,8 +1080,10 @@
 - Коммит `99c5dfd Rebrand game art and audio` отправлен в `origin/main`. GitHub Release:
   https://github.com/BMS1817/earth-life-sim/releases/tag/v1.1.0
 - Все три release-файла повторно скачаны; SHA-256 совпадают с локальными пакетами из раздела выше.
-- Первый Pages deploy загрузил artifact, но deploy-шаг временно не увидел его. Повтор failed jobs успешен:
-  run `45410327654`, attempt 2. Публичный `sw-assets.json` полностью совпадает с `dist`: 810 записей.
+- Первый Pages deploy загрузил artifact, но deploy-шаг не увидел его; повтор `45410327654`, attempt 2,
+  успешен. Когда гонка повторилась на следующем коммите, workflow переведён на официальные отдельные
+  `build`/`deploy` jobs с `needs: build`. Run `45416920105` для `0fa1c04`: обе jobs зелёные с первого
+  запуска. Публичный `sw-assets.json` полностью совпадает с `dist`: 810 записей.
 - Проверены 69 центральных production-файлов: JS, `art/rebrand` PNG/audio совпадают побайтно;
   `manifest.json` совпадает как JSON и текст после нормализации CRLF/LF (Windows/Linux).
 - `shots/public-rebrand-final-3/report.json`: 62 экрана, 3 поколения, 32 favorites, national politics,

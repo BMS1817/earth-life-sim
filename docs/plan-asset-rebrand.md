@@ -301,7 +301,7 @@
 - [x] Описание RU/EN включает rebrand, `$0 or more` и донат `$2` без преимуществ.
 - [x] HTML5/offline/Windows ZIP проверены CRC; hashes записаны в статус.
 - [x] GitHub Release `v1.1.0` опубликован; три внешних файла повторно скачаны, SHA-256 совпадают.
-- [x] GitHub Pages обновлён до `99c5dfd`; manifest совпадает с `dist`, публичные 62-экранный и RU/EN/offline QA зелёные.
+- [x] GitHub Pages содержит игру `99c5dfd`; workflow `0fa1c04` разделяет build/deploy, manifest совпадает с `dist`, публичные 62-экранный и RU/EN/offline QA зелёные.
 - [ ] itch.io обновлён: описание, обложки, GIF/screenshots и три пакета; внешние файлы и страница проверены.
 
 ## Осталось до закрытия публикации
