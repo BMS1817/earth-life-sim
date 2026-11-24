@@ -1118,3 +1118,17 @@
   прошёл 1920/1440/1280/390: overflow, broken images и console errors отсутствуют.
 - Снимок обложки: `shots/itch-public-final.png`. Мобильный блок проверен по DOM/computed-style;
   пустые кадры фоновой вкладки Chrome удалены и не используются как доказательство.
+
+
+
+## Post-rebrand профилирование (2026-11-24)
+- `shots/perf-rebrand-startup/report.json`: 3 прогона desktop/mobile, cold/warm/offline.
+  Mobile cold median 2292 мс welcome / 2752 мс interactive, desktop cold 1054/1223 мс.
+  Mobile warm 566/613 мс, offline 77/128 мс, desktop warm 170/220 мс. Cache 5,6–6,9 с.
+- Жёсткий threshold mobile 2000 мс формально не пройден, но прежний P2 после preload был
+  2274/2703 мс: разница +18/+49 мс не является подтверждённой регрессией нового арта.
+  `art/rebrand` занимает 1,3 МиБ. Новых изменений startup по одному сравнению окружений не предпринято.
+- `shots/perf-rebrand-runtime-desktop/report.json`: 60,00 fps, heap +3,51%, все проверки зелёные.
+- `shots/perf-rebrand-runtime-mobile/report.json`: 60,00 fps, ordinary/heavy p95 15,8 мс,
+  heap +8,63% при пороге 10%, listeners/nodes/timers без роста, retained screens 0, errors пустые.
+- Оптимизация runtime не требуется. Production preview остановлен после измерений.
