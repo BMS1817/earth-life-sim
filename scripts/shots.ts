@@ -453,9 +453,10 @@ async function main(): Promise<void> {
       const cache = await caches.open(key);
       return (await cache.keys()).length >= assets.length && navigator.serviceWorker.controller !== null;
     })()`)), "готовность оффлайн-кэша");
+    const offlineUrl = String(await evaluate(page, "location.href"));
     await page.call("Network.enable");
     await page.call("Network.emulateNetworkConditions", { offline: true, latency: 0, downloadThroughput: 0, uploadThroughput: 0 });
-    await page.call("Page.reload", { ignoreCache: true });
+    await page.call("Page.navigate", { url: offlineUrl });
     await waitForSelector(page, ".memorial-view.ended");
     const offlineGeneration = (await savedState(page)).lineage.generation;
     if (offlineGeneration !== 3) throw new Error(`Оффлайн-поколение: ${offlineGeneration}`);
@@ -482,6 +483,14 @@ async function main(): Promise<void> {
     console.log(`Снимки: ${out}`);
     console.log(`Ошибки страницы: ${page.errors.length}`);
     if (page.errors.length > 0) throw new Error(page.errors.join("\n"));
+  } catch (error) {
+    if (cdp) {
+      const failureState = await evaluate(cdp, `({ url: location.href, text: document.querySelector("#app")?.textContent?.slice(0, 4000), controller: Boolean(navigator.serviceWorker?.controller), online: navigator.onLine, save: localStorage.getItem("earth:life:v10")?.slice(0, 500) })`).catch((diagnosticError) => String(diagnosticError));
+      const shot = await cdp.call("Page.captureScreenshot", { format: "png", captureBeyondViewport: false }).catch(() => null);
+      if (shot) await writeFile(join(out, "failure.png"), Buffer.from(String(shot.data), "base64"));
+      await writeFile(join(out, "failure.json"), JSON.stringify({ error: String(error), failureState, consoleErrors: cdp.errors }, null, 2));
+    }
+    throw error;
   } finally {
     cdp?.close();
     const process = chrome;

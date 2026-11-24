@@ -1073,3 +1073,23 @@
 - `earth-one-life-offline.html`: 67,631,352 байта, SHA-256 `1216f5bc60de1453a90106f14e030807d1ae90f05f14af868f7f24e25dd972bb`.
 - `earth-one-life-windows.zip`: 89,597,301 байт, SHA-256 `9ba72c2fd88991dc4d6afb293f6be11b690ebcc52aa10d0a3c09fe8869bc4a9f`.
 - Оба ZIP: CRC None (ошибок нет). Публикация ждёт отдельного разрешения.
+
+
+
+## Публичный релиз v1.1.0: Pages и GitHub готовы (2026-11-24)
+- Коммит `99c5dfd Rebrand game art and audio` отправлен в `origin/main`. GitHub Release:
+  https://github.com/BMS1817/earth-life-sim/releases/tag/v1.1.0
+- Все три release-файла повторно скачаны; SHA-256 совпадают с локальными пакетами из раздела выше.
+- Первый Pages deploy загрузил artifact, но deploy-шаг временно не увидел его. Повтор failed jobs успешен:
+  run `45410327654`, attempt 2. Публичный `sw-assets.json` полностью совпадает с `dist`: 810 записей.
+- Проверены 69 центральных production-файлов: JS, `art/rebrand` PNG/audio совпадают побайтно;
+  `manifest.json` совпадает как JSON и текст после нормализации CRLF/LF (Windows/Linux).
+- `shots/public-rebrand-final-3/report.json`: 62 экрана, 3 поколения, 32 favorites, national politics,
+  referendum, offline generation 3; `badPixelRatios`, `badLayoutOverflow`, `consoleErrors` пустые.
+- `shots/public-rebrand-i18n/report.json`: RU/EN, 4 choices, 32 favorites, 3 поколения и настоящий
+  offline reload зелёные; console errors нет.
+- В `scripts/shots.ts` offline-этап использует same-URL navigation: headless Chrome трижды показал
+  собственный `ERR_INTERNET_DISCONNECTED` именно на `Page.reload`, не передав запрос service worker.
+  Настоящий reload отдельно проверен `verify-i18n`; добавлены failure screenshot/DOM diagnostics.
+- itch.io ещё не обновлён: встроенный браузер ожидает Cloudflare и вход пользователя. Не считать
+  публикацию itch.io выполненной до загрузки файлов и внешней проверки.
